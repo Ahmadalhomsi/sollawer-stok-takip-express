@@ -67,9 +67,6 @@ export default function App() {
         <div>
             {/* <input type="text" placeholder='Message' /> */}
 
-
-
-
             <button onClick={handleClick}>
                 Click Me!
             </button>
@@ -83,7 +80,7 @@ export default function App() {
                 Update user
             </button>
 
-            <h1>Editable Table</h1>
+            <h1>Siparişler</h1>
             <EditableTable />
 
             <Toaster

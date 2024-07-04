@@ -4,12 +4,15 @@ import { DataGrid } from '@mui/x-data-grid';
 import { TextField, Checkbox, Button, Link, Box, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import NewRowModal from './NewRowModal';
 
 const EditableTable = () => {
   const [rows, setRows] = useState([]);
   const [editIdx, setEditIdx] = useState(-1);
   const [editRow, setEditRow] = useState({});
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setModalOpen] = useState(false);
+
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/users')
@@ -50,103 +53,142 @@ const EditableTable = () => {
     }));
   };
 
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
+  const handleRowCreated = (newRow) => {
+    setRows((prevRows) => [...prevRows, newRow]);
+  };
+
   const columns = [
-    { field: 'orderDate', headerName: 'Order Date', width: 180, renderCell: (params) => new Date(params.value).toLocaleString() },
-    { field: 'shipmentDate', headerName: 'Shipment Date', width: 180, renderCell: (params) => new Date(params.value).toLocaleString() },
-    { field: 'shipmentStatus', headerName: 'Shipment Status', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-      <Checkbox
-        name="shipmentStatus"
-        checked={editRow.shipmentStatus}
-        onChange={handleChange}
-      />
-    ) : params.value ? 'Yes' : 'No' },
-    { field: 'invoiceStatus', headerName: 'Invoice Status', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-      <Checkbox
-        name="invoiceStatus"
-        checked={editRow.invoiceStatus}
-        onChange={handleChange}
-      />
-    ) : params.value ? 'Yes' : 'No' },
-    { field: 'invoiceNO', headerName: 'Invoice No', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-      <TextField
-        name="invoiceNO"
-        value={editRow.invoiceNO}
-        onChange={handleChange}
-      />
-    ) : params.value },
-    { field: 'projectNO', headerName: 'Project No', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-      <TextField
-        name="projectNO"
-        value={editRow.projectNO}
-        onChange={handleChange}
-      />
-    ) : params.value },
-    { field: 'projectName', headerName: 'Project Name', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-      <TextField
-        name="projectName"
-        value={editRow.projectName}
-        onChange={handleChange}
-      />
-    ) : params.value },
-    { field: 'tableCount', headerName: 'Table Count', width: 130, renderCell: (params) => params.row.id === editIdx ? (
-      <TextField
-        name="tableCount"
-        value={editRow.tableCount}
-        onChange={handleChange}
-      />
-    ) : params.value },
-    { field: 'projectLink', headerName: 'Project Link', width: 200, renderCell: (params) => params.row.id === editIdx ? (
-      <TextField
-        name="projectLink"
-        value={editRow.projectLink}
-        onChange={handleChange}
-      />
-    ) : (
-      <Link href={params.value} target="_blank" rel="noopener noreferrer">
-        {params.value}
-      </Link>
-    )},
-    { field: 'company', headerName: 'Company', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-      <TextField
-        name="company"
-        value={editRow.company}
-        onChange={handleChange}
-      />
-    ) : params.value },
-    { field: 'investorName', headerName: 'Investor Name', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-      <TextField
-        name="investorName"
-        value={editRow.investorName}
-        onChange={handleChange}
-      />
-    ) : params.value },
-    { field: 'city', headerName: 'City', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-      <TextField
-        name="city"
-        value={editRow.city}
-        onChange={handleChange}
-      />
-    ) : params.value },
-    { field: 'latitude', headerName: 'Latitude', width: 130, renderCell: (params) => params.row.id === editIdx ? (
-      <TextField
-        type="number"
-        name="latitude"
-        value={editRow.latitude}
-        onChange={handleChange}
-      />
-    ) : params.value },
-    { field: 'longitude', headerName: 'Longitude', width: 130, renderCell: (params) => params.row.id === editIdx ? (
-      <TextField
-        type="number"
-        name="longitude"
-        value={editRow.longitude}
-        onChange={handleChange}
-      />
-    ) : params.value },
+    { field: 'orderDate', headerName: 'Sipariş Tarih', width: 100, renderCell: (params) => new Date(params.value).toLocaleString() },
+    { field: 'shipmentDate', headerName: 'Kargo Tarih', width: 100, renderCell: (params) => new Date(params.value).toLocaleString() },
+    {
+      field: 'shipmentStatus', headerName: 'Kargo Durumu', width: 120, renderCell: (params) => params.row.id === editIdx ? (
+        <Checkbox
+          name="shipmentStatus"
+          checked={editRow.shipmentStatus}
+          onChange={handleChange}
+        />
+      ) : params.value ? 'Yes' : 'No'
+    },
+    {
+      field: 'invoiceStatus', headerName: 'Fatura Durumu', width: 110, renderCell: (params) => params.row.id === editIdx ? (
+        <Checkbox
+          name="invoiceStatus"
+          checked={editRow.invoiceStatus}
+          onChange={handleChange}
+        />
+      ) : params.value ? 'Yes' : 'No'
+    },
+    {
+      field: 'invoiceNO', headerName: 'Fatura NO', width: 120, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="invoiceNO"
+          value={editRow.invoiceNO}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'projectNO', headerName: 'Proje NO', width: 150, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="projectNO"
+          value={editRow.projectNO}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+
+    {
+      field: 'company', headerName: 'Firma', width: 120, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="company"
+          value={editRow.company}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'projectName', headerName: 'Proje', width: 110, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="projectName"
+          value={editRow.projectName}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+
+    {
+      field: 'tableCount', headerName: 'Masa Sayısı', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="tableCount"
+          value={editRow.tableCount}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'city', headerName: 'Şehir', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="city"
+          value={editRow.city}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'latitude', headerName: 'Enlem', width: 80, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          type="number"
+          name="latitude"
+          value={editRow.latitude}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'longitude', headerName: 'Boylam', width: 80, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          type="number"
+          name="longitude"
+          value={editRow.longitude}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'investorName', headerName: 'Yatırımcı İsmi', width: 150, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="investorName"
+          value={editRow.investorName}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'projectLink', headerName: 'Proje Linki', width: 200, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="projectLink"
+          value={editRow.projectLink}
+          onChange={handleChange}
+        />
+      ) : (
+        <Link href={params.value} target="_blank" rel="noopener noreferrer">
+          {params.value}
+        </Link>
+      )
+    },
+
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 164,
       renderCell: (params) => (
         params.row.id === editIdx ? (
           <>
@@ -171,18 +213,27 @@ const EditableTable = () => {
     }
   ];
 
+
   return (
     <Box sx={{ height: 600, width: '100%' }}>
+      <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+        Add New Row
+      </Button>
       <DataGrid
         rows={rows}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[5, 10, 20]}
-        checkboxSelection
+        // checkboxSelection
         disableSelectionOnClick
         loading={loading}
         getRowId={(row) => row.id}
-        
+
+      />
+      <NewRowModal
+        open={isModalOpen}
+        onClose={handleModalClose}
+        onRowCreated={handleRowCreated}
       />
     </Box>
   );
