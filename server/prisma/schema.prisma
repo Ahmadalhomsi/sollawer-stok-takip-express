@@ -1,0 +1,39 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Define a single table that combines all the fields
+model TrackerOrder {
+  id        Int      @id @default(autoincrement())
+  orderDate DateTime
+
+  // Shipment details
+  shipmentDate DateTime?
+  shipmentStatus       Boolean @default(false) // false means "yollanmadı"
+
+  // Invoice details
+  invoiceStatus Boolean @default(false) // false means "kesildi"
+  invoiceNO     String
+
+  // Project details
+  projectNO   String
+  projectName String
+  tableCount  Int
+  projectLink String
+
+  // Company details
+  company      String
+  investorName String?
+
+  // Location details
+  city      String
+  latitude  Float // Enlem
+  longitude Float // Boylam
+}
