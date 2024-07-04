@@ -53,6 +53,7 @@ const EditableTable = () => {
     }));
   };
 
+
   const handleModalOpen = () => {
     setModalOpen(true);
   };
@@ -66,8 +67,41 @@ const EditableTable = () => {
   };
 
   const columns = [
-    { field: 'orderDate', headerName: 'Sipariş Tarih', width: 100, renderCell: (params) => new Date(params.value).toLocaleString() },
-    { field: 'shipmentDate', headerName: 'Kargo Tarih', width: 100, renderCell: (params) => new Date(params.value).toLocaleString() },
+    {
+      field: 'orderDate',
+      headerName: 'Sipariş Tarih',
+      width: 140,
+      renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          fullWidth
+
+          type="datetime-local"
+          name="orderDate"
+          value={new Date(editRow.orderDate).toISOString().slice(0, 16)}
+          onChange={handleChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      ) : new Date(params.value).toLocaleString()
+    },
+    {
+      field: 'shipmentDate',
+      headerName: 'Kargo Tarih',
+      width: 140,
+      renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          fullWidth
+          type="datetime-local"
+          name="shipmentDate"
+          value={new Date(editRow.shipmentDate).toISOString().slice(0, 16)}
+          onChange={handleChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      ) : new Date(params.value).toLocaleString()
+    },
     {
       field: 'shipmentStatus', headerName: 'Kargo Durumu', width: 120, renderCell: (params) => params.row.id === editIdx ? (
         <Checkbox
@@ -75,7 +109,7 @@ const EditableTable = () => {
           checked={editRow.shipmentStatus}
           onChange={handleChange}
         />
-      ) : params.value ? 'Yes' : 'No'
+      ) : params.value ? 'Yollandı' : 'Yollanmadı'
     },
     {
       field: 'invoiceStatus', headerName: 'Fatura Durumu', width: 110, renderCell: (params) => params.row.id === editIdx ? (
@@ -84,7 +118,7 @@ const EditableTable = () => {
           checked={editRow.invoiceStatus}
           onChange={handleChange}
         />
-      ) : params.value ? 'Yes' : 'No'
+      ) : params.value ? 'Kesildi' : 'Kesilmedi'
     },
     {
       field: 'invoiceNO', headerName: 'Fatura NO', width: 120, renderCell: (params) => params.row.id === editIdx ? (
