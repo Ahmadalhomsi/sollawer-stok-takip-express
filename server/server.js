@@ -18,7 +18,7 @@ app.get('/api', (req, res) => { // for test
 
 
 // GET route
-app.get('/api/users', async (req, res) => {
+app.get('/api/users', async (req, res) => { // Get all users
     try {
         const users = await prisma.trackerOrder.findMany();
         res.json(users);

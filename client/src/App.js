@@ -1,8 +1,15 @@
 import React from 'react'
 import axios from 'axios';
+import EditableTable from './components/EditableTable';
+import toast, { Toaster } from "react-hot-toast";
+import "./App.css";
+
 
 
 export default function App() {
+
+    const success = () =>
+	toast.success("Successfully registered");
 
     const handleClick = () => {
         fetch('http://localhost:5000/api') // Replace '/api/data' with your server endpoint
@@ -13,6 +20,8 @@ export default function App() {
                 console.log(data);
             })
             .catch(error => {
+                toast.error(error.message);
+                console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                 // Handle any errors that occur during the fetch request
                 console.log('Error fetching data from serverZZ:');
                 console.error(error);
@@ -55,8 +64,12 @@ export default function App() {
 
 
     return (
-        <div>App
+        <div>
             {/* <input type="text" placeholder='Message' /> */}
+
+
+
+
             <button onClick={handleClick}>
                 Click Me!
             </button>
@@ -69,6 +82,14 @@ export default function App() {
             <button onClick={hangleUpdateUserButton}>
                 Update user
             </button>
+
+            <h1>Editable Table</h1>
+            <EditableTable />
+
+            <Toaster
+				position="top-center"
+				reverseOrder={true}
+			/>
         </div>
     )
 }
