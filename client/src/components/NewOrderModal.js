@@ -1,9 +1,8 @@
-// src/NewRowModal.js
 import React, { useState } from 'react';
 import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import axios from 'axios';
 
-const NewRowModal = ({ open, onClose, onRowCreated }) => {
+const NewOrderModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
         orderDate: '',
         shipmentDate: '',
@@ -68,7 +67,7 @@ const NewRowModal = ({ open, onClose, onRowCreated }) => {
                 maxHeight: 'calc(100vh - 100px)', /* Set max height (adjust as needed) */
             }}>
                 <Typography id="modal-modal-title" variant="h6" component="h2" mb={2}>
-                    Create New Row
+                    Yeni Sipariş Oluştur
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField
@@ -184,4 +183,4 @@ const NewRowModal = ({ open, onClose, onRowCreated }) => {
     );
 };
 
-export default NewRowModal;
+export default NewOrderModal;

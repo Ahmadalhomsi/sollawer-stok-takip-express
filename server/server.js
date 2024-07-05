@@ -20,7 +20,7 @@ app.get('/api', (req, res) => { // for test
 // GET route
 app.get('/api/orders', async (req, res) => { // Get all orders
     try {
-        const orders = await prisma.trackerOrder.findMany();
+        const orders = await prisma.orderTracker.findMany();
         res.json(orders);
     } catch (error) {
         console.error(error);
@@ -51,7 +51,7 @@ app.post('/api/orders', async (req, res) => {
         console.log("TAAAAAAABLECOUOUUNND");
         console.log(tableCount);
 
-        const newUser = await prisma.trackerOrder.create({
+        const newUser = await prisma.orderTracker.create({
             data: {
                 orderDate: new Date(orderDate),          // Ensure proper Date conversion
                 shipmentDate: new Date(shipmentDate),    // Ensure proper Date conversion
@@ -79,24 +79,6 @@ app.post('/api/orders', async (req, res) => {
 
 // PUT route
 app.put('/api/orders/:id', async (req, res) => { // Updates without creating new 
-    // const { id } = req.params;
-
-    // const id = 0
-
-    // const orderDate = new Date()
-    // const shipmentDate = new Date()
-    // const shipmentStatus = true
-    // const invoiceStatus = false
-    // const invoiceNO = "6as854d16asd8"
-    // const projectNO = "4A899F1ASWQFQW52"
-    // const projectName = "Cupas"
-    // const tableCount = 5
-    // const projectLink = " https://www.google.com/"
-    // const company = "Follsawer"
-    // const investorName = "Muhammad"
-    // const city = "Damascus"
-    // const latitude = 33.5138
-    // const longitude = 36.2304
 
     const {
         id,
@@ -117,7 +99,7 @@ app.put('/api/orders/:id', async (req, res) => { // Updates without creating new
     } = req.body;
 
     try {
-        const user = await prisma.trackerOrder.update({
+        const user = await prisma.orderTracker.update({
             where: {
                 id: parseInt(id),
             },
@@ -149,7 +131,7 @@ app.put('/api/orders/:id', async (req, res) => { // Updates without creating new
 app.delete('/api/orders/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        await prisma.trackerOrder.delete({
+        await prisma.orderTracker.delete({
             where: {
                 id: parseInt(id),
             },
@@ -161,6 +143,138 @@ app.delete('/api/orders/:id', async (req, res) => {
     }
 });
 
+//-------------------------------------------------------
+// Card Operation Table
+
+// GET route
+app.get('/api/controlCards', async (req, res) => { // Get all orders
+    try {
+        const orders = await prisma.controlCard.findMany();
+        res.json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Endpoint to create a new user
+app.post('/api/controlCards', async (req, res) => {
+    try {
+        const {
+            parameterNO,
+            parameter,
+            value,
+            orderNumber,
+            UNID,
+            revisionNO,
+            revisionDate,
+            manufacturer,
+            isActive,
+            depotShelfNo,
+            projectNO,
+        } = req.body;
+
+        console.log("TAAAAAAABLECOUOUUNND");
+        console.log(tableCount);
+
+        const newUser = await prisma.controlCard.create({
+            data: {
+                parameterNO: parameterNO.trim(),    // Remove extra spaces
+                parameter: parameter.trim(), 
+                value: value.trim(), 
+                orderNumber: parseInt(orderNumber, 10), 
+                UNID: UNID.trim(), 
+                revisionNO: revisionNO.trim(),          
+                revisionDate: new Date(revisionDate),          // Ensure proper Date conversion
+                manufacturer: manufacturer.trim(), 
+                isActive: Boolean(isActive),
+                depotShelfNo: depotShelfNo.trim(), 
+                projectNO: projectNO.trim(), 
+            }
+        });
+
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
+    }
+});
+
+// PUT route
+app.put('/api/controlCards/:id', async (req, res) => { // Updates without creating new 
+
+    const {
+        id,
+        parameterNO,
+        parameter,
+        value,
+        orderNumber,
+        UNID,
+        revisionNO,
+        revisionDate,
+        manufacturer,
+        isActive,
+        depotShelfNo,
+        projectNO,
+    } = req.body;
+
+    try {
+        const user = await prisma.controlCard.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                parameterNO: parameterNO.trim(),    // Remove extra spaces
+                parameter: parameter.trim(), 
+                value: value.trim(), 
+                orderNumber: parseInt(orderNumber, 10), 
+                UNID: UNID.trim(), 
+                revisionNO: revisionNO.trim(),          
+                revisionDate: new Date(revisionDate),          // Ensure proper Date conversion
+                manufacturer: manufacturer.trim(), 
+                isActive: Boolean(isActive),
+                depotShelfNo: depotShelfNo.trim(), 
+                projectNO: projectNO.trim(), 
+            }
+        });
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// DELETE route
+app.delete('/api/controlCards/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await prisma.controlCard.delete({
+            where: {
+                id: parseInt(id),
+            },
+        });
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//-------------------------------------------------------
 
 // Start the server
 app.listen(5000, () => {

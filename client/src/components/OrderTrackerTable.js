@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { TextField, Checkbox, Button, Link, Box, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import NewRowModal from './NewRowModal';
+import NewOrderModal from './NewOrderModal';
 import toast from "react-hot-toast";
 
 
@@ -42,11 +42,11 @@ const EditableTable = () => {
       orderDate: new Date(editRow.orderDate).toISOString(),  // Ensure proper Date conversion
       shipmentDate: new Date(editRow.shipmentDate).toISOString()  // Ensure proper Date conversion
     };
-  
+
     try {
       // Await the Axios PUT request
       const response = await axios.put(`http://localhost:5000/api/orders/${editIdx}`, dataToUpdate);
-      
+
       // Update rows state only if the request is successful
       if (response.status === 200) {
         const updatedRows = rows.map((row) => (row.id === editIdx ? dataToUpdate : row));
@@ -59,7 +59,7 @@ const EditableTable = () => {
       console.error('Error updating row:', error);
     }
   };
-  
+
 
   const handleCancel = () => {
     setEditIdx(-1);
@@ -74,7 +74,7 @@ const EditableTable = () => {
     }
   };
 
-  
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -98,6 +98,15 @@ const EditableTable = () => {
   };
 
   const columns = [
+    {
+      field: 'id', headerName: 'ID', width: 10, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="id"
+          value={editRow.id}
+          // onChange={handleChange}
+        />
+      ) : params.value
+    },
     {
       field: 'orderDate',
       headerName: 'Sipariş Tarih',
@@ -192,6 +201,7 @@ const EditableTable = () => {
     {
       field: 'tableCount', headerName: 'Masa Sayısı', width: 100, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
+          type="number"
           name="tableCount"
           value={editRow.tableCount}
           onChange={handleChange}
@@ -282,7 +292,7 @@ const EditableTable = () => {
   return (
     <Box sx={{ height: 600, width: '100%' }}>
       <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
-        Add New Row
+        Yeni Sipariş Ekle
       </Button>
       <DataGrid
         rows={rows}
@@ -295,7 +305,7 @@ const EditableTable = () => {
         getRowId={(row) => row.id}
 
       />
-      <NewRowModal
+      <NewOrderModal
         open={isModalOpen}
         onClose={handleModalClose}
         onRowCreated={handleRowCreated}

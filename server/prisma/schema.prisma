@@ -10,7 +10,7 @@ datasource db {
 }
 
 // Define a single table that combines all the fields
-model TrackerOrder {
+model OrderTracker {
   id        Int      @id @default(autoincrement())
   orderDate DateTime
 
@@ -36,6 +36,7 @@ model TrackerOrder {
   city      String
   latitude  Float // Enlem
   longitude Float // Boylam
+
 }
 
 // Define a single table that combines all the fields
@@ -46,7 +47,7 @@ model ControlCard {
   value      String
 
 
-  OrderNumber  String
+  orderNumber  Int
   UNID     String  @unique
   revisionNO  String
   revisionDate  DateTime

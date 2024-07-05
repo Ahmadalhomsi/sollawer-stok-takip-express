@@ -12,7 +12,6 @@ import RedirectButton from "../components/RedirectButton";
 
 
 
-
 const ControlCardPage = () => {
 
 
@@ -21,13 +20,9 @@ const ControlCardPage = () => {
     return (
         <div>
 
-
             <RedirectButton to="/" label="Sipariş İşlemleri" />
             <h1>Kart Islemleri</h1>
             <CardTable />
-
-
-
 
         </div>
     )
