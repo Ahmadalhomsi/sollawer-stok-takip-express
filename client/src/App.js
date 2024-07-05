@@ -29,7 +29,7 @@ export default function App() {
     }
 
     const getUsers = () => {
-        fetch('http://localhost:5000/api/users') // Replace '/api/data' with your server endpoint
+        fetch('http://localhost:5000/api/orders') // Replace '/api/data' with your server endpoint
             .then(response => response.json())
             .then(data => {
                 // Handle the fetched data here
@@ -46,7 +46,7 @@ export default function App() {
 
 
     const updateUser = async (id, userData) => {
-        const url = `http://localhost:5000/api/users/${id}`;
+        const url = `http://localhost:5000/api/orders/${id}`;
         try {
             const response = await axios.put(url, userData);
             return response.data;
@@ -67,7 +67,7 @@ export default function App() {
         <div>
             {/* <input type="text" placeholder='Message' /> */}
 
-            <button onClick={handleClick}>
+            {/* <button onClick={handleClick}>
                 Click Me!
             </button>
 
@@ -78,9 +78,9 @@ export default function App() {
 
             <button onClick={hangleUpdateUserButton}>
                 Update user
-            </button>
+            </button> */}
 
-            <h1>Siparişler</h1>
+            <h1>Siparisler</h1>
             <EditableTable />
 
             <Toaster

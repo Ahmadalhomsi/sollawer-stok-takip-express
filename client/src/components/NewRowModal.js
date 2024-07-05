@@ -12,13 +12,13 @@ const NewRowModal = ({ open, onClose, onRowCreated }) => {
         invoiceNO: '',
         projectNO: '',
         projectName: '',
-        tableCount: '',
+        tableCount: 0,
         projectLink: '',
         company: '',
         investorName: '',
         city: '',
-        latitude: '',
-        longitude: '',
+        latitude: 0,
+        longitude: 0,
     });
 
     const handleChange = (e) => {
@@ -31,8 +31,11 @@ const NewRowModal = ({ open, onClose, onRowCreated }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        console.log("Created Row:");
+        console.log(newRow);
         // Send the new row data to the backend
-        axios.post('http://localhost:5000/api/users', newRow)
+        axios.post('http://localhost:5000/api/orders', newRow)
             .then((response) => {
                 // If the request is successful, call the onRowCreated function to update the table
                 onRowCreated(response.data);

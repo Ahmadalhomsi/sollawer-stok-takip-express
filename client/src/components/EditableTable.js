@@ -15,7 +15,7 @@ const EditableTable = () => {
 
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/users')
+    axios.get('http://localhost:5000/api/orders')
       .then((response) => {
         setRows(response.data);
         setLoading(false);
@@ -31,11 +31,32 @@ const EditableTable = () => {
     setEditRow(rows.find((row) => row.id === params.id));
   };
 
-  const handleSave = () => {
-    const updatedRows = rows.map((row) => (row.id === editIdx ? editRow : row));
-    setRows(updatedRows);
-    setEditIdx(-1);
+  const handleSave = async () => {
+    // Convert necessary fields to the appropriate types
+    const dataToUpdate = {
+      ...editRow,
+      tableCount: parseInt(editRow.tableCount, 10),   // Convert tableCount to Integer
+      orderDate: new Date(editRow.orderDate).toISOString(),  // Ensure proper Date conversion
+      shipmentDate: new Date(editRow.shipmentDate).toISOString()  // Ensure proper Date conversion
+    };
+  
+    try {
+      // Await the Axios PUT request
+      const response = await axios.put(`http://localhost:5000/api/orders/${editIdx}`, dataToUpdate);
+      
+      // Update rows state only if the request is successful
+      if (response.status === 200) {
+        const updatedRows = rows.map((row) => (row.id === editIdx ? dataToUpdate : row));
+        setRows(updatedRows);
+        setEditIdx(-1);
+      } else {
+        console.error(`Failed to update row: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error updating row:', error);
+    }
   };
+  
 
   const handleCancel = () => {
     setEditIdx(-1);
@@ -43,7 +64,14 @@ const EditableTable = () => {
 
   const handleDelete = (id) => {
     setRows(rows.filter((row) => row.id !== id));
+    try {
+      axios.delete(`http://localhost:5000/api/orders/${id}`);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
