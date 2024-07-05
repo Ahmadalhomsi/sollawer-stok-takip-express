@@ -1,15 +1,20 @@
 import React from 'react'
 import axios from 'axios';
-import EditableTable from './components/EditableTable';
+import EditableTable from './components/OrderTrackerTable';
 import toast, { Toaster } from "react-hot-toast";
 import "./App.css";
+import { Routes, Route } from 'react-router-dom';
+import ControlCardPage from './pages/card';
+import RedirectButton from './components/RedirectButton';
+
+
 
 
 
 export default function App() {
 
-    const success = () =>
-	toast.success("Successfully registered");
+    // const success = () =>
+    //     toast.success("Successfully registered");
 
     const handleClick = () => {
         fetch('http://localhost:5000/api') // Replace '/api/data' with your server endpoint
@@ -62,6 +67,16 @@ export default function App() {
     }
 
 
+    const OrdersPage = () => {
+        return (
+            <>
+                <RedirectButton to="/card" label="Kart İşlemleri" />
+                <h1>Siparisler</h1>
+                <EditableTable />
+            </>
+        )
+    }
+
 
     return (
         <div>
@@ -80,13 +95,23 @@ export default function App() {
                 Update user
             </button> */}
 
-            <h1>Siparisler</h1>
-            <EditableTable />
+
+
+
+            <Routes>
+                <Route path='/card' element={<ControlCardPage />} />
+                <Route path='/' element={<OrdersPage />} />
+
+
+            </Routes>
 
             <Toaster
-				position="top-center"
-				reverseOrder={true}
-			/>
+                position="top-center"
+                reverseOrder={true}
+            />
+
+
+
         </div>
     )
 }

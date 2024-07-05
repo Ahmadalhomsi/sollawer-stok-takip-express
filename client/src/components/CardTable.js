@@ -5,8 +5,10 @@ import { TextField, Checkbox, Button, Link, Box, IconButton } from '@mui/materia
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import NewRowModal from './NewRowModal';
+import toast from "react-hot-toast";
 
-const EditableTable = () => {
+
+const CardTable = () => {
   const [rows, setRows] = useState([]);
   const [editIdx, setEditIdx] = useState(-1);
   const [editRow, setEditRow] = useState({});
@@ -21,6 +23,7 @@ const EditableTable = () => {
         setLoading(false);
       })
       .catch((error) => {
+        toast.error(error.message)
         console.error('There was an error fetching the data!', error);
         setLoading(false);
       });
@@ -301,4 +304,4 @@ const EditableTable = () => {
   );
 };
 
-export default EditableTable;
+export default CardTable;

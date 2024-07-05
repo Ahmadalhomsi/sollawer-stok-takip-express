@@ -37,3 +37,21 @@ model TrackerOrder {
   latitude  Float // Enlem
   longitude Float // Boylam
 }
+
+// Define a single table that combines all the fields
+model ControlCard {
+  id        Int      @id @default(autoincrement())
+  parameterNO String
+  parameter   String
+  value      String
+
+
+  OrderNumber  String
+  UNID     String  @unique
+  revisionNO  String
+  revisionDate  DateTime
+  manufacturer  String
+  isActive     Boolean
+  depotShelfNo  String
+  projectNO  String
+}
