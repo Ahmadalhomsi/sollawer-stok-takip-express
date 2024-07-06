@@ -42,10 +42,6 @@ model OrderTracker {
 // Define a single table that combines all the fields
 model ControlCard {
   id        Int      @id @default(autoincrement())
-  parameterNO String
-  parameter   String
-  value      String
-
 
   orderNumber  Int
   UNID     String  @unique
@@ -55,4 +51,14 @@ model ControlCard {
   isActive     Boolean
   depotShelfNo  String
   projectNO  String
+}
+
+
+model CardParameters {
+  id        Int      @id @default(autoincrement())
+  kartId   String
+  parameterNO String
+  parameter   String
+  value      String
+
 }

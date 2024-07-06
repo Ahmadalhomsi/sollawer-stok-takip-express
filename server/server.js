@@ -144,10 +144,10 @@ app.delete('/api/orders/:id', async (req, res) => {
 });
 
 //-------------------------------------------------------
-// Card Operation Table
 
-// GET route
-app.get('/api/controlCards', async (req, res) => { // Get all orders
+
+// Card Operation Table
+app.get('/api/controlCards', async (req, res) => { // Get all cards
     try {
         const orders = await prisma.controlCard.findMany();
         res.json(orders);
@@ -157,8 +157,7 @@ app.get('/api/controlCards', async (req, res) => { // Get all orders
     }
 });
 
-// Endpoint to create a new user
-app.post('/api/controlCards', async (req, res) => {
+app.post('/api/controlCards', async (req, res) => { // Endpoint to create a card
     try {
         const {
             parameterNO,
@@ -200,7 +199,6 @@ app.post('/api/controlCards', async (req, res) => {
     }
 });
 
-// PUT route
 app.put('/api/controlCards/:id', async (req, res) => { // Updates without creating new 
 
     const {
@@ -244,7 +242,6 @@ app.put('/api/controlCards/:id', async (req, res) => { // Updates without creati
     }
 });
 
-// DELETE route
 app.delete('/api/controlCards/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -259,20 +256,6 @@ app.delete('/api/controlCards/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //-------------------------------------------------------
 
