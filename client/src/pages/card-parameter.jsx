@@ -1,4 +1,3 @@
-import CardTable from "../components/CardTable";
 
 
 
@@ -9,24 +8,22 @@ import toast from "react-hot-toast";
 // import { Routes, Route } from 'react-router-dom';
 
 import RedirectButton from "../components/RedirectButton";
+import CardParametersTable from '../components/CardParametersTable';
 
 
 
-const ControlCardPage = () => {
-
-
-
+const CardParameterPage = () => {
 
     return (
         <div>
 
             <RedirectButton to="/" label="Sipariş İşlemleri" />
-            <RedirectButton to="/cardParameter" label="Kart Parametre İşlemleri" />
-            <h1>Kart Islemleri</h1>
-            <CardTable />
+            <RedirectButton to="/card" label="Kart İşlemleri" />
+            <h1>Kart Parametre Islemleri</h1>
+            <CardParametersTable />
 
         </div>
     )
 };
 
-export default ControlCardPage;
+export default CardParameterPage;

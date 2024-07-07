@@ -17,7 +17,8 @@ const RedirectButton = ({ to, label }) => {
         fontSize: '16px',
         fontWeight: 'bold',
         borderRadius: '8px',
-        textTransform: 'none'
+        textTransform: 'none',
+        margin: '6px',
       }}
     >
       {label}

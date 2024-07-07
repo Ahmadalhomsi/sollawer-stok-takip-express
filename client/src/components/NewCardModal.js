@@ -4,9 +4,9 @@ import axios from 'axios';
 
 const NewCardModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
-        parameterNO: '',
-        parameter: '',
-        value: '',
+        // parameterNO: '',
+        // parameter: '',
+        // value: '',
         orderNumber: 0,
         UNID: '',
         revisionNO: '',
@@ -82,7 +82,7 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
                     Yeni Kart Oluştur
                 </Typography>
                 <form onSubmit={handleSubmit}>
-                    <TextField
+                    {/* <TextField
                         fullWidth
                         margin="normal"
                         label="Parametre NO"
@@ -102,7 +102,7 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
                         label="Değer"
                         name="value"
                         onChange={handleChange}
-                    />
+                    /> */}
                     <TextField
                         fullWidth
                         margin="normal"

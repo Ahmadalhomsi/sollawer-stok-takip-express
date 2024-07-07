@@ -6,6 +6,7 @@ import "./App.css";
 import { Routes, Route } from 'react-router-dom';
 import ControlCardPage from './pages/card';
 import RedirectButton from './components/RedirectButton';
+import CardParameterPage from './pages/card-parameter';
 
 
 
@@ -71,6 +72,7 @@ export default function App() {
         return (
             <>
                 <RedirectButton to="/card" label="Kart İşlemleri" />
+                <RedirectButton to="/cardParameter" label="Kart Parametre İşlemleri" />
                 <h1>Siparisler</h1>
                 <EditableTable />
             </>
@@ -100,6 +102,7 @@ export default function App() {
 
             <Routes>
                 <Route path='/card' element={<ControlCardPage />} />
+                <Route path='/cardParameter' element={<CardParameterPage />} />
                 <Route path='/' element={<OrdersPage />} />
 
 

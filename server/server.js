@@ -160,9 +160,9 @@ app.get('/api/controlCards', async (req, res) => { // Get all cards
 app.post('/api/controlCards', async (req, res) => { // Endpoint to create a card
     try {
         const {
-            parameterNO,
-            parameter,
-            value,
+            // parameterNO,
+            // parameter,
+            // value,
             orderNumber,
             UNID,
             revisionNO,
@@ -179,16 +179,16 @@ app.post('/api/controlCards', async (req, res) => { // Endpoint to create a card
         const newUser = await prisma.controlCard.create({
             data: {
                 parameterNO: parameterNO.trim(),    // Remove extra spaces
-                parameter: parameter.trim(), 
-                value: value.trim(), 
-                orderNumber: parseInt(orderNumber, 10), 
-                UNID: UNID.trim(), 
-                revisionNO: revisionNO.trim(),          
+                parameter: parameter.trim(),
+                value: value.trim(),
+                orderNumber: parseInt(orderNumber, 10),
+                UNID: UNID.trim(),
+                revisionNO: revisionNO.trim(),
                 revisionDate: new Date(revisionDate),          // Ensure proper Date conversion
-                manufacturer: manufacturer.trim(), 
+                manufacturer: manufacturer.trim(),
                 isActive: Boolean(isActive),
-                depotShelfNo: depotShelfNo.trim(), 
-                projectNO: projectNO.trim(), 
+                depotShelfNo: depotShelfNo.trim(),
+                projectNO: projectNO.trim(),
             }
         });
 
@@ -203,9 +203,9 @@ app.put('/api/controlCards/:id', async (req, res) => { // Updates without creati
 
     const {
         id,
-        parameterNO,
-        parameter,
-        value,
+        // parameterNO,
+        // parameter,
+        // value,
         orderNumber,
         UNID,
         revisionNO,
@@ -223,16 +223,16 @@ app.put('/api/controlCards/:id', async (req, res) => { // Updates without creati
             },
             data: {
                 parameterNO: parameterNO.trim(),    // Remove extra spaces
-                parameter: parameter.trim(), 
-                value: value.trim(), 
-                orderNumber: parseInt(orderNumber, 10), 
-                UNID: UNID.trim(), 
-                revisionNO: revisionNO.trim(),          
+                parameter: parameter.trim(),
+                value: value.trim(),
+                orderNumber: parseInt(orderNumber, 10),
+                UNID: UNID.trim(),
+                revisionNO: revisionNO.trim(),
                 revisionDate: new Date(revisionDate),          // Ensure proper Date conversion
-                manufacturer: manufacturer.trim(), 
+                manufacturer: manufacturer.trim(),
                 isActive: Boolean(isActive),
-                depotShelfNo: depotShelfNo.trim(), 
-                projectNO: projectNO.trim(), 
+                depotShelfNo: depotShelfNo.trim(),
+                projectNO: projectNO.trim(),
             }
         });
         res.json(user);
@@ -257,7 +257,88 @@ app.delete('/api/controlCards/:id', async (req, res) => {
     }
 });
 
+
 //-------------------------------------------------------
+
+// Card Parameters Table
+app.get('/api/cardParameters', async (req, res) => { // Get all cards
+    try {
+        const orders = await prisma.cardParameters.findMany();
+        res.json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/api/cardParameters', async (req, res) => { // Endpoint to create a card
+    try {
+        const {
+            cardID,
+            parameterNO,
+            parameter,
+            value,
+        } = req.body;
+
+        const newUser = await prisma.cardParameters.create({
+            data: {
+                cardID: cardID.trim(),
+                parameterNO: parameterNO.trim(),    // Remove extra spaces
+                parameter: parameter.trim(),
+                value: value.trim(),
+            }
+        });
+
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
+    }
+});
+
+app.put('/api/cardParameters/:id', async (req, res) => { // Updates without creating new 
+
+    const {
+        id,
+        cardID,
+        parameterNO,
+        parameter,
+        value,
+    } = req.body;
+
+    try {
+        const user = await prisma.cardParameters.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                cardID: cardID.trim(),
+                parameterNO: parameterNO.trim(),    // Remove extra spaces
+                parameter: parameter.trim(),
+                value: value.trim(),
+            }
+        });
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.delete('/api/cardParameters/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await prisma.cardParameters.delete({
+            where: {
+                id: parseInt(id),
+            },
+        });
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 // Start the server
 app.listen(5000, () => {

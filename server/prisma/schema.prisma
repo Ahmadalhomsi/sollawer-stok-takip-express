@@ -56,7 +56,8 @@ model ControlCard {
 
 model CardParameters {
   id        Int      @id @default(autoincrement())
-  kartId   String
+
+  cardID   String
   parameterNO String
   parameter   String
   value      String
