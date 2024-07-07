@@ -8,7 +8,7 @@ import NewOrderModal from './NewOrderModal';
 import toast from "react-hot-toast";
 
 
-const EditableTable = () => {
+const OrderTrackerTable = () => {
   const [rows, setRows] = useState([]);
   const [editIdx, setEditIdx] = useState(-1);
   const [editRow, setEditRow] = useState({});
@@ -314,4 +314,4 @@ const EditableTable = () => {
   );
 };
 
-export default EditableTable;
+export default OrderTrackerTable;

@@ -1,12 +1,4 @@
-
-
-
 import React from 'react'
-import axios from 'axios';
-import toast from "react-hot-toast";
-
-// import { Routes, Route } from 'react-router-dom';
-
 import RedirectButton from "../components/RedirectButton";
 import CardParametersTable from '../components/CardParametersTable';
 
