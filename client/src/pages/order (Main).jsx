@@ -1,18 +1,24 @@
-import React from 'react'
-import RedirectButton from "../components/RedirectButton";
+// src/pages/OrdersPage.js
+
+import React from 'react';
+import TabNavigation from '../components/TabNavigation';
 import OrderTrackerTable from '../components/OrderTrackerTable';
 
-
 const OrdersPage = () => {
+    const tabs = [
+        { label: 'Siparişler', path: '/' },
+        { label: 'Kart İşlemleri', path: '/card' },
+        { label: 'Kart Parametre İşlemleri', path: '/cardParameter' },
+        // Add more tabs as needed
+    ];
 
     return (
         <div>
-            <RedirectButton to="/card" label="Kart İşlemleri" />
-            <RedirectButton to="/cardParameter" label="Kart Parametre İşlemleri" />
-            <h1>Siparisler</h1>
+            <TabNavigation tabs={tabs} />
+            <h1>Siparişler</h1>
             <OrderTrackerTable />
         </div>
-    )
+    );
 };
 
 export default OrdersPage;
