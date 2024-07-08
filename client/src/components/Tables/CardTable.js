@@ -4,11 +4,14 @@ import { DataGrid } from '@mui/x-data-grid';
 import { TextField, Checkbox, Button, Link, Box, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import NewOrderModal from './NewOrderModal';
+
+
+// import NewCardModal from './NewCardModal';
 import toast from "react-hot-toast";
+import NewCardModal from '../Modals/NewCardModal';
 
 
-const OrderTrackerTable = () => {
+const CardTable = () => {
   const [rows, setRows] = useState([]);
   const [editIdx, setEditIdx] = useState(-1);
   const [editRow, setEditRow] = useState({});
@@ -17,7 +20,7 @@ const OrderTrackerTable = () => {
 
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/orders')
+    axios.get('http://localhost:5000/api/controlCards')
       .then((response) => {
         setRows(response.data);
         setLoading(false);
@@ -38,14 +41,13 @@ const OrderTrackerTable = () => {
     // Convert necessary fields to the appropriate types
     const dataToUpdate = {
       ...editRow,
-      tableCount: parseInt(editRow.tableCount, 10),   // Convert tableCount to Integer
-      orderDate: new Date(editRow.orderDate).toISOString(),  // Ensure proper Date conversion
-      shipmentDate: new Date(editRow.shipmentDate).toISOString()  // Ensure proper Date conversion
+      orderNumber: parseInt(editRow.orderNumber, 10),   // Convert tableCount to Integer
+      revisionDate: new Date(editRow.revisionDate).toISOString(),  // Ensure proper Date conversion
     };
 
     try {
       // Await the Axios PUT request
-      const response = await axios.put(`http://localhost:5000/api/orders/${editIdx}`, dataToUpdate);
+      const response = await axios.put(`http://localhost:5000/api/controlCards/${editIdx}`, dataToUpdate);
 
       // Update rows state only if the request is successful
       if (response.status === 200) {
@@ -68,7 +70,7 @@ const OrderTrackerTable = () => {
   const handleDelete = (id) => {
     setRows(rows.filter((row) => row.id !== id));
     try {
-      axios.delete(`http://localhost:5000/api/orders/${id}`);
+      axios.delete(`http://localhost:5000/api/controlCards/${id}`);
     } catch (error) {
       console.log(error);
     }
@@ -98,6 +100,7 @@ const OrderTrackerTable = () => {
   };
 
   const columns = [
+
     {
       field: 'id', headerName: 'ID', width: 10, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
@@ -107,70 +110,109 @@ const OrderTrackerTable = () => {
         />
       ) : params.value
     },
+    // {
+    //   field: 'parameterNO', headerName: 'Parametre NO', width: 120, renderCell: (params) => params.row.id === editIdx ? (
+    //     <TextField
+    //       name="parameterNO"
+    //       value={editRow.parameterNO}
+    //       onChange={handleChange}
+    //     />
+    //   ) : params.value
+    // },
+    // {
+    //   field: 'parameter', headerName: 'Parametre', width: 110, renderCell: (params) => params.row.id === editIdx ? (
+    //     <TextField
+    //       name="parameter"
+    //       value={editRow.parameter}
+    //       onChange={handleChange}
+    //     />
+    //   ) : params.value
+    // },
+    // {
+    //   field: 'value', headerName: 'Değer', width: 80, renderCell: (params) => params.row.id === editIdx ? (
+    //     <TextField
+    //       name="value"
+    //       value={editRow.value}
+    //       onChange={handleChange}
+    //     />
+    //   ) : params.value
+    // },
     {
-      field: 'orderDate',
-      headerName: 'Sipariş Tarih',
-      width: 140,
-      renderCell: (params) => params.row.id === editIdx ? (
+      field: 'orderNumber', headerName: 'Sıra NO', width: 70, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
-          fullWidth
+          type='number'
+          name="orderNumber"
+          value={editRow.orderNumber}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
 
-          type="datetime-local"
-          name="orderDate"
-          value={new Date(editRow.orderDate).toISOString().slice(0, 16)}
-          onChange={handleChange}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      ) : new Date(params.value).toLocaleString()
-    },
     {
-      field: 'shipmentDate',
-      headerName: 'Kargo Tarih',
-      width: 140,
-      renderCell: (params) => params.row.id === editIdx ? (
+      field: 'UNID', headerName: 'UNID', width: 100, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
-          fullWidth
-          type="datetime-local"
-          name="shipmentDate"
-          value={new Date(editRow.shipmentDate).toISOString().slice(0, 16)}
-          onChange={handleChange}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      ) : new Date(params.value).toLocaleString()
-    },
-    {
-      field: 'shipmentStatus', headerName: 'Kargo Durumu', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-        <Checkbox
-          name="shipmentStatus"
-          checked={editRow.shipmentStatus}
-          onChange={handleChange}
-        />
-      ) : params.value ? 'Yollandı' : 'Yollanmadı'
-    },
-    {
-      field: 'invoiceStatus', headerName: 'Fatura Durumu', width: 110, renderCell: (params) => params.row.id === editIdx ? (
-        <Checkbox
-          name="invoiceStatus"
-          checked={editRow.invoiceStatus}
-          onChange={handleChange}
-        />
-      ) : params.value ? 'Kesildi' : 'Kesilmedi'
-    },
-    {
-      field: 'invoiceNO', headerName: 'Fatura NO', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="invoiceNO"
-          value={editRow.invoiceNO}
+          name="UNID"
+          value={editRow.UNID}
           onChange={handleChange}
         />
       ) : params.value
     },
     {
-      field: 'projectNO', headerName: 'Proje NO', width: 150, renderCell: (params) => params.row.id === editIdx ? (
+      field: 'revisionNO', headerName: 'Revizyon NO', width: 110, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="revisionNO"
+          value={editRow.revisionNO}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'revisionDate',
+      headerName: 'Revizyon Tarihi',
+      width: 140,
+      renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          fullWidth
+          type="datetime-local"
+          name="revisionDate"
+          value={new Date(editRow.revisionDate).toISOString().slice(0, 16)}
+          onChange={handleChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      ) : new Date(params.value).toLocaleString()
+    },
+
+    {
+      field: 'manufacturer', headerName: 'Üretici', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="manufacturer"
+          value={editRow.manufacturer}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'isActive', headerName: 'Aktif/Pasif', width: 120, renderCell: (params) => params.row.id === editIdx ? (
+        <Checkbox
+          name="isActive"
+          checked={editRow.isActive}
+          onChange={handleChange}
+        />
+      ) : params.value ? 'Aktif' : 'Pasif'
+    },
+    {
+      field: 'depotShelfNo', headerName: 'Depo Raf No', width: 110, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="depotShelfNo"
+          value={editRow.depotShelfNo}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'projectNO', headerName: 'Proje NO', width: 110, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
           name="projectNO"
           value={editRow.projectNO}
@@ -178,88 +220,6 @@ const OrderTrackerTable = () => {
         />
       ) : params.value
     },
-
-    {
-      field: 'company', headerName: 'Firma', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="company"
-          value={editRow.company}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'projectName', headerName: 'Proje', width: 110, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="projectName"
-          value={editRow.projectName}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-
-    {
-      field: 'tableCount', headerName: 'Masa Sayısı', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          type="number"
-          name="tableCount"
-          value={editRow.tableCount}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'city', headerName: 'Şehir', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="city"
-          value={editRow.city}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'latitude', headerName: 'Enlem', width: 80, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          type="number"
-          name="latitude"
-          value={editRow.latitude}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'longitude', headerName: 'Boylam', width: 80, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          type="number"
-          name="longitude"
-          value={editRow.longitude}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'investorName', headerName: 'Yatırımcı İsmi', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="investorName"
-          value={editRow.investorName}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'projectLink', headerName: 'Proje Linki', width: 200, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="projectLink"
-          value={editRow.projectLink}
-          onChange={handleChange}
-        />
-      ) : (
-        <Link href={params.value} target="_blank" rel="noopener noreferrer">
-          {params.value}
-        </Link>
-      )
-    },
-
     {
       field: 'actions',
       headerName: 'Actions',
@@ -292,7 +252,7 @@ const OrderTrackerTable = () => {
   return (
     <Box sx={{ height: 600, width: '100%' }}>
       <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
-        Yeni Sipariş Ekle
+        Yeni Kontrol Kartı Ekle
       </Button>
       <DataGrid
         rows={rows}
@@ -305,7 +265,7 @@ const OrderTrackerTable = () => {
         getRowId={(row) => row.id}
 
       />
-      <NewOrderModal
+      <NewCardModal
         open={isModalOpen}
         onClose={handleModalClose}
         onRowCreated={handleRowCreated}
@@ -314,4 +274,4 @@ const OrderTrackerTable = () => {
   );
 };
 
-export default OrderTrackerTable;
+export default CardTable;

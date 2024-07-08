@@ -8,7 +8,8 @@ import axios from 'axios';
 
 // import NewCardModal from './NewCardModal';
 import toast from "react-hot-toast";
-import NewCardParameterModal from './NewCardParameterModal';
+import NewCardParameterModal from '../Modals/NewCardParameterModal';
+
 
 
 const CardParametersTable = () => {

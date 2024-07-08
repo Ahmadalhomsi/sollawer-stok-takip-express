@@ -1,23 +1,21 @@
 import React from 'react'
 import RedirectButton from "../components/RedirectButton";
-import CardParametersTable from '../components/Tables/CardParametersTable';
+import FaultyCardsTable from "../components/Tables/FaultyCardTable";
 import TabNavigation from '../components/TabNavigation';
 import { allTabs } from '../components/allTabs';
 
 
-
-const CardParameterPage = () => {
+const FaultyCardPage = () => {
 
 
     return (
         <div>
-
             <TabNavigation tabs={allTabs} />
-            <h1>Kart Parametre Islemleri</h1>
-            <CardParametersTable />
+            <h1>Arizali Kart Islemleri</h1>
+            <FaultyCardsTable />
 
         </div>
     )
 };
 
-export default CardParameterPage;
+export default FaultyCardPage;

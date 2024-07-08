@@ -263,7 +263,7 @@ app.delete('/api/controlCards/:id', async (req, res) => {
 // Card Parameters Table
 app.get('/api/cardParameters', async (req, res) => { // Get all cards
     try {
-        const orders = await prisma.cardParameters.findMany();
+        const orders = await prisma.cardParameter.findMany();
         res.json(orders);
     } catch (error) {
         console.error(error);
@@ -280,7 +280,7 @@ app.post('/api/cardParameters', async (req, res) => { // Endpoint to create a ca
             value,
         } = req.body;
 
-        const newUser = await prisma.cardParameters.create({
+        const newUser = await prisma.cardParameter.create({
             data: {
                 cardID: cardID.trim(),
                 parameterNO: parameterNO.trim(),    // Remove extra spaces
@@ -307,7 +307,7 @@ app.put('/api/cardParameters/:id', async (req, res) => { // Updates without crea
     } = req.body;
 
     try {
-        const user = await prisma.cardParameters.update({
+        const user = await prisma.cardParameter.update({
             where: {
                 id: parseInt(id),
             },
@@ -328,7 +328,97 @@ app.put('/api/cardParameters/:id', async (req, res) => { // Updates without crea
 app.delete('/api/cardParameters/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        await prisma.cardParameters.delete({
+        await prisma.cardParameter.delete({
+            where: {
+                id: parseInt(id),
+            },
+        });
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+//-------------------------------------------------------
+
+// Card Parameters Table
+app.get('/api/faultyCards', async (req, res) => { // Get all cards
+    try {
+        const orders = await prisma.faultyCard.findMany();
+        res.json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/api/faultyCards', async (req, res) => { // Endpoint to create a card
+    try {
+        const {
+            cardID,
+            servisDate,
+            status,
+            fault,
+            photoURL,
+            projectNO,
+        } = req.body;
+
+        const newUser = await prisma.faultyCard.create({
+            data: {
+                cardID: cardID.trim(),
+                servisDate: new Date(servisDate),    // Remove extra spaces
+                status: status.trim(),
+                fault: fault.trim(),
+                photoURL: photoURL,
+                projectNO: projectNO.trim(),
+
+            }
+        });
+
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
+    }
+});
+
+app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creating new 
+
+    const {
+        cardID,
+        servisDate,
+        status,
+        fault,
+        photoURL,
+        projectNO,
+    } = req.body;
+
+    try {
+        const user = await prisma.faultyCard.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                cardID: cardID.trim(),
+                servisDate: new Date(servisDate),    // Remove extra spaces
+                status: status.trim(),
+                fault: fault.trim(),
+                photoURL: photoURL,
+                projectNO: projectNO.trim(),
+            }
+        });
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.delete('/api/faultyCards/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await prisma.faultyCard.delete({
             where: {
                 id: parseInt(id),
             },

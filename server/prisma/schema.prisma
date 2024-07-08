@@ -15,8 +15,8 @@ model OrderTracker {
   orderDate DateTime
 
   // Shipment details
-  shipmentDate DateTime?
-  shipmentStatus       Boolean @default(false) // false means "yollanmadı"
+  shipmentDate   DateTime?
+  shipmentStatus Boolean   @default(false) // false means "yollanmadı"
 
   // Invoice details
   invoiceStatus Boolean @default(false) // false means "kesildi"
@@ -36,30 +36,38 @@ model OrderTracker {
   city      String
   latitude  Float // Enlem
   longitude Float // Boylam
-
 }
 
 // Define a single table that combines all the fields
 model ControlCard {
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   orderNumber  Int
-  UNID     String  @unique
-  revisionNO  String
-  revisionDate  DateTime
-  manufacturer  String
+  UNID         String   @unique
+  revisionNO   String
+  revisionDate DateTime
+  manufacturer String
   isActive     Boolean
-  depotShelfNo  String
-  projectNO  String
+  depotShelfNo String
+  projectNO    String
 }
 
+model CardParameter {
+  id Int @id @default(autoincrement())
 
-model CardParameters {
-  id        Int      @id @default(autoincrement())
-
-  cardID   String
+  cardID      String
   parameterNO String
   parameter   String
-  value      String
+  value       String
+}
 
+model FaultyCard {
+  id Int @id @default(autoincrement())
+
+  cardID     String
+  servisDate DateTime
+  status     String
+  fault      String
+  photoURL      String[]
+  projectNO  String
 }

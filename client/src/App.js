@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import ControlCardPage from './pages/card';
 import CardParameterPage from './pages/card-parameter';
 import OrdersPage from './pages/order (Main)';
+import FaultyCardPage from './pages/faulty-card';
 
 
 export default function App() {
@@ -13,9 +14,10 @@ export default function App() {
         <div>
 
             <Routes>
+                <Route path='/' element={<OrdersPage />} />
                 <Route path='/card' element={<ControlCardPage />} />
                 <Route path='/cardParameter' element={<CardParameterPage />} />
-                <Route path='/' element={<OrdersPage />} />
+                <Route path='/faultyCard' element={<FaultyCardPage />} />
 
             </Routes>
 

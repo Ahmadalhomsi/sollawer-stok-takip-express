@@ -2,7 +2,7 @@
 
 import React from 'react';
 import TabNavigation from '../components/TabNavigation';
-import OrderTrackerTable from '../components/OrderTrackerTable';
+import OrderTrackerTable from '../components/Tables/OrderTrackerTable';
 import { allTabs } from '../components/allTabs';
 
 
