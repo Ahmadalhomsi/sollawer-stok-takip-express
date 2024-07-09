@@ -430,6 +430,36 @@ app.delete('/api/faultyCards/:id', async (req, res) => {
     }
 });
 
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs-extra');
+
+// Create uploads directory if it doesn't exist
+const uploadPath = path.join(__dirname, 'uploads');
+fs.ensureDirSync(uploadPath);
+
+// Set storage engine
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadPath);
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+// Initialize upload variable
+const upload = multer({ storage: storage });
+
+// Upload route
+app.post('/upload', upload.single('file'), (req, res) => {
+    try {
+        res.send({ message: 'File uploaded successfully', filePath: req.file.path });
+    } catch (error) {
+        res.status(400).send({ error: 'Error uploading file' });
+    }
+});
+
 // Start the server
 app.listen(5000, () => {
     console.log('Server is running on port 5000');

@@ -6,6 +6,8 @@ import ControlCardPage from './pages/card';
 import CardParameterPage from './pages/card-parameter';
 import OrdersPage from './pages/order (Main)';
 import FaultyCardPage from './pages/faulty-card';
+import FileUpload from './pages/file-upload';
+
 
 
 export default function App() {
@@ -18,6 +20,7 @@ export default function App() {
                 <Route path='/card' element={<ControlCardPage />} />
                 <Route path='/cardParameter' element={<CardParameterPage />} />
                 <Route path='/faultyCard' element={<FaultyCardPage />} />
+                <Route path='/fileUpload' element={<FileUpload />} />
 
             </Routes>
 
