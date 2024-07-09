@@ -207,9 +207,6 @@ app.put('/api/controlCards/:id', async (req, res) => { // Updates without creati
 
     const {
         id,
-        // parameterNO,
-        // parameter,
-        // value,
         orderNumber,
         UNID,
         revisionNO,
@@ -390,6 +387,7 @@ app.post('/api/faultyCards', async (req, res) => { // Endpoint to create a card
 app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creating new 
 
     const {
+        id,
         cardID,
         servisDate,
         status,
@@ -397,6 +395,8 @@ app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creatin
         photoURL,
         projectNO,
     } = req.body;
+
+    const photoURLArray = Array.isArray(photoURL) ? photoURL : [photoURL]; // Convert photoURL to an array
 
     try {
         const user = await prisma.faultyCard.update({
@@ -408,7 +408,7 @@ app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creatin
                 servisDate: new Date(servisDate),    // Remove extra spaces
                 status: status.trim(),
                 fault: fault.trim(),
-                photoURL: photoURL,
+                photoURL: photoURLArray,
                 projectNO: projectNO.trim(),
             }
         });
@@ -447,25 +447,46 @@ fs.ensureDirSync(uploadPath);
 
 // Set storage engine
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadPath);
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
+    destination: function (req, file, cb) {
+        cb(null, uploadPath);
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
 });
 
 // Initialize upload variable for multiple files
 const upload = multer({ storage: storage });
 
 // Upload route for multiple files
-app.post('/upload', upload.array('files', 10), (req, res) => { // allow up to 10 files
-  try {
-    const filePaths = req.files.map(file => file.path);
-    res.send({ message: 'Files uploaded successfully', filePaths });
-  } catch (error) {
-    res.status(400).send({ error: 'Error uploading files' });
-  }
+app.post('/uploadMulti', upload.array('files', 10), (req, res) => { // allow up to 10 files
+    try {
+        const filePaths = req.files.map(file => file.path);
+        res.send({ message: 'Files uploaded successfully', filePaths });
+    } catch (error) {
+        res.status(400).send({ error: 'Error uploading files' });
+    }
+});
+
+// Upload route for single file
+app.post('/uploadSingle', upload.single('file'), (req, res) => {
+    try {
+        res.send({ message: 'File uploaded successfully', filePath: req.file.path });
+    } catch (error) {
+        res.status(400).send({ error: 'Error uploading file' });
+    }
+});
+
+
+const uploadsDir = path.join(__dirname, 'uploads'); // Define the uploads directory
+
+app.get('/uploads', (req, res) => { // Get all uploaded files
+    fs.readdir(uploadsDir, (err, files) => {
+        if (err) {
+            return res.status(500).send('Unable to scan directory');
+        }
+        res.send(files);
+    });
 });
 
 // Start the server

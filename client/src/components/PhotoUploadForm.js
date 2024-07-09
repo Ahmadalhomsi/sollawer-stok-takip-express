@@ -19,7 +19,7 @@ const PhotoUploadForm = ({ onUpload }) => {
 
     try {
         console.log(file);
-      const response = await axios.post('/api/upload', formData, {
+      const response = await axios.post('/api/uploadMulti', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

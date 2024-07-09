@@ -50,7 +50,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
         });
 
         try {
-            const res = await axios.post('http://localhost:5000/upload', formData, {
+            const res = await axios.post('http://localhost:5000/uploadMulti', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
