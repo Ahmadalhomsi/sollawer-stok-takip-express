@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Modal, Box, TextField, Button, Typography, List, ListItem, Link } from '@mui/material';
 import axios from 'axios';
 
 const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
@@ -8,10 +8,25 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
         servisDate: '',
         status: '',
         fault: '',
-        photoURL: '',
+        photoURL: [],
         projectNO: '',
     });
+    const [files, setFiles] = useState([]);
 
+    useEffect(() => {
+        if (!open) {
+            // Reset the form and files when the modal is closed
+            setNewRow({
+                cardID: '',
+                servisDate: '',
+                status: '',
+                fault: '',
+                photoURL: [],
+                projectNO: '',
+            });
+            setFiles([]);
+        }
+    }, [open]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -21,23 +36,82 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleFileChange = (e) => {
+        setFiles(e.target.files);
+        handleFileUpload(e.target.files);
+    };
+
+    const handleFileUpload = async (files) => {
+        if (files.length === 0) return;
+
+        const formData = new FormData();
+        Array.from(files).forEach(file => {
+            formData.append('files', file);
+        });
+
+        try {
+            const res = await axios.post('http://localhost:5000/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            // Extract filenames from paths
+            const filenames = res.data.filePaths.map(filePath => {
+                return filePath.split('/').pop(); // Get the filename from the path
+            });
+
+            // Update photoURL state with filenames
+            setNewRow((prev) => ({
+                ...prev,
+                photoURL: [...prev.photoURL, ...filenames]
+            }));
+        } catch (err) {
+            console.error('Error uploading files', err);
+        }
+    };
+
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log("Created Row:");
-        console.log(newRow);
-        // Send the new row data to the backend
-        axios.post('http://localhost:5000/api/faultyCards', newRow)
+        // Loop through each link in the photoURL array
+        const extractedFilenames = newRow.photoURL.map(link => {
+            // Use either Method 1 or Method 2 (explained below) to extract the filename
+            const filename = extractFilename(link); // Replace with your chosen method
+            return filename;
+        });
+
+        // Send the data with extracted filenames
+        axios.post('http://localhost:5000/api/faultyCards', {
+            ...newRow,
+            photoURL: extractedFilenames,
+        })
             .then((response) => {
-                // If the request is successful, call the onRowCreated function to update the table
+                // If successful, update table and close modal
                 onRowCreated(response.data);
-                // Close the modal
                 onClose();
             })
             .catch((error) => {
                 console.error('There was an error creating the new row!', error);
             });
     };
+
+    // Function to extract the filename (choose either method)
+
+    // Method 1: Using split() and pop()
+    function extractFilename(link) {
+        return link.split('\\').pop() || link.split('/').pop(); // Handle both backslashes and forward slashes
+    }
+
+    // Method 2: Using lastIndexOf() and substring()
+    function extractFilename(link) {
+        const lastSeparatorIndex = Math.max(link.lastIndexOf('\\'), link.lastIndexOf('/'));
+        return lastSeparatorIndex !== -1 ? link.substring(lastSeparatorIndex + 1) : link;
+    }
+
+
+
 
     return (
         <Modal
@@ -95,13 +169,29 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                         name="fault"
                         onChange={handleChange}
                     />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Photo URL"
-                        name="photoURL"
-                        onChange={handleChange}
-                    />
+                    <Typography variant="body1" sx={{ mt: 2 }}>Uploaded Photos:</Typography>
+                    <List>
+                        {newRow.photoURL.map((url, index) => (
+                            <ListItem key={index}>
+                                <Link href={`http://localhost:5000/${url}`} target="_blank" rel="noopener noreferrer">
+                                    {url}
+                                </Link>
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Button
+                        variant="contained"
+                        component="label"
+                        sx={{ mt: 2 }}
+                    >
+                        Upload Photos
+                        <input
+                            type="file"
+                            multiple
+                            hidden
+                            onChange={handleFileChange}
+                        />
+                    </Button>
                     <TextField
                         fullWidth
                         margin="normal"
@@ -109,7 +199,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                         name="projectNO"
                         onChange={handleChange}
                     />
-                    
+
                     <Box mt={2} display="flex" justifyContent="space-between">
                         <Button onClick={onClose} color="secondary">Cancel</Button>
                         <Button type="submit" variant="contained" color="primary">Create</Button>

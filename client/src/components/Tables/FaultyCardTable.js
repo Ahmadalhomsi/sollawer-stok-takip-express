@@ -1,7 +1,7 @@
 // src/EditableTable.js
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, Checkbox, Button, Link, Box, IconButton } from '@mui/material';
+import { TextField, Link, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
@@ -18,6 +18,8 @@ const FaultyCardsTable = () => {
     const [editRow, setEditRow] = useState({});
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [selectedPhoto, setSelectedPhoto] = useState('');
 
 
     useEffect(() => {
@@ -152,13 +154,34 @@ const FaultyCardsTable = () => {
             ) : params.value
         },
         {
-            field: 'photoURL', headerName: 'Photo URL', width: 300, renderCell: (params) => params.row.id === editIdx ? (
+            field: 'photoURL',
+            headerName: 'Photo URL',
+            width: 300,
+            renderCell: (params) => params.row.id === editIdx ? (
                 <TextField
                     name="photoURL"
                     value={editRow.photoURL}
                     onChange={handleChange}
                 />
-            ) : params.value
+            ) : (
+                <Box>
+                    {params.value.map((url, index) => {
+                        const photoName = url;
+                        // console.log(photoName);
+                        return (
+                            <Link
+                                key={index}
+                                component="button"
+                                variant="body2"
+                                onClick={() => handleClickOpen(encodeURI(`http://localhost:5000/uploads/${photoName}`))}
+                                sx={{ display: 'block', cursor: 'pointer' }}
+                            >
+                                {photoName}
+                            </Link>
+                        );
+                    })}
+                </Box>
+            )
         },
         {
             field: 'projectNO', headerName: 'Proje NO', width: 120, renderCell: (params) => params.row.id === editIdx ? (
@@ -197,6 +220,16 @@ const FaultyCardsTable = () => {
         }
     ];
 
+    const handleClickOpen = (url) => {
+        setSelectedPhoto(url);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setSelectedPhoto('');
+    };
+
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
@@ -213,7 +246,22 @@ const FaultyCardsTable = () => {
                 loading={loading}
                 getRowId={(row) => row.id}
 
+
             />
+            <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+                <DialogTitle>Photo</DialogTitle>
+                <DialogContent>
+                    {selectedPhoto && (
+                        <img src={selectedPhoto} alt="Uploaded" style={{ width: '100%', height: 'auto' }} />
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             <NewFaultyCardModal
                 open={isModalOpen}
                 onClose={handleModalClose}

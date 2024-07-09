@@ -8,6 +8,10 @@ const prisma = new PrismaClient();
 app.use(cors())
 app.use(express.json());
 
+
+
+
+
 // GET route
 app.get('/api', (req, res) => { // for test
     //res.send('Hello, world!');
@@ -434,30 +438,34 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs-extra');
 
+// Serve static files from the 'uploads' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Create uploads directory if it doesn't exist
 const uploadPath = path.join(__dirname, 'uploads');
 fs.ensureDirSync(uploadPath);
 
 // Set storage engine
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
+  destination: function (req, file, cb) {
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
 });
 
-// Initialize upload variable
+// Initialize upload variable for multiple files
 const upload = multer({ storage: storage });
 
-// Upload route
-app.post('/upload', upload.single('file'), (req, res) => {
-    try {
-        res.send({ message: 'File uploaded successfully', filePath: req.file.path });
-    } catch (error) {
-        res.status(400).send({ error: 'Error uploading file' });
-    }
+// Upload route for multiple files
+app.post('/upload', upload.array('files', 10), (req, res) => { // allow up to 10 files
+  try {
+    const filePaths = req.files.map(file => file.path);
+    res.send({ message: 'Files uploaded successfully', filePaths });
+  } catch (error) {
+    res.status(400).send({ error: 'Error uploading files' });
+  }
 });
 
 // Start the server
