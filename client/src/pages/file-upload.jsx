@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Button, Typography, List, ListItem } from '@mui/material';
+import { Box, Button, Typography, List, ListItem, IconButton } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import TabNavigation from '../components/TabNavigation';
 import { allTabs } from '../components/allTabs';
 import toast from "react-hot-toast";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const FileUpload = () => {
     const [file, setFile] = useState(null);
@@ -40,6 +41,8 @@ const FileUpload = () => {
         const formData = new FormData();
         formData.append('file', file);
 
+        console.log("Submitted");
+        console.log(formData);
         try {
             const res = await axios.post('http://localhost:5000/uploadSingle', formData, {
                 headers: {
@@ -49,11 +52,19 @@ const FileUpload = () => {
             toast.success('File uploaded successfully');
             fetchUploadedFiles(); // Refresh the list of uploaded files
         } catch (err) {
-            if (err.response && err.response.data) {
-                toast.error(err.message);
-            } else {
-                toast.error('Error uploading file');
-            }
+            toast.error('Error uploading file');
+        }
+    };
+
+    const handleDelete = async (filePath) => {
+        try {
+            await axios.delete('http://localhost:5000/deleteFile', {
+                data: { filePath }
+            });
+            toast.success('File deleted successfully');
+            fetchUploadedFiles(); // Refresh the list of uploaded files
+        } catch (err) {
+            toast.error('Error deleting file');
         }
     };
 
@@ -83,7 +94,12 @@ const FileUpload = () => {
                     <Typography variant="h6">Uploaded Files:</Typography>
                     <List>
                         {uploadedFiles.map((uploadedFile, index) => (
-                            <ListItem key={index}>{uploadedFile}</ListItem>
+                            <ListItem key={index}>
+                                {uploadedFile}
+                                <IconButton onClick={() => handleDelete(uploadedFile)} aria-label="delete" sx={{ ml: 2 }}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </ListItem>
                         ))}
                     </List>
                 </Box>

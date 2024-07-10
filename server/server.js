@@ -462,15 +462,57 @@ app.post('/uploadMulti', upload.array('files', 10), (req, res) => { // allow up 
     }
 });
 
-// Upload route for single file
-app.post('/uploadSingle', upload.single('file'), (req, res) => {
+// // Upload route for single file
+// app.post('/uploadSingle', upload.single('file'), (req, res) => {
+//     try {
+//         res.send({ message: 'File uploaded successfully', filePath: req.file.path });
+//     } catch (error) {
+//         res.status(400).send({ error: 'Error uploading file' });
+//     }
+// });
+
+
+const XLSX = require('xlsx');
+
+
+app.post('/uploadSingle', upload.single('file'), async (req, res) => {
+
+    console.log("CAME");
+
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+
+    const workbook = XLSX.readFile(req.file.path);
+    const sheetName = workbook.SheetNames[3];
+    const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+    console.log("*******************************************");
+    console.log(worksheet);
+
+    console.log("END OF TOTAL");
+
+
     try {
-        res.send({ message: 'File uploaded successfully', filePath: req.file.path });
-    } catch (error) {
-        res.status(400).send({ error: 'Error uploading file' });
+        for (const row of worksheet) {
+            //         // Map the row data to your database schema
+            //         await prisma.yourModel.create({
+            //             data: {
+            //                 column1: row.column1,
+            //                 column2: row.column2,
+            //                 // Add more columns as needed
+            //             },
+            //         });
+
+            console.log(row);
+
+        }
+        res.status(200).send('File data inserted into database.');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error inserting data into database.');
     }
 });
-
 
 const uploadsDir = path.join(__dirname, 'uploads'); // Define the uploads directory
 
@@ -481,6 +523,34 @@ app.get('/uploads', (req, res) => { // Get all uploaded files
         }
         res.send(files);
     });
+});
+
+app.delete('/deleteFile', async (req, res) => {
+    try {
+
+        var { filePath } = req.body;
+
+        if (!filePath) {
+            return res.status(400).json({ error: 'Filename is required' });
+        }
+
+
+        filePath = "uploads/" + filePath
+
+
+        // Check if the file exists
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ error: 'File not found' });
+        }
+
+        // Remove the file
+        await fs.remove(filePath);
+
+        res.status(200).json({ message: 'File deleted successfully' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'File deletion failed' });
+    }
 });
 
 // Start the server
