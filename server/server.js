@@ -164,9 +164,6 @@ app.get('/api/controlCards', async (req, res) => { // Get all cards
 app.post('/api/controlCards', async (req, res) => { // Endpoint to create a card
     try {
         const {
-            // parameterNO,
-            // parameter,
-            // value,
             orderNumber,
             UNID,
             revisionNO,
@@ -462,22 +459,17 @@ app.post('/uploadMulti', upload.array('files', 10), (req, res) => { // allow up 
     }
 });
 
-// // Upload route for single file
-// app.post('/uploadSingle', upload.single('file'), (req, res) => {
-//     try {
-//         res.send({ message: 'File uploaded successfully', filePath: req.file.path });
-//     } catch (error) {
-//         res.status(400).send({ error: 'Error uploading file' });
-//     }
-// });
-
-
 const XLSX = require('xlsx');
 
 
 app.post('/uploadSingle', upload.single('file'), async (req, res) => {
 
-    console.log("CAME");
+    console.log("Uploading...");
+
+    const { sheetPage } = req.body;
+
+    console.log("SHEET PAGE: " + sheetPage);
+
 
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
@@ -489,24 +481,55 @@ app.post('/uploadSingle', upload.single('file'), async (req, res) => {
 
     console.log("*******************************************");
     console.log(worksheet);
-
     console.log("END OF TOTAL");
 
+    // orderNumber  Int
+    // UNID         String   @unique
+    // revisionNO   String
+    // revisionDate DateTime
+    // manufacturer String
+    // isActive     Boolean
+    // depotShelfNo String
+    // projectNO    String
+
+    // {
+    //     'Sıra No': 1,
+    //     UNID: '003F0046',
+    //     'Revizyon No': 'Rez-02.31',
+    //     'Revizyon Tarihi': 44706,
+    //     'Üretici': 'ABC',
+    //     'Aktif/Pasif': 'Aktif',
+    //     'Depor Raf No': 'A11',
+    //     'Koli No': 'B16',
+    //     'Proje No': 'AA10-1479-A'
+    //   },
 
     try {
         for (const row of worksheet) {
-            //         // Map the row data to your database schema
-            //         await prisma.yourModel.create({
-            //             data: {
-            //                 column1: row.column1,
-            //                 column2: row.column2,
-            //                 // Add more columns as needed
-            //             },
-            //         });
 
-            console.log(row);
+            await prisma.controlCard.create({
+                data: {
+                    orderNumber: parseInt(row['Sıra No'], 10),
+                    UNID: row['UNID'].trim(),
+                    revisionNO: row['Revizyon No'].trim(),
+                    revisionDate: new Date(row['Revizyon Tarihi']),
+                    manufacturer: row['Üretici'].trim(),
+                    isActive: Boolean(row['Aktif/Pasif']),
+                    depotShelfNo: row['Depor Raf No'].trim(),
+                    projectNO: row['Proje No']?.trim() || "",
+                }
+            });
 
+            console.log("orderNumber: " + parseInt(row['Sıra No'], 10),
+                "UNID: " + row["UNID"].trim(),
+                "revisionNO: " + row['Revizyon No'].trim(),
+                "revisionDate: " + new Date(row['Revizyon Tarihi']),
+                " manufacturer: " + row['Üretici'].trim(),
+                "isActive: " + Boolean(row['Aktif/Pasif']),
+                "depotShelfNo: " + row['Depor Raf No'].trim(),
+                "projectNO: " + row['Proje No']?.trim(),);
         }
+
         res.status(200).send('File data inserted into database.');
     } catch (err) {
         console.error(err);

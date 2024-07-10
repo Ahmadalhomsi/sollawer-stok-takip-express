@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Button, Typography, List, ListItem, IconButton } from '@mui/material';
+import { Box, Button, Typography, List, ListItem, IconButton, TextField } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import TabNavigation from '../components/TabNavigation';
 import { allTabs } from '../components/allTabs';
@@ -11,6 +11,8 @@ const FileUpload = () => {
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState('');
     const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [sheetPage, setSheetPage] = useState(0);
+
 
     const onDrop = (acceptedFiles) => {
         setFile(acceptedFiles[0]);
@@ -40,6 +42,7 @@ const FileUpload = () => {
         }
         const formData = new FormData();
         formData.append('file', file);
+        formData.append('sheetPage', sheetPage);
 
         console.log("Submitted");
         console.log(formData);
@@ -82,6 +85,13 @@ const FileUpload = () => {
                         Selected file: {file.name}
                     </Typography>
                 )}
+                <TextField
+                    label="Sheet Page"
+                    variant="outlined"
+                    value={sheetPage}
+                    onChange={(e) => setSheetPage(e.target.value)}
+                    sx={{ mt: 2, width: '100%' }}
+                />
                 <Button variant="contained" color="primary" onClick={onSubmit} sx={{ mt: 2 }}>
                     Upload
                 </Button>
