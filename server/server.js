@@ -150,7 +150,7 @@ app.delete('/api/orders/:id', async (req, res) => {
 //-------------------------------------------------------
 
 
-// Card Operation Table
+// Control Cards Table
 app.get('/api/controlCards', async (req, res) => { // Get all cards
     try {
         const orders = await prisma.controlCard.findMany();
@@ -177,14 +177,8 @@ app.post('/api/controlCards', async (req, res) => { // Endpoint to create a card
             projectNO,
         } = req.body;
 
-        console.log("TAAAAAAABLECOUOUUNND");
-        console.log(tableCount);
-
         const newUser = await prisma.controlCard.create({
             data: {
-                parameterNO: parameterNO.trim(),    // Remove extra spaces
-                parameter: parameter.trim(),
-                value: value.trim(),
                 orderNumber: parseInt(orderNumber, 10),
                 UNID: UNID.trim(),
                 revisionNO: revisionNO.trim(),
@@ -343,7 +337,7 @@ app.delete('/api/cardParameters/:id', async (req, res) => {
 
 //-------------------------------------------------------
 
-// Card Parameters Table
+// Faulty Cards Table
 app.get('/api/faultyCards', async (req, res) => { // Get all cards
     try {
         const orders = await prisma.faultyCard.findMany();

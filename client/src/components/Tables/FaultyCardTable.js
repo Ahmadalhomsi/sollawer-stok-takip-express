@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { TextField, Link, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
 import toast from "react-hot-toast";
 import NewFaultyCardModal from '../Modals/NewFaultyCardModal';
@@ -118,6 +119,21 @@ const FaultyCardsTable = () => {
         }
     };
 
+    const handleDeleteURL = (urlToDelete) => {
+        const updatedPhotoURLs = editRow.photoURL.filter(url => url !== urlToDelete);
+        setEditRow((prev) => ({
+            ...prev,
+            photoURL: updatedPhotoURLs
+        }));
+        setURLDialogOpen(false)
+        console.log('URL deleted:', urlToDelete);
+        toast.success('URL deleted successfully!');
+    };
+
+    const handleEditURLs = () => {
+        setURLDialogOpen(true);
+    };
+
     const columns = [
         {
             field: 'id', headerName: 'ID', width: 10, renderCell: (params) => params.row.id === editIdx ? (
@@ -179,17 +195,9 @@ const FaultyCardsTable = () => {
             renderCell: (params) => params.row.id === editIdx ? (
                 <>
                     <Box>
-                        {editRow.photoURL.map((url, index) => (
-                            <Link
-                                key={index}
-                                component="button"
-                                variant="body2"
-                                onClick={() => handleClickOpen(`http://localhost:5000/uploads/${url}`)}
-                                sx={{ display: 'block', cursor: 'pointer' }}
-                            >
-                                {url}
-                            </Link>
-                        ))}
+                        <Button onClick={handleEditURLs} variant="contained" color="primary" size="small">
+                            Edit Photo URLs
+                        </Button>
                     </Box>
                 </>
             ) : (
@@ -242,20 +250,7 @@ const FaultyCardsTable = () => {
                     </>
                 )
             )
-        },
-        {
-            field: 'addURL',
-            headerName: 'PhotoURL',
-            width: 300,
-            renderCell: (params) => params.row.id === editIdx ? (
-                <>
-                    
-                    <Button onClick={handleAddURL} variant="contained" color="primary" size="small" style={{ marginRight: 8 }}>
-                        Add Photo URL
-                    </Button>
-                </>
-            ) : null
-        },
+        }
     ];
 
     return (
@@ -286,12 +281,25 @@ const FaultyCardsTable = () => {
                 </DialogActions>
             </Dialog>
             <Dialog open={isURLDialogOpen} onClose={handleURLDialogClose}>
-                <DialogTitle>Add Photo URL</DialogTitle>
+                <DialogTitle>Edit Photo URLs</DialogTitle>
                 <DialogContent>
+                    {editRow.photoURL && editRow.photoURL.map((url, index) => (
+                        <Box key={index} display="flex" alignItems="center">
+                            <TextField
+                                fullWidth
+                                value={url}
+                                disabled
+                                margin="dense"
+                            />
+                            <IconButton onClick={() => handleDeleteURL(url)} color="error" size="small">
+                                <DeleteIcon />
+                            </IconButton>
+                        </Box>
+                    ))}
                     <TextField
                         autoFocus
                         margin="dense"
-                        label="Photo URL"
+                        label="New Photo URL"
                         type="url"
                         fullWidth
                         value={newPhotoURL}
