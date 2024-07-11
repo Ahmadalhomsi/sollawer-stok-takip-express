@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import axios from 'axios';
 
-const NewCardParameterModal = ({ open, onClose, onRowCreated }) => {
+
+const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) => {
     const [newRow, setNewRow] = useState({
         cardID: '',
         parameterNO: '',
@@ -10,6 +11,14 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated }) => {
         value: '',
     });
 
+    useEffect(() => {
+        if (selectedUNID) {
+            setNewRow((prev) => ({
+                ...prev,
+                cardID: selectedUNID, // Automatically set parameter field with selected UNID
+            }));
+        }
+    }, [selectedUNID]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -65,6 +74,7 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated }) => {
                         fullWidth
                         margin="normal"
                         label="Kart ID"
+                        value={newRow.cardID} // Set value from state
                         name="cardID"
                         onChange={handleChange}
                     />
@@ -80,6 +90,7 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated }) => {
                         margin="normal"
                         label="Parametre"
                         name="parameter"
+                        // value={newRow.parameter} // Set value from state
                         onChange={handleChange}
                     />
                     <TextField

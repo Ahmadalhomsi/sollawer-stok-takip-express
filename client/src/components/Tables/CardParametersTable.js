@@ -14,6 +14,8 @@ const CardParametersTable = () => {
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
     const [unidSearchModalOpen, setUNIDSearchModalOpen] = useState(false);
+    const [selectedUNID, setSelectedUNID] = useState(null);
+    const [showLabel, setShowLabel] = useState(false);
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/cardParameters')
@@ -84,14 +86,14 @@ const CardParametersTable = () => {
 
     const handleRowCreated = (newRow) => {
         setRows((prevRows) => [...prevRows, newRow]);
+        setShowLabel(false); // Hide the label after creating a new row
+        setSelectedUNID(null); // Clear the selected UNID
     };
 
+
     const handleUNIDSelect = (selectedUNID, selectedCardName) => {
-        setEditRow((prev) => ({
-            ...prev,
-            UNID: selectedUNID,
-            parameter: selectedCardName, // Update parameter with selected card name
-        }));
+        setSelectedUNID(selectedUNID);
+        setShowLabel(true);
         setUNIDSearchModalOpen(false); // Close the modal after selecting
     };
 
@@ -166,21 +168,6 @@ const CardParametersTable = () => {
                 )
             )
         },
-        {
-            field: 'UNIDCardAdd',
-            headerName: 'UNID ile kart ekle',
-            width: 300,
-            renderCell: (params) => (
-                <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={() => setUNIDSearchModalOpen(true)}
-                >
-                    UNID ile kart ekle
-                </Button>
-            )
-        },
     ];
 
     return (
@@ -188,6 +175,22 @@ const CardParametersTable = () => {
             <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
                 Yeni Kart Prametre Ekle
             </Button>
+
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setUNIDSearchModalOpen(true)}
+                style={{ marginBottom: 16, marginLeft: 35 }}
+            >
+                UNID ile kart ekle
+            </Button>
+
+            {showLabel && (
+                <Box sx={{ marginBottom: 2 }}>
+                    <strong>Selected UNID: {selectedUNID}</strong>
+                </Box>
+            )}
+
             <DataGrid
                 rows={rows}
                 columns={columns}
@@ -201,7 +204,9 @@ const CardParametersTable = () => {
                 open={isModalOpen}
                 onClose={handleModalClose}
                 onRowCreated={handleRowCreated}
+                selectedUNID={selectedUNID} // Pass selected UNID to the modal
             />
+
             <UNIDSearchModal
                 open={unidSearchModalOpen}
                 onClose={() => setUNIDSearchModalOpen(false)}
