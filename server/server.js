@@ -461,8 +461,28 @@ app.post('/uploadMulti', upload.array('files', 10), (req, res) => { // allow up 
 
 const XLSX = require('xlsx');
 
+app.post('/api/upload', upload.single('file'), (req, res) => {
+    const { file } = req;
+    if (!file) {
+        return res.status(400).send('No file uploaded');
+    }
 
-app.post('/uploadSingle', upload.single('file'), async (req, res) => {
+    const fileName = file.filename;
+
+    const filePath = path.join('uploads', file.filename);
+
+    fs.renameSync(file.path, filePath);
+
+
+    console.log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+
+    console.log(fileName);
+
+    res.json({ fileName });
+});
+
+
+app.post('/uploadSingle', upload.single('file'), async (req, res) => { // xlsx file upload
 
     console.log("Uploading...");
 
@@ -482,27 +502,6 @@ app.post('/uploadSingle', upload.single('file'), async (req, res) => {
     console.log("*******************************************");
     console.log(worksheet);
     console.log("END OF TOTAL");
-
-    // orderNumber  Int
-    // UNID         String   @unique
-    // revisionNO   String
-    // revisionDate DateTime
-    // manufacturer String
-    // isActive     Boolean
-    // depotShelfNo String
-    // projectNO    String
-
-    // {
-    //     'Sıra No': 1,
-    //     UNID: '003F0046',
-    //     'Revizyon No': 'Rez-02.31',
-    //     'Revizyon Tarihi': 44706,
-    //     'Üretici': 'ABC',
-    //     'Aktif/Pasif': 'Aktif',
-    //     'Depor Raf No': 'A11',
-    //     'Koli No': 'B16',
-    //     'Proje No': 'AA10-1479-A'
-    //   },
 
     try {
         for (const row of worksheet) {
@@ -563,7 +562,8 @@ app.delete('/deleteFile', async (req, res) => {
 
         // Check if the file exists
         if (!fs.existsSync(filePath)) {
-            return res.status(404).json({ error: 'File not found' });
+            return res.status(200).json({ message: 'File deleted successfully' });
+
         }
 
         // Remove the file

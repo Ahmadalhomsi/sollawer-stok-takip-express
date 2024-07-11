@@ -4,7 +4,7 @@ import { TextField, Link, Box, Dialog, DialogTitle, DialogContent, DialogActions
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import NewFaultyCardModal from '../Modals/NewFaultyCardModal';
 
 const FaultyCardsTable = () => {
@@ -16,7 +16,7 @@ const FaultyCardsTable = () => {
     const [open, setOpen] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState('');
     const [isURLDialogOpen, setURLDialogOpen] = useState(false);
-    const [newPhotoURL, setNewPhotoURL] = useState('');
+    const [newPhotoFile, setNewPhotoFile] = useState(null);
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/faultyCards')
@@ -25,7 +25,7 @@ const FaultyCardsTable = () => {
                 setLoading(false);
             })
             .catch((error) => {
-                toast.error(error.message)
+                toast.error(error.message);
                 console.error('There was an error fetching the data!', error);
                 setLoading(false);
             });
@@ -37,13 +37,9 @@ const FaultyCardsTable = () => {
     };
 
     const handleSave = async () => {
-        const dataToUpdate = {
-            ...editRow,
-        };
-
+        const dataToUpdate = { ...editRow };
         try {
             const response = await axios.put(`http://localhost:5000/api/faultyCards/${editIdx}`, dataToUpdate);
-
             if (response.status === 200) {
                 const updatedRows = rows.map((row) => (row.id === editIdx ? dataToUpdate : row));
                 setRows(updatedRows);
@@ -105,29 +101,57 @@ const FaultyCardsTable = () => {
 
     const handleURLDialogClose = () => {
         setURLDialogOpen(false);
-        setNewPhotoURL('');
+        setNewPhotoFile(null);
     };
 
-    const handleURLSubmit = () => {
-        if (newPhotoURL) {
-            const updatedPhotoURLs = [...editRow.photoURL, newPhotoURL];
-            setEditRow((prev) => ({
-                ...prev,
-                photoURL: updatedPhotoURLs
-            }));
-            handleURLDialogClose();
+    const handleURLSubmit = async () => {
+        if (newPhotoFile) {
+            const formData = new FormData();
+            formData.append('file', newPhotoFile);
+
+            try {
+                const response = await axios.post('http://localhost:5000/api/upload', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+
+
+                const photoName = response.data.fileName;
+
+                console.log("XXXXXXXXXX");
+                console.log(photoName);
+
+                const updatedPhotoURLs = [...editRow.photoURL, photoName];
+                setEditRow((prev) => ({
+                    ...prev,
+                    photoURL: updatedPhotoURLs
+                }));
+
+                handleURLDialogClose();
+            } catch (error) {
+                console.error('Error uploading photo:', error);
+                toast.error('Error uploading photo');
+            }
         }
     };
 
-    const handleDeleteURL = (urlToDelete) => {
-        const updatedPhotoURLs = editRow.photoURL.filter(url => url !== urlToDelete);
+    const handleDeleteURL = async (urlToDelete) => {
+        const updatedPhotoURLs = editRow.photoURL.filter((url) => url !== urlToDelete);
         setEditRow((prev) => ({
             ...prev,
             photoURL: updatedPhotoURLs
         }));
-        setURLDialogOpen(false)
-        console.log('URL deleted:', urlToDelete);
-        toast.success('URL deleted successfully!');
+
+
+        try {
+            await axios.delete('http://localhost:5000/deleteFile', {
+                data: { filePath: urlToDelete }
+            });
+        } catch (err) {
+            toast.error('Error deleting file');
+        }
+
+
+        toast.success('Photo deleted successfully!');
     };
 
     const handleEditURLs = () => {
@@ -254,25 +278,31 @@ const FaultyCardsTable = () => {
     ];
 
     return (
-        <Box sx={{ height: 600, width: '100%' }}>
-            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
-                Yeni Arızalı Kart Ekle
-            </Button>
-            <DataGrid
-                rows={rows}
-                columns={columns}
-                pageSize={10}
-                rowsPerPageOptions={[5, 10, 20]}
-                disableSelectionOnClick
-                loading={loading}
-                getRowId={(row) => row.id}
+        <div>
+            <Box m={2}>
+                <Button onClick={handleModalOpen} variant="contained" color="primary">Add New Faulty Card</Button>
+            </Box>
+
+            <NewFaultyCardModal
+                open={isModalOpen}
+                onClose={handleModalClose}
+                onRowCreated={handleRowCreated}
             />
-            <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-                <DialogTitle>Photo</DialogTitle>
+
+            <Box m={2} style={{ height: 600, width: '100%' }}>
+                <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    loading={loading}
+                    pageSize={10}
+                    rowsPerPageOptions={[10, 25, 50]}
+                />
+            </Box>
+
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Photo Preview</DialogTitle>
                 <DialogContent>
-                    {selectedPhoto && (
-                        <img src={selectedPhoto} alt="Uploaded" style={{ width: '100%', height: 'auto' }} />
-                    )}
+                    <img src={selectedPhoto} alt="Preview" style={{ width: '100%' }} />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
@@ -280,47 +310,54 @@ const FaultyCardsTable = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+
             <Dialog open={isURLDialogOpen} onClose={handleURLDialogClose}>
                 <DialogTitle>Edit Photo URLs</DialogTitle>
                 <DialogContent>
-                    {editRow.photoURL && editRow.photoURL.map((url, index) => (
-                        <Box key={index} display="flex" alignItems="center">
-                            <TextField
-                                fullWidth
-                                value={url}
-                                disabled
-                                margin="dense"
-                            />
-                            <IconButton onClick={() => handleDeleteURL(url)} color="error" size="small">
-                                <DeleteIcon />
-                            </IconButton>
-                        </Box>
-                    ))}
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="New Photo URL"
-                        type="url"
-                        fullWidth
-                        value={newPhotoURL}
-                        onChange={(e) => setNewPhotoURL(e.target.value)}
-                    />
+
+                    <Button
+                        variant="contained"
+                        component="label"
+                        color="primary"
+                        style={{ marginBottom: '1rem' }}
+                    >
+                        Upload Photo
+                        <input
+                            type="file"
+                            hidden
+                            onChange={(e) => setNewPhotoFile(e.target.files[0])}
+                            accept="image/*"
+                        />
+                    </Button>
+                    <Button onClick={handleURLSubmit} variant="contained" color="primary" style={{ marginLeft: '1rem', marginBottom: '1rem'}}>
+                        Upload
+                    </Button>
+        
+                    <Box>
+                        {editRow.photoURL && editRow.photoURL.map((url, index) => (
+                            <Box key={index} display="flex" alignItems="center">
+                                <Link
+                                    component="button"
+                                    variant="body2"
+                                    onClick={() => handleClickOpen(`http://localhost:5000/uploads/${url}`)}
+                                    sx={{ display: 'block', cursor: 'pointer', marginRight: 2 }}
+                                >
+                                    {url}
+                                </Link>
+                                <IconButton onClick={() => handleDeleteURL(url)} color="error" size="small">
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Box>
+                        ))}
+                    </Box>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleURLDialogClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleURLSubmit} color="primary">
-                        Add
+                        Close
                     </Button>
                 </DialogActions>
             </Dialog>
-            <NewFaultyCardModal
-                open={isModalOpen}
-                onClose={handleModalClose}
-                onRowCreated={handleRowCreated}
-            />
-        </Box>
+        </div>
     );
 };
 
