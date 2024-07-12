@@ -127,6 +127,7 @@ const FaultyCardsTable = () => {
                 }));
 
                 handleURLDialogClose();
+                toast.success('Photo uploaded successfully!');
             } catch (error) {
                 console.error('Error uploading photo:', error);
                 toast.error('Error uploading photo');
@@ -321,7 +322,7 @@ const FaultyCardsTable = () => {
                         color="primary"
                         style={{ marginBottom: '1rem' }}
                     >
-                        Upload Photo
+                        Choose Photo
                         <input
                             type="file"
                             hidden

@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors')
+const { addDays, isValid } = require('date-fns');
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -9,16 +10,11 @@ app.use(cors())
 app.use(express.json());
 
 
-
-
-
 // GET route
 app.get('/api', (req, res) => { // for test
     //res.send('Hello, world!');
     res.json({ "users": ["userOne", "UserTwo"] });
 });
-
-
 
 
 // GET route
@@ -482,7 +478,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 });
 
 
-app.post('/uploadSingle', upload.single('file'), async (req, res) => { // xlsx file upload
+app.post('/uploadControlCards', upload.single('file'), async (req, res) => { // xlsx file upload
 
     console.log("Uploading...");
 
@@ -503,15 +499,30 @@ app.post('/uploadSingle', upload.single('file'), async (req, res) => { // xlsx f
     console.log(worksheet);
     console.log("END OF TOTAL");
 
+
+    // Function to convert Excel serial number to JavaScript Date
+    const excelSerialToDate = (serial) => {
+        const excelEpoch = new Date(1899, 11, 30); // Excel epoch starts at 1899-12-30
+        return addDays(excelEpoch, serial);
+    };
+
+
     try {
         for (const row of worksheet) {
+
+            const revisionDate = excelSerialToDate(row['Revizyon Tarihi']);
+
+            if (!isValid(revisionDate)) {
+                console.error(`Invalid date format for row: ${JSON.stringify(row)}`);
+                continue; // Skip this row if the date is invalid
+            }
 
             await prisma.controlCard.create({
                 data: {
                     orderNumber: parseInt(row['Sıra No'], 10),
                     UNID: row['UNID'].trim(),
                     revisionNO: row['Revizyon No'].trim(),
-                    revisionDate: new Date(row['Revizyon Tarihi']),
+                    revisionDate: revisionDate,
                     manufacturer: row['Üretici'].trim(),
                     isActive: Boolean(row['Aktif/Pasif']),
                     depotShelfNo: row['Depor Raf No'].trim(),
@@ -522,11 +533,11 @@ app.post('/uploadSingle', upload.single('file'), async (req, res) => { // xlsx f
             console.log("orderNumber: " + parseInt(row['Sıra No'], 10),
                 "UNID: " + row["UNID"].trim(),
                 "revisionNO: " + row['Revizyon No'].trim(),
-                "revisionDate: " + new Date(row['Revizyon Tarihi']),
-                " manufacturer: " + row['Üretici'].trim(),
+                "revisionDate: " + revisionDate,
+                "manufacturer: " + row['Üretici'].trim(),
                 "isActive: " + Boolean(row['Aktif/Pasif']),
                 "depotShelfNo: " + row['Depor Raf No'].trim(),
-                "projectNO: " + row['Proje No']?.trim(),);
+                "projectNO: " + row['Proje No']?.trim());
         }
 
         res.status(200).send('File data inserted into database.');

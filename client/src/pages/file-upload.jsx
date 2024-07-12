@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Button, Typography, List, ListItem, IconButton, TextField } from '@mui/material';
+import { Box, Button, Typography, List, ListItem, IconButton, TextField, Autocomplete } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import TabNavigation from '../components/TabNavigation';
 import { allTabs } from '../components/allTabs';
@@ -12,7 +12,7 @@ const FileUpload = () => {
     const [message, setMessage] = useState('');
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [sheetPage, setSheetPage] = useState(0);
-
+    const [uploadType, setUploadType] = useState('Kontrol Kart Import');
 
     const onDrop = (acceptedFiles) => {
         setFile(acceptedFiles[0]);
@@ -44,10 +44,10 @@ const FileUpload = () => {
         formData.append('file', file);
         formData.append('sheetPage', sheetPage);
 
-        console.log("Submitted");
-        console.log(formData);
+        const endpoint = uploadType === 'Kontrol Kart Import' ? '/uploadControlCards' : '/uploadCardParameters';
+
         try {
-            const res = await axios.post('http://localhost:5000/uploadSingle', formData, {
+            const res = await axios.post(`http://localhost:5000${endpoint}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -85,6 +85,13 @@ const FileUpload = () => {
                         Selected file: {file.name}
                     </Typography>
                 )}
+                <Autocomplete
+                    options={['Kontrol Kart Import', 'Kart Parametresi Import']}
+                    value={uploadType}
+                    onChange={(event, newValue) => setUploadType(newValue)}
+                    renderInput={(params) => <TextField {...params} label="Upload Type" variant="outlined" sx={{ mt: 2 }} />}
+                    sx={{ width: '100%' }}
+                />
                 <TextField
                     label="Sheet Page"
                     variant="outlined"
