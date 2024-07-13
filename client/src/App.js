@@ -6,7 +6,7 @@ import ControlCardPage from './pages/card';
 import CardParameterPage from './pages/card-parameter';
 import OrdersPage from './pages/order (Main)';
 import FaultyCardPage from './pages/faulty-card';
-import FileUpload from './pages/file-upload';
+import FileUpload from './pages/excel-import';
 
 
 

@@ -492,7 +492,7 @@ app.post('/uploadControlCards', upload.single('file'), async (req, res) => { // 
     }
 
     const workbook = XLSX.readFile(req.file.path);
-    const sheetName = workbook.SheetNames[3];
+    const sheetName = workbook.SheetNames[sheetPage];
     const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
     console.log("*******************************************");
@@ -538,6 +538,61 @@ app.post('/uploadControlCards', upload.single('file'), async (req, res) => { // 
                 "isActive: " + Boolean(row['Aktif/Pasif']),
                 "depotShelfNo: " + row['Depor Raf No'].trim(),
                 "projectNO: " + row['Proje No']?.trim());
+        }
+
+        res.status(200).send('File data inserted into database.');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error inserting data into database.');
+    }
+});
+
+app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
+    console.log("Uploading...");
+
+    const { sheetPage } = req.body;
+    console.log("SHEET PAGE: " + sheetPage);
+
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+
+    const workbook = XLSX.readFile(req.file.path);
+    const sheetName = workbook.SheetNames[sheetPage];
+    const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+    console.log("*******************************************");
+    console.log(worksheet);
+    console.log("END OF TOTAL");
+
+    try {
+        for (const row of worksheet) {
+            for (let i = 0; i < 4; i++) { // assuming a maximum of 4 parameters per row
+                const paramNoKey = `Parametre No${i > 0 ? `_${i}` : ''}`;
+                const paramKey = `Parametre${i > 0 ? `_${i}` : ''}`;
+                const valueKey = `Değer${i > 0 ? `_${i}` : ''}`;
+
+                if (row[paramNoKey] && row[paramKey] && row[valueKey]) {
+                    const parameterNo = row[paramNoKey].trim();
+                    const parameter = row[paramKey].trim();
+                    const value = parseInt(row[valueKey], 10); // assuming the value is an integer
+
+                    console.log(
+                        "parameterNO: " + parameterNo,
+                        "parameter: " + parameter,
+                        "value: " + value,
+                    );
+
+                    await prisma.cardParameter.create({
+                        data: {
+                            parameterNO: parameterNo + "",
+                            parameter: parameter + "",
+                            value: value + "",
+                            cardID: i + "",
+                        }
+                    });
+                }
+            }
         }
 
         res.status(200).send('File data inserted into database.');
