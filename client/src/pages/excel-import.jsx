@@ -7,7 +7,7 @@ import { allTabs } from '../components/allTabs';
 import toast from "react-hot-toast";
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const FileUpload = () => {
+const ExcelImport = () => {
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState('');
     const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -125,4 +125,4 @@ const FileUpload = () => {
     );
 };
 
-export default FileUpload;
+export default ExcelImport;

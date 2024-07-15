@@ -6,7 +6,9 @@ import ControlCardPage from './pages/card';
 import CardParameterPage from './pages/card-parameter';
 import OrdersPage from './pages/order (Main)';
 import FaultyCardPage from './pages/faulty-card';
-import FileUpload from './pages/excel-import';
+import ExcelImport from './pages/excel-import';
+import ExcelExport from './pages/excel-export';
+
 
 
 
@@ -20,7 +22,8 @@ export default function App() {
                 <Route path='/card' element={<ControlCardPage />} />
                 <Route path='/cardParameter' element={<CardParameterPage />} />
                 <Route path='/faultyCard' element={<FaultyCardPage />} />
-                <Route path='/fileUpload' element={<FileUpload />} />
+                <Route path='/excelImport' element={<ExcelImport />} />
+                <Route path='/excelExport' element={<ExcelExport />} />
 
             </Routes>
 

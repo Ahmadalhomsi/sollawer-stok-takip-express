@@ -642,6 +642,44 @@ app.delete('/deleteFile', async (req, res) => {
     }
 });
 
+
+app.get('/exportData', async (req, res) => {
+    const { table } = req.query;
+
+    if (!table) {
+        return res.status(400).send('Table name is required.');
+    }
+
+    let data;
+    try {
+        if (table === 'Siparişler') {
+            data = await prisma.OrderTracker.findMany();
+        } else if (table === 'Kontrol kartlar') {
+            data = await prisma.ControlCard.findMany();
+        } else if (table === 'Kart parametreler') {
+            data = await prisma.CardParameter.findMany();
+        } else {
+            return res.status(400).send('Invalid table name.');
+        }
+
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, table);
+
+        const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+        // Sanitize filename to avoid invalid characters
+        const sanitizedTable = table.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+        res.setHeader('Content-Disposition', `attachment; filename=${sanitizedTable}.xlsx`);
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.send(buffer);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error exporting data.');
+    }
+});
+
 // Start the server
 app.listen(5000, () => {
     console.log('Server is running on port 5000');
