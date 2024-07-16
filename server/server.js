@@ -557,38 +557,58 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
         return res.status(400).send('No file uploaded.');
     }
 
-    const workbook = XLSX.readFile(req.file.path);
+    const workbook = XLSX.readFile(req.file.path, { cellStyles: true });
     const sheetName = workbook.SheetNames[sheetPage];
-    const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+    const worksheet = workbook.Sheets[sheetName];
 
+    const worksheetJson = XLSX.utils.sheet_to_json(worksheet, { raw: false, header: 1 });
     console.log("*******************************************");
-    console.log(worksheet);
+    console.log(worksheetJson);
     console.log("END OF TOTAL");
 
     try {
-        for (const row of worksheet) {
-            for (let i = 0; i < 4; i++) { // assuming a maximum of 4 parameters per row
-                const paramNoKey = `Parametre No${i > 0 ? `_${i}` : ''}`;
-                const paramKey = `Parametre${i > 0 ? `_${i}` : ''}`;
-                const valueKey = `Değer${i > 0 ? `_${i}` : ''}`;
+        for (let rowIndex = 1; rowIndex < worksheetJson.length; rowIndex++) {
+            const row = worksheetJson[rowIndex];
 
-                if (row[paramNoKey] && row[paramKey] && row[valueKey]) {
-                    const parameterNo = row[paramNoKey].trim();
-                    const parameter = row[paramKey].trim();
-                    const value = parseInt(row[valueKey], 10); // assuming the value is an integer
+            for (let i = 0; i < row.length; i += 3) { // process each set of 3 columns
+                const paramNo = row[i] ? row[i].trim() : '';
+                const parameter = row[i + 1] ? row[i + 1].trim() : '';
+                const value = row[i + 2] ? row[i + 2].trim() : '';
 
+                const valueCell = worksheet[XLSX.utils.encode_cell({ r: rowIndex, c: i + 2 })];
+
+                let cardID = Math.floor(i / 3) + ""; // assign a cardID based on the parameter set index
+
+                if (valueCell && valueCell.s) {
+                    console.log("Cell Style Properties:", valueCell.s);
+
+                    if (valueCell.s && valueCell.s.fgColor && valueCell.s.fgColor.rgb) {
+                        console.log("Entering color check...");
+                        if (valueCell.s.fgColor.rgb === 'FFFF00') { // Yellow color
+                            cardID = value;
+                            console.log("cardID set to value due to color match: ", cardID);
+                        } else {
+                            console.log("Color does not match. fgColor: ", valueCell.s.fgColor.rgb);
+                        }
+                    } else {
+                        console.log("fgColor or fgColor.rgb is undefined");
+                    }
+                }
+
+                if (paramNo || parameter || value) { // ensure at least one value is present
                     console.log(
-                        "parameterNO: " + parameterNo,
+                        "parameterNO: " + paramNo,
                         "parameter: " + parameter,
                         "value: " + value,
+                        "cardID: " + cardID
                     );
 
                     await prisma.cardParameter.create({
                         data: {
-                            parameterNO: parameterNo + "",
-                            parameter: parameter + "",
-                            value: value + "",
-                            cardID: i + "",
+                            parameterNO: paramNo,
+                            parameter: parameter,
+                            value: value,
+                            cardID: cardID,
                         }
                     });
                 }
