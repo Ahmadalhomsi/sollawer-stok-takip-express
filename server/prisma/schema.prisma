@@ -38,7 +38,6 @@ model OrderTracker {
   longitude Float // Boylam
 }
 
-// Define a single table that combines all the fields
 model ControlCard {
   id Int @id @default(autoincrement())
 

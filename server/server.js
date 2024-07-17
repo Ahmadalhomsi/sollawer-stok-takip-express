@@ -663,6 +663,8 @@ app.delete('/deleteFile', async (req, res) => {
 });
 
 
+
+
 app.get('/exportData', async (req, res) => {
     const { table } = req.query;
 
@@ -676,8 +678,23 @@ app.get('/exportData', async (req, res) => {
             data = await prisma.OrderTracker.findMany();
         } else if (table === 'Kontrol kartlar') {
             data = await prisma.ControlCard.findMany();
+            data = data.map(item => ({
+                'Sıra No': item.orderNumber,
+                'UNID': item.UNID,
+                'Revizyon No': item.revisionNO,
+                'Revizyon Tarihi': item.revisionDate.toISOString().split('T')[0],
+                'Üretici': item.manufacturer,
+                'Aktif/Pasif': item.isActive ? 'Aktif' : 'Pasif',
+                'Depo Raf No': item.depotShelfNo,
+                'Proje No': item.projectNO
+            }));
         } else if (table === 'Kart parametreler') {
             data = await prisma.CardParameter.findMany();
+            data = data.map(item => ({
+                'Parametre No': item.parameterNO,
+                'Parametre': item.parameter,
+                'Değer': item.value
+            }));
         } else {
             return res.status(400).send('Invalid table name.');
         }
@@ -699,6 +716,14 @@ app.get('/exportData', async (req, res) => {
         res.status(500).send('Error exporting data.');
     }
 });
+
+
+
+
+
+
+
+
 
 // Start the server
 app.listen(5000, () => {
