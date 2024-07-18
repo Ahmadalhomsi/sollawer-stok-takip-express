@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Box, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 // src/Modals/UNIDSearchModal.js
 const UNIDSearchModal = ({ open, onClose, onSelect }) => {
@@ -15,6 +16,7 @@ const UNIDSearchModal = ({ open, onClose, onSelect }) => {
                 })
                 .catch((error) => {
                     console.error('Error fetching cards:', error);
+                    toast.error('Error fetching cards!');
                 });
         }
     }, [open]);

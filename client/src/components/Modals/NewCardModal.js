@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const NewCardModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
-        // parameterNO: '',
-        // parameter: '',
-        // value: '',
         orderNumber: 0,
         UNID: '',
         revisionNO: '',
@@ -16,21 +14,6 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
         depotShelfNo: '',
         projectNO: '',
     });
-
-
-    //     parameterNO String
-    //   parameter   String
-    //   value      String
-
-
-    //   orderNumber  Int
-    //   UNID     String  @unique
-    //   revisionNO  String
-    //   revisionDate  DateTime
-    //   manufacturer  String
-    //   isActive     Boolean
-    //   depotShelfNo  String
-    //   projectNO  String
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -55,6 +38,7 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
             })
             .catch((error) => {
                 console.error('There was an error creating the new row!', error);
+                toast.error('There was an error creating the new row!');
             });
     };
 
@@ -82,27 +66,6 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
                     Yeni Kart Oluştur
                 </Typography>
                 <form onSubmit={handleSubmit}>
-                    {/* <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Parametre NO"
-                        name="parameterNO"
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Parametre"
-                        name="parameter"
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Değer"
-                        name="value"
-                        onChange={handleChange}
-                    /> */}
                     <TextField
                         fullWidth
                         margin="normal"

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const NewOrderModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
@@ -43,6 +44,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
             })
             .catch((error) => {
                 console.error('There was an error creating the new row!', error);
+                toast.error('There was an error creating the new row!');
             });
     };
 

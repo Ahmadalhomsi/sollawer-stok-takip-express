@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Box, TextField, Button, Typography, List, ListItem, Link } from '@mui/material';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
@@ -68,6 +69,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
             }));
         } catch (err) {
             console.error('Error uploading files', err);
+            toast.error('Error uploading files');
         }
     };
 
@@ -94,6 +96,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
             })
             .catch((error) => {
                 console.error('There was an error creating the new row!', error);
+                toast.error('There was an error creating the new row!');
             });
     };
 

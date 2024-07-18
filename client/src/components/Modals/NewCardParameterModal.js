@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 
 const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) => {
@@ -43,6 +44,8 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) =>
             })
             .catch((error) => {
                 console.error('There was an error creating the new row!', error);
+                toast.error('There was an error creating the new row!');
+
             });
     };
 
@@ -100,7 +103,7 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) =>
                         name="value"
                         onChange={handleChange}
                     />
-                    
+
                     <Box mt={2} display="flex" justifyContent="space-between">
                         <Button onClick={onClose} color="secondary">Cancel</Button>
                         <Button type="submit" variant="contained" color="primary">Create</Button>

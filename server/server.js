@@ -639,7 +639,6 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
             res.status(500).json({ message: `Error inserting data into database. Error: ${err.message}` });
         }
 
-
     }
 });
 
