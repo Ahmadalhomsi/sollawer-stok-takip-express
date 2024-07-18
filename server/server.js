@@ -262,7 +262,7 @@ app.get('/api/cardParameters', async (req, res) => { // Get all cards
 app.post('/api/cardParameters', async (req, res) => { // Endpoint to create a card
     try {
         const {
-            cardID,
+            UNID,
             parameterNO,
             parameter,
             value,
@@ -270,7 +270,7 @@ app.post('/api/cardParameters', async (req, res) => { // Endpoint to create a ca
 
         const newUser = await prisma.cardParameter.create({
             data: {
-                cardID: cardID.trim(),
+                UNID: UNID.trim(),
                 parameterNO: parameterNO.trim(),    // Remove extra spaces
                 parameter: parameter.trim(),
                 value: value.trim(),
@@ -288,7 +288,7 @@ app.put('/api/cardParameters/:id', async (req, res) => { // Updates without crea
 
     const {
         id,
-        cardID,
+        UNID,
         parameterNO,
         parameter,
         value,
@@ -300,7 +300,7 @@ app.put('/api/cardParameters/:id', async (req, res) => { // Updates without crea
                 id: parseInt(id),
             },
             data: {
-                cardID: cardID.trim(),
+                UNID: UNID.trim(),
                 parameterNO: parameterNO.trim(),    // Remove extra spaces
                 parameter: parameter.trim(),
                 value: value.trim(),
@@ -344,7 +344,7 @@ app.get('/api/faultyCards', async (req, res) => { // Get all cards
 app.post('/api/faultyCards', async (req, res) => { // Endpoint to create a card
     try {
         const {
-            cardID,
+            UNID,
             servisDate,
             status,
             fault,
@@ -354,7 +354,7 @@ app.post('/api/faultyCards', async (req, res) => { // Endpoint to create a card
 
         const newUser = await prisma.faultyCard.create({
             data: {
-                cardID: cardID.trim(),
+                UNID: UNID.trim(),
                 servisDate: new Date(servisDate),    // Remove extra spaces
                 status: status.trim(),
                 fault: fault.trim(),
@@ -375,7 +375,7 @@ app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creatin
 
     const {
         id,
-        cardID,
+        UNID,
         servisDate,
         status,
         fault,
@@ -391,7 +391,7 @@ app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creatin
                 id: parseInt(id),
             },
             data: {
-                cardID: cardID.trim(),
+                UNID: UNID.trim(),
                 servisDate: new Date(servisDate),    // Remove extra spaces
                 status: status.trim(),
                 fault: fault.trim(),
@@ -577,7 +577,8 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
 
                 const valueCell = worksheet[XLSX.utils.encode_cell({ r: rowIndex, c: i + 2 })];
 
-                let cardID = Math.floor(i / 3) + ""; // assign a cardID based on the parameter set index
+                // let UNID = Math.floor(i / 3) + ""; // assign a UNID based on the parameter set index
+                let UNID = 0;
 
                 if (valueCell && valueCell.s) {
                     console.log("Cell Style Properties:", valueCell.s);
@@ -585,8 +586,8 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
                     if (valueCell.s && valueCell.s.fgColor && valueCell.s.fgColor.rgb) {
                         console.log("Entering color check...");
                         if (valueCell.s.fgColor.rgb === 'FFFF00') { // Yellow color
-                            cardID = value;
-                            console.log("cardID set to value due to color match: ", cardID);
+                            UNID = value + "";
+                            console.log("UNID set to value due to color match: ", UNID);
                         } else {
                             console.log("Color does not match. fgColor: ", valueCell.s.fgColor.rgb);
                         }
@@ -600,16 +601,19 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
                         "parameterNO: " + paramNo,
                         "parameter: " + parameter,
                         "value: " + value,
-                        "cardID: " + cardID
+                        "UNID: " + UNID
                     );
 
+                    // Create the data object conditionally
+                    const data = {
+                        parameterNO: paramNo,
+                        parameter: parameter,
+                        value: value,
+                        ...(UNID !== 0 && { UNID: UNID }) // Only include UNID if it is not zero
+                    };
+
                     await prisma.cardParameter.create({
-                        data: {
-                            parameterNO: paramNo,
-                            parameter: parameter,
-                            value: value,
-                            cardID: cardID,
-                        }
+                        data: data
                     });
                 }
             }

@@ -39,25 +39,32 @@ model OrderTracker {
 }
 
 model ControlCard {
-  id Int @id @default(autoincrement())
-
-  orderNumber  Int
+  id           Int      @id @default(autoincrement())
   UNID         String   @unique
+  orderNumber  Int // Equals to TrackerID or DSID
   revisionNO   String
   revisionDate DateTime
   manufacturer String
   isActive     Boolean
   depotShelfNo String
   projectNO    String
+
+  // Relation fields
+  cardParameters CardParameter[] @relation("ControlCardToCardParameters")
 }
 
 model CardParameter {
-  id Int @id @default(autoincrement())
-
-  cardID      String
+  id          Int     @id @default(autoincrement())
+  UNID        String? // UNID optional
   parameterNO String
   parameter   String
   value       String
+
+  // Relation fields
+  controlCard ControlCard? @relation("ControlCardToCardParameters", fields: [UNID], references: [UNID])
+
+  // Index to speed up queries on UNID
+  @@index([UNID])
 }
 
 model FaultyCard {
@@ -67,6 +74,6 @@ model FaultyCard {
   servisDate DateTime
   status     String
   fault      String
-  photoURL      String[]
+  photoURL   String[]
   projectNO  String
 }

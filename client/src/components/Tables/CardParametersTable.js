@@ -107,10 +107,10 @@ const CardParametersTable = () => {
             ) : params.value
         },
         {
-            field: 'cardID', headerName: 'Kart ID', width: 120, renderCell: (params) => params.row.id === editIdx ? (
+            field: 'UNID', headerName: 'UNID', width: 120, renderCell: (params) => params.row.id === editIdx ? (
                 <TextField
-                    name="cardID"
-                    value={editRow.cardID}
+                    name="UNID"
+                    value={editRow.UNID}
                     onChange={handleChange}
                 />
             ) : params.value
