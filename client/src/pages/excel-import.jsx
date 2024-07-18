@@ -54,8 +54,12 @@ const ExcelImport = () => {
             });
             toast.success('File uploaded successfully');
             fetchUploadedFiles(); // Refresh the list of uploaded files
-        } catch (err) {
-            toast.error('Error uploading file');
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                toast.error(error.response.data.message); // Display toast notification
+            } else {
+                console.error(error); // Log unexpected errors
+            }
         }
     };
 

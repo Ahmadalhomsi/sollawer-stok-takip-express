@@ -566,8 +566,17 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
     console.log(worksheetJson);
     console.log("END OF TOTAL");
 
+    // Defined outside the loop to pass them to the catch block
+    let isUNID = false;
+    let UNID = 0;
+
     try {
+
+
+
         for (let rowIndex = 1; rowIndex < worksheetJson.length; rowIndex++) {
+            isUNID = false;
+            UNID = 0;
             const row = worksheetJson[rowIndex];
 
             for (let i = 0; i < row.length; i += 3) { // process each set of 3 columns
@@ -578,7 +587,8 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
                 const valueCell = worksheet[XLSX.utils.encode_cell({ r: rowIndex, c: i + 2 })];
 
                 // let UNID = Math.floor(i / 3) + ""; // assign a UNID based on the parameter set index
-                let UNID = 0;
+
+
 
                 if (valueCell && valueCell.s) {
                     console.log("Cell Style Properties:", valueCell.s);
@@ -587,6 +597,7 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
                         console.log("Entering color check...");
                         if (valueCell.s.fgColor.rgb === 'FFFF00') { // Yellow color
                             UNID = value + "";
+                            isUNID = true;
                             console.log("UNID set to value due to color match: ", UNID);
                         } else {
                             console.log("Color does not match. fgColor: ", valueCell.s.fgColor.rgb);
@@ -621,8 +632,14 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
 
         res.status(200).send('File data inserted into database.');
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Error inserting data into database.');
+        if (isUNID) {
+            res.status(400).json({ message: `The provided UNID ${UNID} doesn\'t exist in the referenced table.` });
+        }
+        else {
+            res.status(500).json({ message: `Error inserting data into database. Error: ${err.message}` });
+        }
+
+
     }
 });
 

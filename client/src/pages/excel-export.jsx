@@ -14,24 +14,6 @@ const ExcelExport = () => {
         setSelectedFile(event.target.files[0]);
     };
 
-    const handleUpload = async () => {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        formData.append('sheetPage', sheetPage);
-
-        try {
-            const response = await axios.post('/uploadCardParameters', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            alert(response.data);
-        } catch (error) {
-            console.error(error);
-            alert('Error uploading file.');
-        }
-    };
-
     const handleExport = async () => {
         try {
             const response = await axios.get(`http://localhost:5000/exportData?table=${exportTable}`, {
