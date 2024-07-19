@@ -421,6 +421,10 @@ app.delete('/api/faultyCards/:id', async (req, res) => {
     }
 });
 
+
+//-------------------------------------------------------
+
+// Excel Import
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs-extra');
@@ -444,17 +448,6 @@ const storage = multer.diskStorage({
 
 // Initialize upload variable for multiple files
 const upload = multer({ storage: storage });
-
-// Upload route for multiple files
-app.post('/uploadMulti', upload.array('files', 10), (req, res) => { // allow up to 10 files
-    try {
-        const filePaths = req.files.map(file => file.path);
-        res.send({ message: 'Files uploaded successfully', filePaths });
-    } catch (error) {
-        res.status(400).send({ error: 'Error uploading files' });
-    }
-});
-
 const XLSX = require('xlsx');
 
 app.post('/api/upload', upload.single('file'), (req, res) => {
@@ -476,7 +469,6 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 
     res.json({ fileName });
 });
-
 
 app.post('/uploadControlCards', upload.single('file'), async (req, res) => { // xlsx file upload
 
@@ -683,8 +675,9 @@ app.delete('/deleteFile', async (req, res) => {
 });
 
 
+//-------------------------------------------------------
 
-
+// Excel Export
 app.get('/exportData', async (req, res) => {
     const { table } = req.query;
 
@@ -738,7 +731,106 @@ app.get('/exportData', async (req, res) => {
 });
 
 
+//-------------------------------------------------------
 
+// Customers Table
+app.get('/api/customers', async (req, res) => { // Get all 
+    try {
+        const orders = await prisma.controlCard.findMany();
+        res.json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/api/customers', async (req, res) => { // Endpoint to create a new customer
+    try {
+        const {
+            orderNumber,
+            UNID,
+            revisionNO,
+            revisionDate,
+            manufacturer,
+            isActive,
+            depotShelfNo,
+            projectNO,
+        } = req.body;
+
+        const newUser = await prisma.controlCard.create({
+            data: {
+                orderNumber: parseInt(orderNumber, 10),
+                UNID: UNID.trim(),
+                revisionNO: revisionNO.trim(),
+                revisionDate: new Date(revisionDate),          // Ensure proper Date conversion
+                manufacturer: manufacturer.trim(),
+                isActive: Boolean(isActive),
+                depotShelfNo: depotShelfNo.trim(),
+                projectNO: projectNO.trim(),
+            }
+        });
+
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
+    }
+});
+
+app.put('/api/customers/:id', async (req, res) => { // Updates without creating new 
+
+    const {
+        id,
+        orderNumber,
+        UNID,
+        revisionNO,
+        revisionDate,
+        manufacturer,
+        isActive,
+        depotShelfNo,
+        projectNO,
+    } = req.body;
+
+    try {
+        const user = await prisma.controlCard.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                parameterNO: parameterNO.trim(),    // Remove extra spaces
+                parameter: parameter.trim(),
+                value: value.trim(),
+                orderNumber: parseInt(orderNumber, 10),
+                UNID: UNID.trim(),
+                revisionNO: revisionNO.trim(),
+                revisionDate: new Date(revisionDate),          // Ensure proper Date conversion
+                manufacturer: manufacturer.trim(),
+                isActive: Boolean(isActive),
+                depotShelfNo: depotShelfNo.trim(),
+                projectNO: projectNO.trim(),
+            }
+        });
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.delete('/api/customers/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await prisma.controlCard.delete({
+            where: {
+                id: parseInt(id),
+            },
+        });
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 
 

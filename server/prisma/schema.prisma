@@ -38,6 +38,34 @@ model OrderTracker {
   longitude Float // Boylam
 }
 
+model Customer {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  companyName String
+  email       String?
+  phone       String?
+
+  // Relation fields
+  projects Project[] @relation("CustomerToProject")
+}
+
+model Project {
+  id          Int     @id @default(autoincrement())
+  projectNO   String  @unique
+  projectName String
+  tableCount  Int
+  projectLink String?
+  city        String
+  latitude    Float
+  longitude   Float
+
+  // Relation fields
+  customerName String?
+  customer     Customer? @relation("CustomerToProject", fields: [customerName], references: [name])
+
+  controlCards ControlCard[] @relation("ProjectToControlCards")
+}
+
 model ControlCard {
   id           Int      @id @default(autoincrement())
   UNID         String   @unique
@@ -51,6 +79,7 @@ model ControlCard {
 
   // Relation fields
   cardParameters CardParameter[] @relation("ControlCardToCardParameters")
+  project        Project?         @relation("ProjectToControlCards", fields: [projectNO], references: [projectNO])
 }
 
 model CardParameter {

@@ -15,7 +15,7 @@ const CardParametersTable = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [unidSearchModalOpen, setUNIDSearchModalOpen] = useState(false);
     const [selectedUNID, setSelectedUNID] = useState(null);
-    const [showLabel, setShowLabel] = useState(false);
+    const [isCartSelected, setShowLabel] = useState(false);
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/cardParameters')
@@ -172,7 +172,7 @@ const CardParametersTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
-            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+            <Button disabled={!isCartSelected} onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
                 Yeni Kart Prametre Ekle
             </Button>
 
@@ -182,10 +182,10 @@ const CardParametersTable = () => {
                 onClick={() => setUNIDSearchModalOpen(true)}
                 style={{ marginBottom: 16, marginLeft: 35 }}
             >
-                UNID ile kart ekle
+                UNID ile kart seç
             </Button>
 
-            {showLabel && (
+            {isCartSelected && (
                 <Box sx={{ marginBottom: 2 }}>
                     <strong>Selected UNID: {selectedUNID}</strong>
                 </Box>
