@@ -736,7 +736,7 @@ app.get('/exportData', async (req, res) => {
 // Customers Table
 app.get('/api/customers', async (req, res) => { // Get all 
     try {
-        const orders = await prisma.controlCard.findMany();
+        const orders = await prisma.customer.findMany();
         res.json(orders);
     } catch (error) {
         console.error(error);
@@ -747,26 +747,18 @@ app.get('/api/customers', async (req, res) => { // Get all
 app.post('/api/customers', async (req, res) => { // Endpoint to create a new customer
     try {
         const {
-            orderNumber,
-            UNID,
-            revisionNO,
-            revisionDate,
-            manufacturer,
-            isActive,
-            depotShelfNo,
-            projectNO,
+            name,
+            companyName,
+            email,
+            phone,
         } = req.body;
 
-        const newUser = await prisma.controlCard.create({
+        const newUser = await prisma.customer.create({
             data: {
-                orderNumber: parseInt(orderNumber, 10),
-                UNID: UNID.trim(),
-                revisionNO: revisionNO.trim(),
-                revisionDate: new Date(revisionDate),          // Ensure proper Date conversion
-                manufacturer: manufacturer.trim(),
-                isActive: Boolean(isActive),
-                depotShelfNo: depotShelfNo.trim(),
-                projectNO: projectNO.trim(),
+                name: name.trim(),  // Remove extra spaces
+                companyName: companyName.trim(),
+                email: email.trim(),
+                phone: phone.trim(),
             }
         });
 
@@ -781,33 +773,22 @@ app.put('/api/customers/:id', async (req, res) => { // Updates without creating 
 
     const {
         id,
-        orderNumber,
-        UNID,
-        revisionNO,
-        revisionDate,
-        manufacturer,
-        isActive,
-        depotShelfNo,
-        projectNO,
+        name,
+        companyName,
+        email,
+        phone,
     } = req.body;
 
     try {
-        const user = await prisma.controlCard.update({
+        const user = await prisma.customer.update({
             where: {
                 id: parseInt(id),
             },
             data: {
-                parameterNO: parameterNO.trim(),    // Remove extra spaces
-                parameter: parameter.trim(),
-                value: value.trim(),
-                orderNumber: parseInt(orderNumber, 10),
-                UNID: UNID.trim(),
-                revisionNO: revisionNO.trim(),
-                revisionDate: new Date(revisionDate),          // Ensure proper Date conversion
-                manufacturer: manufacturer.trim(),
-                isActive: Boolean(isActive),
-                depotShelfNo: depotShelfNo.trim(),
-                projectNO: projectNO.trim(),
+                name: name.trim(),  // Remove extra spaces
+                companyName: companyName.trim(),
+                email: email.trim(),
+                phone: phone.trim(),
             }
         });
         res.json(user);
@@ -820,7 +801,102 @@ app.put('/api/customers/:id', async (req, res) => { // Updates without creating 
 app.delete('/api/customers/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        await prisma.controlCard.delete({
+        await prisma.customer.delete({
+            where: {
+                id: parseInt(id),
+            },
+        });
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+//-------------------------------------------------------
+
+// Projects Table
+app.get('/api/projects', async (req, res) => { // Get all cards
+    try {
+        const orders = await prisma.project.findMany();
+        res.json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/api/controlCards', async (req, res) => { // Endpoint to create a card
+    try {
+        const {  
+            projectNO,
+            tableCount,
+            projectLink,
+            city,
+            latitude,
+            longitude,
+            customerName,
+        } = req.body;
+
+        const newUser = await prisma.project.create({
+            data: {   
+                projectNO: projectNO.trim(),
+                tableCount: UNID.trim(),
+                projectLink: projectLink.trim(),
+                city: city.trim,         
+                latitude: parseFloat(latitude),   
+                longitude: parseFloat(longitude),
+                customerName: customerName.trim(),
+            }
+        });
+
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
+    }
+});
+
+app.put('/api/projects/:id', async (req, res) => { // Updates without creating new 
+
+    const {
+        id,
+        projectNO,
+        tableCount,
+        projectLink,
+        city,
+        latitude,
+        longitude,
+        customerName,
+    } = req.body;
+
+    try {
+        const user = await prisma.project.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                projectNO: projectNO.trim(),
+                tableCount: UNID.trim(),
+                projectLink: projectLink.trim(),
+                city: city.trim,         
+                latitude: parseFloat(latitude),   
+                longitude: parseFloat(longitude),
+                customerName: customerName.trim(),
+            }
+        });
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.delete('/api/projects/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await prisma.project.delete({
             where: {
                 id: parseInt(id),
             },
@@ -835,6 +911,11 @@ app.delete('/api/customers/:id', async (req, res) => {
 
 
 
+
+
+
+
+//-------------------------------------------------------
 
 
 // Start the server

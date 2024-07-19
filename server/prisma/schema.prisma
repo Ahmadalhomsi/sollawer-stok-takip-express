@@ -52,7 +52,6 @@ model Customer {
 model Project {
   id          Int     @id @default(autoincrement())
   projectNO   String  @unique
-  projectName String
   tableCount  Int
   projectLink String?
   city        String
@@ -75,7 +74,7 @@ model ControlCard {
   manufacturer String
   isActive     Boolean
   depotShelfNo String
-  projectNO    String
+  projectNO    String?
 
   // Relation fields
   cardParameters CardParameter[] @relation("ControlCardToCardParameters")
