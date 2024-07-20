@@ -110,33 +110,6 @@ const CardTable = () => {
         />
       ) : params.value
     },
-    // {
-    //   field: 'parameterNO', headerName: 'Parametre NO', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-    //     <TextField
-    //       name="parameterNO"
-    //       value={editRow.parameterNO}
-    //       onChange={handleChange}
-    //     />
-    //   ) : params.value
-    // },
-    // {
-    //   field: 'parameter', headerName: 'Parametre', width: 110, renderCell: (params) => params.row.id === editIdx ? (
-    //     <TextField
-    //       name="parameter"
-    //       value={editRow.parameter}
-    //       onChange={handleChange}
-    //     />
-    //   ) : params.value
-    // },
-    // {
-    //   field: 'value', headerName: 'Değer', width: 80, renderCell: (params) => params.row.id === editIdx ? (
-    //     <TextField
-    //       name="value"
-    //       value={editRow.value}
-    //       onChange={handleChange}
-    //     />
-    //   ) : params.value
-    // },
     {
       field: 'orderNumber', headerName: 'Sıra NO', width: 70, renderCell: (params) => params.row.id === editIdx ? (
         <TextField

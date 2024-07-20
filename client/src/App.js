@@ -8,6 +8,8 @@ import OrdersPage from './pages/order (Main)';
 import FaultyCardPage from './pages/faulty-card';
 import ExcelImport from './pages/excel-import';
 import ExcelExport from './pages/excel-export';
+import CustomerPage from './pages/customer';
+import ProjectPage from './pages/project';
 
 
 
@@ -24,6 +26,8 @@ export default function App() {
                 <Route path='/faultyCard' element={<FaultyCardPage />} />
                 <Route path='/excelImport' element={<ExcelImport />} />
                 <Route path='/excelExport' element={<ExcelExport />} />
+                <Route path='/customer' element={<CustomerPage />} />
+                <Route path='/project' element={<ProjectPage />} />
 
             </Routes>
 

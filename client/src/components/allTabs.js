@@ -5,5 +5,7 @@ export const allTabs = [
     { label: 'Arızalı Kart İşlemleri', path: '/faultyCard' },
     { label: 'Excel Import', path: '/excelImport' },
     { label: 'Excel Export', path: '/excelExport' },
+    { label: 'Müşteri İşlemleri', path: '/customer' },
+    { label: 'Proje İşlemleri', path: '/project' },
     // Add more tabs as needed
 ];
