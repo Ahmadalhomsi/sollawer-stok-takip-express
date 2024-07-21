@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors')
-const { addDays, isValid } = require('date-fns');
+const { addDays, isValid, parse } = require('date-fns');
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -827,9 +827,9 @@ app.get('/api/projects', async (req, res) => { // Get all cards
     }
 });
 
-app.post('/api/controlCards', async (req, res) => { // Endpoint to create a card
+app.post('/api/projects', async (req, res) => { // Endpoint to create a card
     try {
-        const {  
+        const {
             projectNO,
             tableCount,
             projectLink,
@@ -840,12 +840,12 @@ app.post('/api/controlCards', async (req, res) => { // Endpoint to create a card
         } = req.body;
 
         const newUser = await prisma.project.create({
-            data: {   
+            data: {
                 projectNO: projectNO.trim(),
-                tableCount: UNID.trim(),
+                tableCount: parseInt(tableCount, 10),
                 projectLink: projectLink.trim(),
-                city: city.trim,         
-                latitude: parseFloat(latitude),   
+                city: city.trim(),
+                latitude: parseFloat(latitude),
                 longitude: parseFloat(longitude),
                 customerName: customerName.trim(),
             }
@@ -878,10 +878,10 @@ app.put('/api/projects/:id', async (req, res) => { // Updates without creating n
             },
             data: {
                 projectNO: projectNO.trim(),
-                tableCount: UNID.trim(),
+                tableCount: parseInt(tableCount, 10),
                 projectLink: projectLink.trim(),
-                city: city.trim,         
-                latitude: parseFloat(latitude),   
+                city: city.trim(),
+                latitude: parseFloat(latitude),
                 longitude: parseFloat(longitude),
                 customerName: customerName.trim(),
             }

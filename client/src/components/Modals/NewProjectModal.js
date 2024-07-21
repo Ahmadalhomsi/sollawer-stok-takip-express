@@ -3,12 +3,15 @@ import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel }
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const NewCustomerModal = ({ open, onClose, onRowCreated }) => {
+const NewProjectModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
-        name: '',
-        companyName: '',
-        email: '',
-        phone: '',
+        projectNO: '',
+        tableCount: 0,
+        projectLink: '',
+        city: '',
+        manufacturer: '',
+        latitude: 0,
+        longitude: 0,
     });
 
     const handleChange = (e) => {
@@ -25,7 +28,7 @@ const NewCustomerModal = ({ open, onClose, onRowCreated }) => {
         console.log("Created Row:");
         console.log(newRow);
         // Send the new row data to the backend
-        axios.post('http://localhost:5000/api/customers', newRow)
+        axios.post('http://localhost:5000/api/projects', newRow)
             .then((response) => {
                 // If the request is successful, call the onRowCreated function to update the table
                 onRowCreated(response.data);
@@ -59,37 +62,55 @@ const NewCustomerModal = ({ open, onClose, onRowCreated }) => {
                 maxHeight: 'calc(100vh - 100px)', /* Set max height (adjust as needed) */
             }}>
                 <Typography id="modal-modal-title" variant="h6" component="h2" mb={2}>
-                    Yeni Müşteri Oluştur
+                    Yeni Proje Oluştur
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Müşteri İsmi"
-                        name="name"
+                        label="Project NO"
+                        name="projectNO"
                         onChange={handleChange}
                     />
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Firma"
-                        name="companyName"
+                        type='number'
+                        label="Masa sayısı"
+                        name="tableCount"
                         onChange={handleChange}
                     />
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Email"
-                        name="email"
+                        label="Proje Linki"
+                        name="projectLink"
                         onChange={handleChange}
                     />
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Telefon Numarası"
-                        name="phone"
+                        label="Şehir"
+                        name="city"
                         onChange={handleChange}
                     />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        type='number'
+                        label="Enlem"
+                        name="latitude"
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        type='number'
+                        label="Boylam"
+                        name="longitude"
+                        onChange={handleChange}
+                    />
+
                     <Box mt={2} display="flex" justifyContent="space-between">
                         <Button onClick={onClose} color="secondary">Cancel</Button>
                         <Button type="submit" variant="contained" color="primary">Create</Button>
@@ -100,4 +121,4 @@ const NewCustomerModal = ({ open, onClose, onRowCreated }) => {
     );
 };
 
-export default NewCustomerModal;
+export default NewProjectModal;

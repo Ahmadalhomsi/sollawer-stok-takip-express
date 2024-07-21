@@ -1,8 +1,9 @@
 import React from 'react'
 import RedirectButton from "../components/RedirectButton";
-import CardTable from "../components/Tables/CardTable";
+
 import TabNavigation from '../components/TabNavigation';
 import { allTabs } from '../components/allTabs';
+import ProjectTable from '../components/Tables/ProjectTable';
 
 
 const ProjectPage = () => {
@@ -14,7 +15,7 @@ const ProjectPage = () => {
 
             <TabNavigation tabs={allTabs} />
             <h1>Proje Islemleri</h1>
-            <CardTable />
+            <ProjectTable />
 
         </div>
     )
