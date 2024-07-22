@@ -16,11 +16,21 @@ const CardParametersTable = () => {
     const [unidSearchModalOpen, setUNIDSearchModalOpen] = useState(false);
     const [selectedUNID, setSelectedUNID] = useState(null);
     const [isCartSelected, setShowLabel] = useState(false);
+    const [unidFilter, setUnidFilter] = useState('');
 
     useEffect(() => {
+        fetchData();
+    }, [unidFilter]);
+
+    const fetchData = () => {
+        setLoading(true);
         axios.get('http://localhost:5000/api/cardParameters')
             .then((response) => {
-                setRows(response.data);
+                let filteredRows = response.data;
+                if (unidFilter) {
+                    filteredRows = filteredRows.filter(row => row.UNID.includes(unidFilter));
+                }
+                setRows(filteredRows);
                 setLoading(false);
             })
             .catch((error) => {
@@ -28,7 +38,7 @@ const CardParametersTable = () => {
                 console.error('There was an error fetching the data!', error);
                 setLoading(false);
             });
-    }, []);
+    };
 
     const handleEdit = (params) => {
         setEditIdx(params.id);
@@ -90,11 +100,14 @@ const CardParametersTable = () => {
         setSelectedUNID(null); // Clear the selected UNID
     };
 
-
     const handleUNIDSelect = (selectedUNID, selectedCardName) => {
         setSelectedUNID(selectedUNID);
         setShowLabel(true);
         setUNIDSearchModalOpen(false); // Close the modal after selecting
+    };
+
+    const handleFilterChange = (event) => {
+        setUnidFilter(event.target.value);
     };
 
     const columns = [
@@ -172,6 +185,14 @@ const CardParametersTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
+            <TextField
+                label="UNID Filter"
+                value={unidFilter}
+                onChange={handleFilterChange}
+                variant="outlined"
+                size='small'
+                style={{ marginBottom: 16, marginRight: 35, marginLeft: 10 }}
+            />
             <Button disabled={!isCartSelected} onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
                 Yeni Kart Prametre Ekle
             </Button>
