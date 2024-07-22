@@ -78,7 +78,7 @@ model ControlCard {
 
   // Relation fields
   cardParameters CardParameter[] @relation("ControlCardToCardParameters")
-  project        Project?         @relation("ProjectToControlCards", fields: [projectNO], references: [projectNO])
+  project        Project?        @relation("ProjectToControlCards", fields: [projectNO], references: [projectNO])
 }
 
 model CardParameter {
@@ -91,6 +91,7 @@ model CardParameter {
   // Relation fields
   controlCard ControlCard? @relation("ControlCardToCardParameters", fields: [UNID], references: [UNID])
 
+  @@unique([UNID, parameter])
   // Index to speed up queries on UNID
   @@index([UNID])
 }

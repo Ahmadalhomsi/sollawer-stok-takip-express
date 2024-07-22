@@ -561,10 +561,9 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
     // Defined outside the loop to pass them to the catch block
     let isUNID = false;
     let UNID = 0;
+    let columnsUNID = [];
 
     try {
-
-
 
         for (let rowIndex = 1; rowIndex < worksheetJson.length; rowIndex++) {
             isUNID = false;
@@ -590,6 +589,8 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
                         if (valueCell.s.fgColor.rgb === 'FFFF00') { // Yellow color
                             UNID = value + "";
                             isUNID = true;
+                            columnsUNID.push(UNID);
+                            console.log("Columns Group: " + (i / 3));
                             console.log("UNID set to value due to color match: ", UNID);
                         } else {
                             console.log("Color does not match. fgColor: ", valueCell.s.fgColor.rgb);
@@ -600,30 +601,42 @@ app.post('/uploadCardParameters', upload.single('file'), async (req, res) => {
                 }
 
                 if (paramNo || parameter || value) { // ensure at least one value is present
+                    const currentUNID = columnsUNID[Math.floor(i / 3)];
+
                     console.log(
                         "parameterNO: " + paramNo,
                         "parameter: " + parameter,
                         "value: " + value,
-                        "UNID: " + UNID
+                        "UNID: " + currentUNID
                     );
 
-                    // Create the data object conditionally
-                    const data = {
-                        parameterNO: paramNo,
-                        parameter: parameter,
-                        value: value,
-                        ...(UNID !== 0 && { UNID: UNID }) // Only include UNID if it is not zero
-                    };
-
-                    await prisma.cardParameter.create({
-                        data: data
+                    // Upsert to update if exists or create if not
+                    await prisma.cardParameter.upsert({
+                        where: {
+                            UNID_parameter: {
+                                UNID: currentUNID,
+                                parameter: parameter
+                            }
+                        },
+                        update: {
+                            parameterNO: paramNo,
+                            value: value
+                        },
+                        create: {
+                            parameterNO: paramNo,
+                            parameter: parameter,
+                            value: value,
+                            UNID: currentUNID
+                        }
                     });
+
                 }
             }
         }
 
         res.status(200).send('File data inserted into database.');
     } catch (err) {
+        console.log(err);
         if (isUNID) {
             res.status(400).json({ message: `The provided UNID ${UNID} doesn\'t exist in the referenced table.` });
         }
