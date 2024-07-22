@@ -171,6 +171,15 @@ const ProjectTable = () => {
             ) : params.value
         },
         {
+            field: 'customerName', headerName: 'Müşteri Adı', width: 140, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    name="customerName"
+                    value={editRow.customerName}
+                    onChange={handleChange}
+                />
+            ) : params.value
+        },
+        {
             field: 'actions',
             headerName: 'Actions',
             width: 164,

@@ -210,9 +210,6 @@ app.put('/api/controlCards/:id', async (req, res) => { // Updates without creati
                 id: parseInt(id),
             },
             data: {
-                parameterNO: parameterNO.trim(),    // Remove extra spaces
-                parameter: parameter.trim(),
-                value: value.trim(),
                 orderNumber: parseInt(orderNumber, 10),
                 UNID: UNID.trim(),
                 revisionNO: revisionNO.trim(),
