@@ -518,7 +518,7 @@ app.post('/uploadControlCards', upload.single('file'), async (req, res) => { // 
                     manufacturer: row['Üretici'].trim(),
                     isActive: Boolean(row['Aktif/Pasif']),
                     depotShelfNo: row['Depor Raf No'].trim(),
-                    projectNO: row['Proje No']?.trim() || "",
+                    ...(row['Proje No']?.trim() ? { projectNO: row['Proje No'].trim() } : {})
                 }
             });
 
