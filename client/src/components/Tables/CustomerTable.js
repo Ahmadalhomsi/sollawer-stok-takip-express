@@ -177,7 +177,7 @@ const CustomerTable = () => {
     return (
         <Box sx={{ height: 600, width: '100%' }}>
             <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
-                Yeni Müşteri Ekle
+                YENİ MÜŞTERİ EKLE
             </Button>
             <DataGrid
                 rows={rows}

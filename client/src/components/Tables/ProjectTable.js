@@ -211,7 +211,7 @@ const ProjectTable = () => {
     return (
         <Box sx={{ height: 600, width: '100%' }}>
             <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
-                Yeni Proje Ekle
+                YENİ PROJE EKLE
             </Button>
             <DataGrid
                 rows={rows}

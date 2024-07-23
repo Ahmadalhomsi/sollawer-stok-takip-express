@@ -292,7 +292,7 @@ const OrderTrackerTable = () => {
   return (
     <Box sx={{ height: 600, width: '100%' }}>
       <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
-        Yeni Sipariş Ekle
+        YENİ SİPARİŞ EKLE
       </Button>
       <DataGrid
         rows={rows}

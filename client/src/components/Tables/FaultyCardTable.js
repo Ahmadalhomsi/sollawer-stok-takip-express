@@ -281,7 +281,9 @@ const FaultyCardsTable = () => {
     return (
         <div>
             <Box m={2}>
-                <Button onClick={handleModalOpen} variant="contained" color="primary">Add New Faulty Card</Button>
+                <Button onClick={handleModalOpen} variant="contained" color="primary">
+                    YENİ ARIZALI KART EKLE
+                    </Button>
             </Box>
 
             <NewFaultyCardModal

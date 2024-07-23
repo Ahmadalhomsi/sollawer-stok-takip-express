@@ -6,7 +6,9 @@ import React from 'react';
 
 import { ERPallTabs } from '../../components/ERP/ERPallTabs';
 import TabNavigation from '../../components/TabNavigation';
-import OrderTrackerTable from '../../components/Tables/OrderTrackerTable';
+
+import StockTable from '../../components/Tables/ERP/StockTable';
+
 
 
 const ERPstockPage = () => {
@@ -14,8 +16,8 @@ const ERPstockPage = () => {
     return (
         <div>
             <TabNavigation tabs={ERPallTabs} />
-            <h1>ERP Stock</h1>
-            <OrderTrackerTable />
+            <h1>Stok İşlemleri</h1>
+            <StockTable />
 
         </div>
     );

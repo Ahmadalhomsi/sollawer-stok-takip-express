@@ -107,3 +107,20 @@ model FaultyCard {
   projectNO  String
 }
 
+
+  // actuator      String
+  // powerSupply    String
+  // keyboard
+  // screen
+
+
+model Stock {
+  id           Int      @id @default(autoincrement())
+  stockNO      String   @unique
+  stockType    String?
+  stockStatus  String?
+  stockCount   Int
+  stockPrice   Float
+  stockComment String?
+
+}

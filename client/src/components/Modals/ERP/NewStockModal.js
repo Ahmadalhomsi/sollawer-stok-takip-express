@@ -3,22 +3,14 @@ import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel }
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const NewOrderModal = ({ open, onClose, onRowCreated }) => {
+const NewStockModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
-        orderDate: '',
-        shipmentDate: '',
-        shipmentStatus: false,
-        invoiceStatus: false,
-        invoiceNO: '',
-        projectNO: '',
-        projectName: '',
-        tableCount: 0,
-        projectLink: '',
-        company: '',
-        investorName: '',
-        city: '',
-        latitude: 0,
-        longitude: 0,
+        stockNO: '',
+        stockType: '',
+        stockStatus: '',
+        stockCount: 0,
+        stockPrice: 0,
+        stockComment: '',
     });
 
     const handleChange = (e) => {
@@ -35,7 +27,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
         console.log("Created Row:");
         console.log(newRow);
         // Send the new row data to the backend
-        axios.post('http://localhost:5000/api/orders', newRow)
+        axios.post('http://localhost:5000/api/erp/stocks', newRow)
             .then((response) => {
                 // If the request is successful, call the onRowCreated function to update the table
                 onRowCreated(response.data);
@@ -69,112 +61,53 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                 maxHeight: 'calc(100vh - 100px)', /* Set max height (adjust as needed) */
             }}>
                 <Typography id="modal-modal-title" variant="h6" component="h2" mb={2}>
-                    Yeni Sipariş Oluştur
+                    Yeni Stok Oluştur
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Order Date"
-                        type="datetime-local"
-                        name="orderDate"
-                        onChange={handleChange}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Shipment Date"
-                        type="datetime-local"
-                        name="shipmentDate"
-                        onChange={handleChange}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                    <FormControlLabel
-                        control={<Checkbox name="shipmentStatus" checked={newRow.shipmentStatus} onChange={handleChange} />}
-                        label="Shipment Status"
-                    />
-                    <FormControlLabel
-                        control={<Checkbox name="invoiceStatus" checked={newRow.invoiceStatus} onChange={handleChange} />}
-                        label="Invoice Status"
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Invoice No"
-                        name="invoiceNO"
+                        label="Stok NO"
+                        name="stockNO"
                         onChange={handleChange}
                     />
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Project No"
-                        name="projectNO"
+                        label="Stok Tipi"
+                        name="stockType"
                         onChange={handleChange}
                     />
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Project Name"
-                        name="projectName"
+                        label="Stok Durumu"
+                        name="stockStatus"
                         onChange={handleChange}
                     />
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Table Count"
-                        name="tableCount"
+                        label="Stok Sayısı"
+                        name="stockCount"
                         type="number"
                         onChange={handleChange}
                     />
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Project Link"
-                        name="projectLink"
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Company"
-                        name="company"
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Investor Name"
-                        name="investorName"
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="City"
-                        name="city"
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Latitude"
-                        name="latitude"
+                        label="Stok Fiyatı"
+                        name="stockPrice"
                         type="number"
                         inputProps={{ step: "any" }} // Allow any step for float numbers
                         onChange={handleChange}
                     />
+
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Longitude"
-                        name="longitude"
-                        type="number"
-                        inputProps={{ step: "any" }} // Allow any step for float numbers
+                        label="Ek Bilgi"
+                        name="stockComment"
                         onChange={handleChange}
                     />
                     <Box mt={2} display="flex" justifyContent="space-between">
@@ -187,4 +120,4 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
     );
 };
 
-export default NewOrderModal;
+export default NewStockModal;

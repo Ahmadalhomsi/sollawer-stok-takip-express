@@ -100,6 +100,7 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         type='number'
                         label="Enlem"
                         name="latitude"
+                        inputProps={{ step: "any" }} // Allow any step for float numbers
                         onChange={handleChange}
                     />
                     <TextField
@@ -108,6 +109,7 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         type='number'
                         label="Boylam"
                         name="longitude"
+                        inputProps={{ step: "any" }} // Allow any step for float numbers
                         onChange={handleChange}
                     />
 

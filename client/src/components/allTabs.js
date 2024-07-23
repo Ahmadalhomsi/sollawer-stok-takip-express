@@ -1,12 +1,12 @@
 export const allTabs = [
-    { label: 'ERP Kısmı', path: '/erp/stock', sx: { color: '#1976d2' } },
-    { label: 'Siparişler', path: '/' },
-    { label: 'Müşteri İşlemleri', path: '/customer' },
-    { label: 'Proje İşlemleri', path: '/project' },
-    { label: 'Kart İşlemleri', path: '/card' },
-    { label: 'Kart Parametre İşlemleri', path: '/cardParameter' },
-    { label: 'Arızalı Kart İşlemleri', path: '/faultyCard' },
-    { label: 'Excel Import', path: '/excelImport' },
-    { label: 'Excel Export', path: '/excelExport' },
+    { label: 'ERP KISMI', path: '/erp/stock', sx: { color: '#1976d2', fontWeight: 'bold' } },
+    { label: 'SİPARİŞLER', path: '/' },
+    { label: 'MÜŞTERİ İŞLEMLERİ', path: '/customer' },
+    { label: 'PROJE İŞLERMLERİ', path: '/project' },
+    { label: 'KART İŞLERMLERİ', path: '/card' },
+    { label: 'KART PARAMETRESİ İŞLERMLERİ', path: '/cardParameter' },
+    { label: 'ARIZALI KART İŞLERMLERİ', path: '/faultyCard' },
+    { label: 'EXCEL IMPORT', path: '/excelImport' },
+    { label: 'EXCEL EXPORT', path: '/excelExport' },
     // Add more tabs as needed
 ];

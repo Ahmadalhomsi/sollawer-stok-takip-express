@@ -194,7 +194,7 @@ const CardParametersTable = () => {
                 style={{ marginBottom: 16, marginRight: 35, marginLeft: 10 }}
             />
             <Button disabled={!isCartSelected} onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
-                Yeni Kart Prametre Ekle
+                YENİ KART PARAMETRESİ EKLE
             </Button>
 
             <Button
@@ -203,7 +203,7 @@ const CardParametersTable = () => {
                 onClick={() => setUNIDSearchModalOpen(true)}
                 style={{ marginBottom: 16, marginLeft: 35 }}
             >
-                UNID ile kart seç
+                UNID İLE KART SEÇ
             </Button>
 
             {isCartSelected && (
