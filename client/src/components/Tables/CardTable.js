@@ -1,15 +1,10 @@
-// src/EditableTable.js
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, Checkbox, Button, Link, Box, IconButton } from '@mui/material';
+import { TextField, Checkbox, Button, Box, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-
-
-// import NewCardModal from './NewCardModal';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import NewCardModal from '../Modals/NewCardModal';
-
 
 const CardTable = () => {
   const [rows, setRows] = useState([]);
@@ -17,7 +12,8 @@ const CardTable = () => {
   const [editRow, setEditRow] = useState({});
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setModalOpen] = useState(false);
-
+  const [unidFilter, setUnidFilter] = useState('');
+  const [projectNoFilter, setProjectNoFilter] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/controlCards')
@@ -26,7 +22,7 @@ const CardTable = () => {
         setLoading(false);
       })
       .catch((error) => {
-        toast.error(error.message)
+        toast.error(error.message);
         console.error('There was an error fetching the data!', error);
         setLoading(false);
       });
@@ -38,18 +34,15 @@ const CardTable = () => {
   };
 
   const handleSave = async () => {
-    // Convert necessary fields to the appropriate types
     const dataToUpdate = {
       ...editRow,
-      orderNumber: parseInt(editRow.orderNumber, 10),   // Convert tableCount to Integer
-      revisionDate: new Date(editRow.revisionDate).toISOString(),  // Ensure proper Date conversion
+      orderNumber: parseInt(editRow.orderNumber, 10),
+      revisionDate: new Date(editRow.revisionDate).toISOString(),
     };
 
     try {
-      // Await the Axios PUT request
       const response = await axios.put(`http://localhost:5000/api/controlCards/${editIdx}`, dataToUpdate);
 
-      // Update rows state only if the request is successful
       if (response.status === 200) {
         const updatedRows = rows.map((row) => (row.id === editIdx ? dataToUpdate : row));
         setRows(updatedRows);
@@ -61,7 +54,6 @@ const CardTable = () => {
       console.error('Error updating row:', error);
     }
   };
-
 
   const handleCancel = () => {
     setEditIdx(-1);
@@ -76,8 +68,6 @@ const CardTable = () => {
     }
   };
 
-
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setEditRow((prev) => ({
@@ -85,7 +75,6 @@ const CardTable = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
   };
-
 
   const handleModalOpen = () => {
     setModalOpen(true);
@@ -99,14 +88,25 @@ const CardTable = () => {
     setRows((prevRows) => [...prevRows, newRow]);
   };
 
-  const columns = [
+  const handleUnidFilterChange = (e) => {
+    setUnidFilter(e.target.value);
+  };
 
+  const handleProjectNoFilterChange = (e) => {
+    setProjectNoFilter(e.target.value);
+  };
+
+  const filteredRows = rows.filter((row) =>
+    row.UNID?.toLowerCase().includes(unidFilter.toLowerCase()) &&
+    row.projectNO?.toLowerCase().includes(projectNoFilter.toLowerCase())
+  );
+
+  const columns = [
     {
       field: 'id', headerName: 'ID', width: 10, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
           name="id"
           value={editRow.id}
-          // onChange={handleChange}
         />
       ) : params.value
     },
@@ -120,7 +120,6 @@ const CardTable = () => {
         />
       ) : params.value
     },
-
     {
       field: 'UNID', headerName: 'UNID', width: 100, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
@@ -156,7 +155,6 @@ const CardTable = () => {
         />
       ) : new Date(params.value).toLocaleString()
     },
-
     {
       field: 'manufacturer', headerName: 'Üretici', width: 100, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
@@ -221,22 +219,38 @@ const CardTable = () => {
     }
   ];
 
-
   return (
     <Box sx={{ height: 600, width: '100%' }}>
+      <TextField
+        label="UNID Filter"
+        variant="outlined"
+        value={unidFilter}
+        onChange={handleUnidFilterChange}
+        size='small'
+        style={{ marginBottom: 16, marginRight: 25, marginLeft: 10 }}
+      />
+      <TextField
+        label="Proje NO Filter"
+        variant="outlined"
+        value={projectNoFilter}
+        onChange={handleProjectNoFilterChange}
+        size='small'
+        style={{ marginBottom: 16, marginRight: 35}}
+      />
+
       <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
         Yeni Kontrol Kartı Ekle
       </Button>
+
+
       <DataGrid
-        rows={rows}
+        rows={filteredRows}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[5, 10, 20]}
-        // checkboxSelection
         disableSelectionOnClick
         loading={loading}
         getRowId={(row) => row.id}
-
       />
       <NewCardModal
         open={isModalOpen}

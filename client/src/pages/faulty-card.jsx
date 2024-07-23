@@ -1,5 +1,4 @@
 import React from 'react'
-import RedirectButton from "../components/RedirectButton";
 import FaultyCardsTable from "../components/Tables/FaultyCardTable";
 import TabNavigation from '../components/TabNavigation';
 import { allTabs } from '../components/allTabs';
