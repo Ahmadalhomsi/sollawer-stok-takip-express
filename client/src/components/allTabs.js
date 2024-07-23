@@ -1,5 +1,5 @@
 export const allTabs = [
-    { label: 'ERP Kısmı', path: '/erp/stock', sx: { color: 'red' } },
+    { label: 'ERP Kısmı', path: '/erp/stock', sx: { color: '#1976d2' } },
     { label: 'Siparişler', path: '/' },
     { label: 'Müşteri İşlemleri', path: '/customer' },
     { label: 'Proje İşlemleri', path: '/project' },

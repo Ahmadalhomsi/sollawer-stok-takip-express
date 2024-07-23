@@ -17,16 +17,22 @@ const TabNavigation = ({ tabs }) => {
       value={location.pathname}
       onChange={handleChange}
       aria-label="navigation tabs"
+      sx={{
+        '& .MuiTabs-indicator': {
+          backgroundColor: '#ffd800', // Change tab indicator color
+        },
+
+      }}
     >
       {tabs.map((tab) => (
         <Tab key={tab.path} label={tab.label} value={tab.path}
         sx={{
           ...tab.sx, // Apply custom sx if provided
           '&.Mui-selected': {
-            color: tab.sx?.['&.Mui-selected']?.color || '#ffd800', // Change selected tab text color, // Change selected tab text color
+            color: tab.sx?.['&.Mui-selected']?.color || '#E7C503', // Change selected tab text color, // Change selected tab text color
           },
           '&:hover': {
-            color: tab.sx?.['&:hover']?.color || "#B3B304", // Change text color on hover
+            color: tab.sx?.['&:hover']?.color || "#ACA001", // Change text color on hover
           },
         }}
         />
