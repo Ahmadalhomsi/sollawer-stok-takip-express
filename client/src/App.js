@@ -10,6 +10,7 @@ import ExcelImport from './pages/excel-import';
 import ExcelExport from './pages/excel-export';
 import CustomerPage from './pages/customer';
 import ProjectPage from './pages/project';
+import ERPstockPage from './pages/ERP/stock';
 
 
 
@@ -28,6 +29,8 @@ export default function App() {
                 <Route path='/excelExport' element={<ExcelExport />} />
                 <Route path='/customer' element={<CustomerPage />} />
                 <Route path='/project' element={<ProjectPage />} />
+
+                <Route path='/erp/stock' element={<ERPstockPage />} />
 
             </Routes>
 
