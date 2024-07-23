@@ -5,12 +5,17 @@ import toast from 'react-hot-toast';
 
 const NewStockModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
-        stockNO: '',
-        stockType: '',
-        stockStatus: '',
-        stockCount: 0,
-        stockPrice: 0,
-        stockComment: '',
+        stockName: '',
+        quantity: 0,
+        duration: '',
+        requested: 0,
+        inStock: 0,
+        boxQuantity: 0,
+        need: 0,
+        cost: 0,
+        deliveryDate: '',
+        company: '',
+        description: '',
     });
 
     const handleChange = (e) => {
@@ -67,47 +72,85 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Stok NO"
-                        name="stockNO"
+                        label="Parça Adı"
+                        name="stockName"
                         onChange={handleChange}
                     />
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Stok Tipi"
-                        name="stockType"
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Stok Durumu"
-                        name="stockStatus"
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Stok Sayısı"
-                        name="stockCount"
+                        label="Adet"
+                        name="quantity"
                         type="number"
                         onChange={handleChange}
                     />
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Stok Fiyatı"
-                        name="stockPrice"
+                        label="Süre"
+                        name="duration"
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Talep Edilen"
+                        name="requested"
+                        type="number"
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Stokta"
+                        name="inStock"
+                        type="number"
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Kutu Adet"
+                        name="boxQuantity"
+                        type="number"
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="İhtiyaç"
+                        name="need"
+                        type="number"
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Maliyet"
+                        name="cost"
                         type="number"
                         inputProps={{ step: "any" }} // Allow any step for float numbers
                         onChange={handleChange}
                     />
-
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Ek Bilgi"
-                        name="stockComment"
+                        label="Teslim Süresi"
+                        name="deliveryDate"
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Firma"
+                        name="company"
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Açıklama"
+                        name="description"
                         onChange={handleChange}
                     />
                     <Box mt={2} display="flex" justifyContent="space-between">

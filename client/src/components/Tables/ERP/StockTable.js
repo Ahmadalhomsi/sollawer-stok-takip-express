@@ -39,8 +39,13 @@ const StockTable = () => {
     // Convert necessary fields to the appropriate types
     const dataToUpdate = {
       ...editRow,
-      stockCount: parseInt(editRow.stockCount, 10),   // Convert tableCount to Integer
-      stockPrice: parseFloat(editRow.stockPrice),     // Convert tablePrice to
+      quantity: parseInt(editRow.quantity, 10),   // Convert tableCount to Integer
+      requested: parseInt(editRow.requested, 10), // Convert requested to Integer
+      inStock: parseInt(editRow.inStock, 10),     // Convert inStock to Integer
+      boxQuantity: parseInt(editRow.boxQuantity, 10), // Convert boxQuantity to Integer
+      need: parseInt(editRow.need, 10),           // Convert need to Integer
+      cost: parseFloat(editRow.cost),             // Convert cost to Float
+
     };
 
     try {
@@ -103,63 +108,111 @@ const StockTable = () => {
         <TextField
           name="id"
           value={editRow.id}
-          // onChange={handleChange}
+        // onChange={handleChange}
         />
       ) : params.value
     },
     {
-      field: 'stockNO', headerName: 'Stok NO', width: 120, renderCell: (params) => params.row.id === editIdx ? (
+      field: 'stockName', headerName: 'Parça Adı', width: 240, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
-          name="stockNO"
-          value={editRow.stockNO}
+          name="stockName"
+          value={editRow.stockName}
           onChange={handleChange}
         />
       ) : params.value
     },
     {
-      field: 'stockType', headerName: 'Stok Tipi', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="stockType"
-          value={editRow.stockType}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-
-    {
-      field: 'stockStatus', headerName: 'Durum', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="stockStatus"
-          value={editRow.stockStatus}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'stockCount', headerName: 'Stok Sayısı', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+      field: 'quantity', headerName: 'Adet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
           type="number"
-          name="stockCount"
-          value={editRow.stockCount}
+          name="quantity"
+          value={editRow.quantity}
           onChange={handleChange}
         />
       ) : params.value
     },
     {
-      field: 'stockPrice', headerName: 'Stok Fiyatı', width: 80, renderCell: (params) => params.row.id === editIdx ? (
+      field: 'duration', headerName: 'Süre', width: 120, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="duration"
+          value={editRow.duration}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'requested', headerName: 'Talep Edilen', width: 100, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
           type="number"
-          name="stockPrice"
-          value={editRow.stockPrice}
+          name="requested"
+          value={editRow.requested}
           onChange={handleChange}
         />
       ) : params.value
     },
     {
-      field: 'stockComment', headerName: 'Ek Bilgi', width: 150, renderCell: (params) => params.row.id === editIdx ? (
+      field: 'inStock', headerName: 'Stokta', width: 100, renderCell: (params) => params.row.id === editIdx ? (
         <TextField
-          name="stockComment"
-          value={editRow.stockComment}
+          type="number"
+          name="inStock"
+          value={editRow.inStock}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'boxQuantity', headerName: 'Kutu Adet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          type="number"
+          name="boxQuantity"
+          value={editRow.boxQuantity}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'need', headerName: 'İhtiyaç', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          type="number"
+          name="need"
+          value={editRow.need}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'cost', headerName: 'Maliyet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          type="number"
+          name="cost"
+          value={editRow.cost}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'deliveryDate', headerName: 'Teslim Süresi', width: 120, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="deliveryDate"
+          value={editRow.deliveryDate}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'company', headerName: 'Firma', width: 140, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="company"
+          value={editRow.company}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'description', headerName: 'Açıklama', width: 150, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          name="description"
+          value={editRow.description}
           onChange={handleChange}
         />
       ) : params.value

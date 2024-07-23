@@ -945,22 +945,33 @@ app.get('/api/erp/stocks', async (req, res) => { // Get all cards
 app.post('/api/erp/stocks', async (req, res) => { // Endpoint to create a card
     try {
         const {
-            stockNO,
-            stockType,
-            stockStatus,
-            stockCount,
-            stockPrice,
-            stockComment,
+            stockName,
+            quantity,
+            duration,
+            requested,
+            inStock,
+            boxQuantity,
+            need,
+            cost,
+            deliveryDate,
+            company,
+            description,
+
         } = req.body;
 
         const newUser = await prisma.stock.create({
             data: {
-                stockNO: stockNO.trim(),
-                stockType: stockType.trim(),
-                stockStatus: stockStatus.trim(),
-                stockCount: parseInt(stockCount),
-                stockPrice: parseFloat(stockPrice),
-                stockComment: stockComment.trim(),
+                stockName: stockName.trim(),
+                quantity: parseInt(quantity),
+                duration: duration.trim(),
+                requested: parseInt(requested),
+                inStock: parseInt(inStock),
+                boxQuantity: parseInt(boxQuantity),
+                need: parseInt(need),
+                cost: parseFloat(cost),
+                deliveryDate: deliveryDate.trim(),
+                company: company.trim(),
+                description: description.trim(),
             }
         });
 
@@ -975,12 +986,17 @@ app.put('/api/erp/stocks/:id', async (req, res) => { // Updates without creating
 
     const {
         id,
-        stockNO,
-        stockType,
-        stockStatus,
-        stockCount,
-        stockPrice,
-        stockComment,
+        stockName,
+        quantity,
+        duration,
+        requested,
+        inStock,
+        boxQuantity,
+        need,
+        cost,
+        deliveryDate,
+        company,
+        description,
     } = req.body;
 
     try {
@@ -989,12 +1005,17 @@ app.put('/api/erp/stocks/:id', async (req, res) => { // Updates without creating
                 id: parseInt(id),
             },
             data: {
-                stockNO: stockNO.trim(),
-                stockType: stockType.trim(),
-                stockStatus: stockStatus.trim(),
-                stockCount: parseInt(stockCount),
-                stockPrice: parseFloat(stockPrice),
-                stockComment: stockComment.trim(),
+                stockName: stockName.trim(),
+                quantity: parseInt(quantity),
+                duration: duration.trim(),
+                requested: parseInt(requested),
+                inStock: parseInt(inStock),
+                boxQuantity: parseInt(boxQuantity),
+                need: parseInt(need),
+                cost: parseFloat(cost),
+                deliveryDate: deliveryDate.trim(),
+                company: company.trim(),
+                description: description.trim(),
             }
         });
         res.json(user);

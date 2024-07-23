@@ -116,11 +116,16 @@ model FaultyCard {
 
 model Stock {
   id           Int      @id @default(autoincrement())
-  stockNO      String   @unique
-  stockType    String?
-  stockStatus  String?
-  stockCount   Int
-  stockPrice   Float
-  stockComment String?
-
+  stockName      String   @unique
+  quantity   Int
+  duration    String?
+  requested  Int?
+  inStock    Int?
+  boxQuantity Int?
+  need       Int?
+  
+  cost   Float?
+  deliveryDate String?
+  company      String?
+  description String?
 }
