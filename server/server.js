@@ -956,6 +956,7 @@ app.post('/api/erp/stocks', async (req, res) => { // Endpoint to create a card
             deliveryDate,
             company,
             description,
+            photoURL
 
         } = req.body;
 
@@ -972,6 +973,7 @@ app.post('/api/erp/stocks', async (req, res) => { // Endpoint to create a card
                 deliveryDate: deliveryDate.trim(),
                 company: company.trim(),
                 description: description.trim(),
+                photoURL: photoURL,
             }
         });
 
@@ -997,7 +999,11 @@ app.put('/api/erp/stocks/:id', async (req, res) => { // Updates without creating
         deliveryDate,
         company,
         description,
+        photoURL
     } = req.body;
+
+    const photoURLArray = Array.isArray(photoURL) ? photoURL : [photoURL]; // Convert photoURL to an array
+
 
     try {
         const user = await prisma.stock.update({
@@ -1016,6 +1022,7 @@ app.put('/api/erp/stocks/:id', async (req, res) => { // Updates without creating
                 deliveryDate: deliveryDate.trim(),
                 company: company.trim(),
                 description: description.trim(),
+                photoURL: photoURLArray,
             }
         });
         res.json(user);

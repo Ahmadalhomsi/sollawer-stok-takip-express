@@ -128,4 +128,5 @@ model Stock {
   deliveryDate String?
   company      String?
   description String?
+  photoURL   String[]
 }
