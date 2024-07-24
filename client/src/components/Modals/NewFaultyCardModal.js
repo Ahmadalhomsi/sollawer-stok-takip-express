@@ -45,31 +45,29 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
     const handleFileUpload = async (files) => {
         if (files.length === 0) return;
 
-        const formData = new FormData();
-        Array.from(files).forEach(file => {
-            formData.append('files', file);
-        });
+        for (const file of files) {
+            const formData = new FormData();
+            formData.append('file', file); 
 
-        try {
-            const res = await axios.post('http://localhost:5000/uploadMulti', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+            try {
+                const res = await axios.post('http://localhost:5000/api/upload', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
 
-            // Extract filenames from paths
-            const filenames = res.data.filePaths.map(filePath => {
-                return filePath.split('/').pop(); // Get the filename from the path
-            });
+                // Extract filename from response
+                const { fileName } = res.data;
 
-            // Update photoURL state with filenames
-            setNewRow((prev) => ({
-                ...prev,
-                photoURL: [...prev.photoURL, ...filenames]
-            }));
-        } catch (err) {
-            console.error('Error uploading files', err);
-            toast.error('Error uploading files');
+                // Update photoURL state with filenames
+                setNewRow((prev) => ({
+                    ...prev,
+                    photoURL: [...prev.photoURL, fileName]
+                }));
+            } catch (err) {
+                console.error('Error uploading files', err);
+                toast.error('Error uploading files');
+            }
         }
     };
 

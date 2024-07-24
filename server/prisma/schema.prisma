@@ -107,26 +107,37 @@ model FaultyCard {
   projectNO  String
 }
 
-
-  // actuator      String
-  // powerSupply    String
-  // keyboard
-  // screen
-
+// actuator      String
+// powerSupply    String
+// keyboard
+// screen
 
 model Stock {
-  id           Int      @id @default(autoincrement())
-  stockName      String   @unique
-  quantity   Int
-  duration    String?
-  requested  Int?
-  inStock    Int?
-  boxQuantity Int?
-  need       Int?
-  
-  cost   Float?
+  id        Int     @id @default(autoincrement())
+  stockName String  @unique
+  stockType String
+  quantity  Int
+  duration  String?
+  // requested   Int?
+  inStock   Int?
+  // boxQuantity Int?
+  // need        Int?
+
+  cost         Float?
   deliveryDate String?
   company      String?
-  description String?
-  photoURL   String[]
+  description  String?
+  photoURL     String[]
+}
+
+model StockMovement {
+  id           Int      @id @default(autoincrement())
+  stockName    String
+  movementType String
+  quantity     Int
+  movement     String?
+  boxQuantity  Int?
+  need         Int?
+  date         DateTime?
+  description  String?
 }

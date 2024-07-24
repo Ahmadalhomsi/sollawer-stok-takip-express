@@ -170,109 +170,118 @@ const StockTable = () => {
             ) : params.value
         },
         {
-          field: 'stockName', headerName: 'Parça Adı', width: 240, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-              name="stockName"
-              value={editRow.stockName}
-              onChange={handleChange}
-            />
-          ) : params.value
+            field: 'stockName', headerName: 'Parça Adı', width: 240, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    name="stockName"
+                    value={editRow.stockName}
+                    onChange={handleChange}
+                />
+            ) : params.value
         },
         {
-          field: 'quantity', headerName: 'Adet', width: 80, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-              type="number"
-              name="quantity"
-              value={editRow.quantity}
-              onChange={handleChange}
-            />
-          ) : params.value
+            field: 'stockType', headerName: 'Stok Tipi', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    name="stockType"
+                    value={editRow.stockType}
+                    onChange={handleChange}
+                />
+            ) : params.value
         },
         {
-          field: 'duration', headerName: 'Süre', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-              name="duration"
-              value={editRow.duration}
-              onChange={handleChange}
-            />
-          ) : params.value
+            field: 'quantity', headerName: 'Adet', width: 80, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    type="number"
+                    name="quantity"
+                    value={editRow.quantity}
+                    onChange={handleChange}
+                />
+            ) : params.value
         },
         {
-          field: 'requested', headerName: 'Talep Edilen', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-              type="number"
-              name="requested"
-              value={editRow.requested}
-              onChange={handleChange}
-            />
-          ) : params.value
+            field: 'duration', headerName: 'Süre', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    name="duration"
+                    value={editRow.duration}
+                    onChange={handleChange}
+                />
+            ) : params.value
+        },
+        // {
+        //   field: 'requested', headerName: 'Talep Edilen', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+        //     <TextField
+        //       type="number"
+        //       name="requested"
+        //       value={editRow.requested}
+        //       onChange={handleChange}
+        //     />
+        //   ) : params.value
+        // },
+        {
+            field: 'inStock', headerName: 'Stokta', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    type="number"
+                    name="inStock"
+                    value={editRow.inStock}
+                    onChange={handleChange}
+                />
+            ) : params.value
+        },
+        // {
+        //   field: 'boxQuantity', headerName: 'Kutu Adet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+        //     <TextField
+        //       type="number"
+        //       name="boxQuantity"
+        //       value={editRow.boxQuantity}
+        //       onChange={handleChange}
+        //     />
+        //   ) : params.value
+        // },
+        // {
+        //   field: 'need', headerName: 'İhtiyaç', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+        //     <TextField
+        //       type="number"
+        //       name="need"
+        //       value={editRow.need}
+        //       onChange={handleChange}
+        //     />
+        //   ) : params.value
+        // },
+        {
+            field: 'cost', headerName: 'Maliyet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    type="number"
+                    name="cost"
+                    value={editRow.cost}
+                    onChange={handleChange}
+                />
+            ) : params.value
         },
         {
-          field: 'inStock', headerName: 'Stokta', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-              type="number"
-              name="inStock"
-              value={editRow.inStock}
-              onChange={handleChange}
-            />
-          ) : params.value
+            field: 'deliveryDate', headerName: 'Teslim Süresi', width: 120, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    name="deliveryDate"
+                    value={editRow.deliveryDate}
+                    onChange={handleChange}
+                />
+            ) : params.value
         },
         {
-          field: 'boxQuantity', headerName: 'Kutu Adet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-              type="number"
-              name="boxQuantity"
-              value={editRow.boxQuantity}
-              onChange={handleChange}
-            />
-          ) : params.value
+            field: 'company', headerName: 'Firma', width: 140, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    name="company"
+                    value={editRow.company}
+                    onChange={handleChange}
+                />
+            ) : params.value
         },
         {
-          field: 'need', headerName: 'İhtiyaç', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-              type="number"
-              name="need"
-              value={editRow.need}
-              onChange={handleChange}
-            />
-          ) : params.value
-        },
-        {
-          field: 'cost', headerName: 'Maliyet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-              type="number"
-              name="cost"
-              value={editRow.cost}
-              onChange={handleChange}
-            />
-          ) : params.value
-        },
-        {
-          field: 'deliveryDate', headerName: 'Teslim Süresi', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-              name="deliveryDate"
-              value={editRow.deliveryDate}
-              onChange={handleChange}
-            />
-          ) : params.value
-        },
-        {
-          field: 'company', headerName: 'Firma', width: 140, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-              name="company"
-              value={editRow.company}
-              onChange={handleChange}
-            />
-          ) : params.value
-        },
-        {
-          field: 'description', headerName: 'Açıklama', width: 180, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-              name="description"
-              value={editRow.description}
-              onChange={handleChange}
-            />
-          ) : params.value
+            field: 'description', headerName: 'Açıklama', width: 180, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    name="description"
+                    value={editRow.description}
+                    onChange={handleChange}
+                />
+            ) : params.value
         },
         {
             field: 'photoURL',
@@ -335,7 +344,7 @@ const StockTable = () => {
             <Box m={2}>
                 <Button onClick={handleModalOpen} variant="contained" color="primary">
                     YENİ ARIZALI KART EKLE
-                    </Button>
+                </Button>
             </Box>
 
             <NewStockModal
@@ -384,10 +393,10 @@ const StockTable = () => {
                             accept="image/*"
                         />
                     </Button>
-                    <Button onClick={handleURLSubmit} variant="contained" color="primary" style={{ marginLeft: '1rem', marginBottom: '1rem'}}>
+                    <Button onClick={handleURLSubmit} variant="contained" color="primary" style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
                         Upload
                     </Button>
-        
+
                     <Box>
                         {editRow.photoURL && editRow.photoURL.map((url, index) => (
                             <Box key={index} display="flex" alignItems="center">

@@ -932,6 +932,11 @@ app.delete('/api/projects/:id', async (req, res) => {
 // stockPrice   Float
 // stockComment String?
 
+// stockType String
+// requested   Int?
+// boxQuantity Int?
+// need        Int?
+
 app.get('/api/erp/stocks', async (req, res) => { // Get all cards
     try {
         const orders = await prisma.stock.findMany();
@@ -946,12 +951,10 @@ app.post('/api/erp/stocks', async (req, res) => { // Endpoint to create a card
     try {
         const {
             stockName,
+            stockType,
             quantity,
             duration,
-            requested,
             inStock,
-            boxQuantity,
-            need,
             cost,
             deliveryDate,
             company,
@@ -963,12 +966,10 @@ app.post('/api/erp/stocks', async (req, res) => { // Endpoint to create a card
         const newUser = await prisma.stock.create({
             data: {
                 stockName: stockName.trim(),
+                stockType: stockType.trim(),
                 quantity: parseInt(quantity),
                 duration: duration.trim(),
-                requested: parseInt(requested),
                 inStock: parseInt(inStock),
-                boxQuantity: parseInt(boxQuantity),
-                need: parseInt(need),
                 cost: parseFloat(cost),
                 deliveryDate: deliveryDate.trim(),
                 company: company.trim(),
@@ -989,12 +990,10 @@ app.put('/api/erp/stocks/:id', async (req, res) => { // Updates without creating
     const {
         id,
         stockName,
+        stockType,
         quantity,
         duration,
-        requested,
         inStock,
-        boxQuantity,
-        need,
         cost,
         deliveryDate,
         company,
@@ -1012,12 +1011,10 @@ app.put('/api/erp/stocks/:id', async (req, res) => { // Updates without creating
             },
             data: {
                 stockName: stockName.trim(),
+                stockType: stockType.trim(),
                 quantity: parseInt(quantity),
                 duration: duration.trim(),
-                requested: parseInt(requested),
                 inStock: parseInt(inStock),
-                boxQuantity: parseInt(boxQuantity),
-                need: parseInt(need),
                 cost: parseFloat(cost),
                 deliveryDate: deliveryDate.trim(),
                 company: company.trim(),
