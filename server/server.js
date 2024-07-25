@@ -1048,6 +1048,108 @@ app.delete('/api/erp/stocks/:id', async (req, res) => {
 
 //-------------------------------------------------------
 
+// ERP Stock Movement Table
+
+app.get('/api/erp/stockMovement', async (req, res) => { // Get all cards
+    try {
+        const orders = await prisma.stockMovement.findMany();
+        res.json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/api/erp/stockMovement', async (req, res) => { // Endpoint to create a card
+    try {
+        const {
+            stockName,
+            movementType,
+            quantity,
+            movement,
+            boxQuantity,
+            need,
+            date,
+            description,
+        } = req.body;
+
+        const newUser = await prisma.stockMovement.create({
+            data: {
+                stockName: stockName.trim(),
+                movementType: movementType.trim(),
+                quantity: parseInt(quantity),
+                movement: movement.trim(),
+                boxQuantity: parseInt(boxQuantity),
+                need: parseInt(need),
+                date: new Date(date),
+                description: description.trim(),
+
+            }
+        });
+
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
+    }
+});
+
+app.put('/api/erp/stockMovement/:id', async (req, res) => { // Updates without creating new 
+
+    const {
+        id,
+        stockName,
+        movementType,
+        quantity,
+        movement,
+        boxQuantity,
+        need,
+        date,
+        description,
+    } = req.body;
+
+
+    try {
+        const user = await prisma.stockMovement.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                stockName: stockName.trim(),
+                movementType: movementType.trim(),
+                quantity: parseInt(quantity),
+                movement: movement.trim(),
+                boxQuantity: parseInt(boxQuantity),
+                need: parseInt(need),
+                date: new Date(date),
+                description: description.trim(),
+            }
+        });
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.delete('/api/erp/stockMovement/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await prisma.stockMovement.delete({
+            where: {
+                id: parseInt(id),
+            },
+        });
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
+
 
 // Start the server
 app.listen(5000, () => {
