@@ -1060,7 +1060,11 @@ app.get('/api/erp/stockMovement', async (req, res) => { // Get all cards
     }
 });
 
-app.post('/api/erp/stockMovement', async (req, res) => { // Endpoint to create a card
+
+const { Prisma } = require('@prisma/client');
+
+
+app.post('/api/erp/stockMovement', async (req, res) => {
     try {
         const {
             stockName,
@@ -1083,13 +1087,18 @@ app.post('/api/erp/stockMovement', async (req, res) => { // Endpoint to create a
                 need: parseInt(need),
                 date: new Date(date),
                 description: description.trim(),
-
             }
         });
 
         res.status(201).json(newUser);
     } catch (error) {
-        console.error('Error creating user:', error);
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2003') { // Foreign key constraint violation code in Prisma
+                return res.status(400).json({ error: 'Foreign key constraint violation: the referenced key does not exist.' });
+            }
+        }
+
+        console.log('Error creating user:', error);
         res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });

@@ -28,6 +28,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
 
         console.log("Created Row:");
         console.log(newRow);
+
         // Send the new row data to the backend
         axios.post('http://localhost:5000/api/erp/stockMovement', newRow)
             .then((response) => {
@@ -38,7 +39,16 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
             })
             .catch((error) => {
                 console.error('There was an error creating the new row!', error);
-                toast.error('There was an error creating the new row!');
+                if (error.response && error.response.data && error.response.data.error) {
+                    // Check for specific foreign key constraint error
+                    if (error.response.data.error.includes('Foreign key constraint violation')) {
+                        toast.error('Foreign key constraint violation: the referenced key does not exist.');
+                    } else {
+                        toast.error(error.response.data.error);
+                    }
+                } else {
+                    toast.error('There was an error creating the new row!');
+                }
             });
     };
 

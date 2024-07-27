@@ -113,26 +113,23 @@ model FaultyCard {
 // screen
 
 model Stock {
-  id        Int     @id @default(autoincrement())
-  stockName String  @unique
-  stockType String
-  quantity  Int
-  duration  String?
-  // requested   Int?
-  inStock   Int?
-  // boxQuantity Int?
-  // need        Int?
-
+  id           Int             @id @default(autoincrement())
+  stockName    String          @unique
+  stockType    String
+  quantity     Int
+  duration     String?
+  inStock      Int?
   cost         Float?
   deliveryDate String?
   company      String?
   description  String?
   photoURL     String[]
+  movements    StockMovement[] // Relation to StockMovement
 }
 
 model StockMovement {
-  id           Int      @id @default(autoincrement())
-  stockName    String
+  id      Int @id @default(autoincrement())
+  stockName String // Foreign key field
   movementType String
   quantity     Int
   movement     String?
@@ -140,4 +137,6 @@ model StockMovement {
   need         Int?
   date         DateTime?
   description  String?
+  // Relation to Stock
+  stock Stock @relation(fields: [stockName], references: [stockName]) 
 }
