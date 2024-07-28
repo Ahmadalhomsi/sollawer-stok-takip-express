@@ -17,7 +17,7 @@ const StockMovementTable = () => {
 
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/erp/stockMovement')
+    axios.get('http://localhost:5000/api/erp/stockMovements')
       .then((response) => {
         setRows(response.data);
         setLoading(false);
@@ -39,6 +39,7 @@ const StockMovementTable = () => {
     const dataToUpdate = {
       ...editRow,
       quantity: parseInt(editRow.quantity),
+      requested: parseInt(editRow.requested),
       boxQuantity: parseInt(editRow.boxQuantity),
       need: parseInt(editRow.need),
       date: new Date(editRow.date).toISOString(),
@@ -46,7 +47,7 @@ const StockMovementTable = () => {
 
     try {
       // Await the Axios PUT request
-      const response = await axios.put(`http://localhost:5000/api/erp/stockMovement/${editIdx}`, dataToUpdate);
+      const response = await axios.put(`http://localhost:5000/api/erp/stockMovements/${editIdx}`, dataToUpdate);
 
       // Update rows state only if the request is successful
       if (response.status === 200) {
@@ -69,7 +70,7 @@ const StockMovementTable = () => {
   const handleDelete = (id) => {
     setRows(rows.filter((row) => row.id !== id));
     try {
-      axios.delete(`http://localhost:5000/api/erp/stockMovement/${id}`);
+      axios.delete(`http://localhost:5000/api/erp/stockMovements/${id}`);
     } catch (error) {
       console.log(error);
     }
@@ -133,6 +134,16 @@ const StockMovementTable = () => {
           type="number"
           name="quantity"
           value={editRow.quantity}
+          onChange={handleChange}
+        />
+      ) : params.value
+    },
+    {
+      field: 'requested', headerName: 'Talep Edilen', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+        <TextField
+          type="number"
+          name="requested"
+          value={editRow.requested}
           onChange={handleChange}
         />
       ) : params.value

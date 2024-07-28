@@ -14,7 +14,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
         duration: '',
         inStock: 0,
         cost: 0,
-        deliveryDate: '',
+        // deliveryDate: '',
         company: '',
         description: '',
         photoURL: [],
@@ -32,7 +32,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                 duration: '',
                 inStock: 0,
                 cost: 0,
-                deliveryDate: '',
+                // deliveryDate: '',
                 company: '',
                 description: '',
                 photoURL: [],
@@ -195,13 +195,13 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                         inputProps={{ step: "any" }} // Allow any step for float numbers
                         onChange={handleChange}
                     />
-                    <TextField
+                    {/* <TextField
                         fullWidth
                         margin="normal"
                         label="Teslim Süresi"
                         name="deliveryDate"
                         onChange={handleChange}
-                    />
+                    /> */}
                     <TextField
                         fullWidth
                         margin="normal"

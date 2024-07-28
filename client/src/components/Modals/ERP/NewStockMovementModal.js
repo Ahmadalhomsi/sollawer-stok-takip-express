@@ -8,6 +8,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
         stockName: '',
         movementType: '',
         quantity: 0,
+        requested: 0,
         movement: '',
         boxQuantity: 0,
         need: 0,
@@ -30,7 +31,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
         console.log(newRow);
 
         // Send the new row data to the backend
-        axios.post('http://localhost:5000/api/erp/stockMovement', newRow)
+        axios.post('http://localhost:5000/api/erp/stockMovements', newRow)
             .then((response) => {
                 // If the request is successful, call the onRowCreated function to update the table
                 onRowCreated(response.data);
@@ -95,6 +96,14 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                         margin="normal"
                         label="Adet"
                         name="quantity"
+                        type="number"
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Talep Edilen"
+                        name="requested"
                         type="number"
                         onChange={handleChange}
                     />

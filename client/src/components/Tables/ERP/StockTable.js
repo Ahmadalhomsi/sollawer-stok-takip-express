@@ -117,7 +117,7 @@ const StockTable = () => {
 
                 const photoName = response.data.fileName;
 
-                console.log("XXXXXXXXXX");
+                console.log("VVVVVVVVVV");
                 console.log(photoName);
 
                 const updatedPhotoURLs = [...editRow.photoURL, photoName];
@@ -256,15 +256,15 @@ const StockTable = () => {
                 />
             ) : params.value
         },
-        {
-            field: 'deliveryDate', headerName: 'Teslim Süresi', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="deliveryDate"
-                    value={editRow.deliveryDate}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
+        // {
+        //     field: 'deliveryDate', headerName: 'Teslim Süresi', width: 120, renderCell: (params) => params.row.id === editIdx ? (
+        //         <TextField
+        //             name="deliveryDate"
+        //             value={editRow.deliveryDate}
+        //             onChange={handleChange}
+        //         />
+        //     ) : params.value
+        // },
         {
             field: 'company', headerName: 'Firma', width: 140, renderCell: (params) => params.row.id === editIdx ? (
                 <TextField

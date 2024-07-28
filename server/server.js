@@ -956,7 +956,7 @@ app.post('/api/erp/stocks', async (req, res) => { // Endpoint to create a card
             duration,
             inStock,
             cost,
-            deliveryDate,
+            // deliveryDate,
             company,
             description,
             photoURL
@@ -971,7 +971,7 @@ app.post('/api/erp/stocks', async (req, res) => { // Endpoint to create a card
                 duration: duration.trim(),
                 inStock: parseInt(inStock),
                 cost: parseFloat(cost),
-                deliveryDate: deliveryDate.trim(),
+                // deliveryDate: deliveryDate.trim(),
                 company: company.trim(),
                 description: description.trim(),
                 photoURL: photoURL,
@@ -995,7 +995,7 @@ app.put('/api/erp/stocks/:id', async (req, res) => { // Updates without creating
         duration,
         inStock,
         cost,
-        deliveryDate,
+        // deliveryDate,
         company,
         description,
         photoURL
@@ -1016,7 +1016,7 @@ app.put('/api/erp/stocks/:id', async (req, res) => { // Updates without creating
                 duration: duration.trim(),
                 inStock: parseInt(inStock),
                 cost: parseFloat(cost),
-                deliveryDate: deliveryDate.trim(),
+                // deliveryDate: deliveryDate.trim(),
                 company: company.trim(),
                 description: description.trim(),
                 photoURL: photoURLArray,
@@ -1050,7 +1050,7 @@ app.delete('/api/erp/stocks/:id', async (req, res) => {
 
 // ERP Stock Movement Table
 
-app.get('/api/erp/stockMovement', async (req, res) => { // Get all cards
+app.get('/api/erp/stockMovements', async (req, res) => { // Get all cards
     try {
         const orders = await prisma.stockMovement.findMany();
         res.json(orders);
@@ -1064,12 +1064,13 @@ app.get('/api/erp/stockMovement', async (req, res) => { // Get all cards
 const { Prisma } = require('@prisma/client');
 
 
-app.post('/api/erp/stockMovement', async (req, res) => {
+app.post('/api/erp/stockMovements', async (req, res) => {
     try {
         const {
             stockName,
             movementType,
             quantity,
+            requested,
             movement,
             boxQuantity,
             need,
@@ -1082,6 +1083,7 @@ app.post('/api/erp/stockMovement', async (req, res) => {
                 stockName: stockName.trim(),
                 movementType: movementType.trim(),
                 quantity: parseInt(quantity),
+                requested: parseInt(requested),
                 movement: movement.trim(),
                 boxQuantity: parseInt(boxQuantity),
                 need: parseInt(need),
@@ -1103,13 +1105,14 @@ app.post('/api/erp/stockMovement', async (req, res) => {
     }
 });
 
-app.put('/api/erp/stockMovement/:id', async (req, res) => { // Updates without creating new 
+app.put('/api/erp/stockMovements/:id', async (req, res) => { // Updates without creating new 
 
     const {
         id,
         stockName,
         movementType,
         quantity,
+        requested,
         movement,
         boxQuantity,
         need,
@@ -1127,6 +1130,7 @@ app.put('/api/erp/stockMovement/:id', async (req, res) => { // Updates without c
                 stockName: stockName.trim(),
                 movementType: movementType.trim(),
                 quantity: parseInt(quantity),
+                requested: parseInt(requested),
                 movement: movement.trim(),
                 boxQuantity: parseInt(boxQuantity),
                 need: parseInt(need),
@@ -1141,7 +1145,7 @@ app.put('/api/erp/stockMovement/:id', async (req, res) => { // Updates without c
     }
 });
 
-app.delete('/api/erp/stockMovement/:id', async (req, res) => {
+app.delete('/api/erp/stockMovements/:id', async (req, res) => {
     const { id } = req.params;
     try {
         await prisma.stockMovement.delete({

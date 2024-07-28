@@ -120,7 +120,6 @@ model Stock {
   duration     String?
   inStock      Int?
   cost         Float?
-  deliveryDate String?
   company      String?
   description  String?
   photoURL     String[]
@@ -132,6 +131,7 @@ model StockMovement {
   stockName String // Foreign key field
   movementType String
   quantity     Int
+  requested   Int?
   movement     String?
   boxQuantity  Int?
   need         Int?
