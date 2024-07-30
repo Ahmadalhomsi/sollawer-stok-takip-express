@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import NewStockModal from '../../Modals/ERP/NewStockModal';
+import NewStockModal from '../Modals/NewStockModal';
 
 const StockTable = () => {
     const [rows, setRows] = useState([]);

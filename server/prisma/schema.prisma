@@ -113,30 +113,74 @@ model FaultyCard {
 // screen
 
 model Stock {
-  id           Int             @id @default(autoincrement())
-  stockName    String          @unique
-  stockType    String
-  quantity     Int
-  duration     String?
-  inStock      Int?
-  cost         Float?
-  company      String?
-  description  String?
-  photoURL     String[]
-  movements    StockMovement[] // Relation to StockMovement
+  id          Int             @id @default(autoincrement())
+  stockName   String          @unique
+  stockType   String
+  quantity    Int
+  duration    String?
+  inStock     Int?
+  cost        Float?
+  company     String?
+  description String?
+  photoURL    String[]
+  movements   StockMovement[] // Relation to StockMovement
+
+  BillOfProductItems BillOfProductItem[] // Relation to BillOfProductItem
 }
 
 model StockMovement {
-  id      Int @id @default(autoincrement())
-  stockName String // Foreign key field
+  id           Int       @id @default(autoincrement())
+  stockName    String // Foreign key field
   movementType String
   quantity     Int
-  requested   Int?
+  requested    Int?
   movement     String?
   boxQuantity  Int?
   need         Int?
   date         DateTime?
   description  String?
   // Relation to Stock
-  stock Stock @relation(fields: [stockName], references: [stockName]) 
+  stock        Stock     @relation(fields: [stockName], references: [stockName])
 }
+
+model BillOfProduct {
+  id          Int                 @id @default(autoincrement())
+  billName    String              @unique
+  billDate    DateTime
+  description String?
+  
+  items       BillOfProductItem[] // Relation to BillOfProductItem
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BillOfProductItem {
+  id Int @id @default(autoincrement())
+
+  quantity Int // Quantity of the stock required for the BillOfProduct
+
+  BillOfProductId Int
+  stockId         Int
+
+  // Relations
+  BillOfProduct BillOfProduct @relation(fields: [BillOfProductId], references: [id])
+  stock         Stock         @relation(fields: [stockId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([BillOfProductId, stockId])
+}
+
+// model ProductionOrder {
+//   id           Int       @id @default(autoincrement())
+//   orderNO      String
+//   orderDate    DateTime
+//   BillOfProduct  BillOfProduct @relation(fields: [BillOfProductId], references: [id])
+//   BillOfProductId Int
+//   quantity     Int
+
+//   createdAt    DateTime  @default(now())
+//   updatedAt    DateTime  @updatedAt
+// }

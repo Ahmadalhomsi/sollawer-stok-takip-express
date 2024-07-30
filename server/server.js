@@ -1060,10 +1060,7 @@ app.get('/api/erp/stockMovements', async (req, res) => { // Get all cards
     }
 });
 
-
 const { Prisma } = require('@prisma/client');
-
-
 app.post('/api/erp/stockMovements', async (req, res) => {
     try {
         const {
@@ -1160,6 +1157,111 @@ app.delete('/api/erp/stockMovements/:id', async (req, res) => {
     }
 });
 
+
+
+//-------------------------------------------------------
+
+// ERP Bill Of Product Table
+
+app.get('/api/erp/billsOfProduct', async (req, res) => { // Get all cards
+    try {
+        const orders = await prisma.billOfProduct.findMany({
+            include: {
+                items: true,
+            },
+        });
+        res.json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/api/erp/billsOfProduct', async (req, res) => { // Endpoint to create a card
+    const { billName, billDate, description, items } = req.body;
+    try {
+        const billOfProduct = await prisma.billOfProduct.create({
+            data: {
+                billName,
+                billDate: new Date(billDate),
+                description,
+                items: {
+                    create: items.map(item => ({
+                        stockId: parseInt(item.stockId),
+                        quantity: parseInt(item.quantity),
+                    })),
+                },
+            },
+            include: { items: true },
+        });
+        res.json(billOfProduct);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to create Bill of Product' });
+    }
+});
+
+app.put('/api/erp/billsOfProduct/:id', async (req, res) => { // Updates without creating new 
+
+    const {
+        billName,
+        billDate,
+        description
+    } = req.body;
+
+    const photoURLArray = Array.isArray(photoURL) ? photoURL : [photoURL]; // Convert photoURL to an array
+
+
+    try {
+        const user = await prisma.billOfProduct.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                billName: billName.trim(),
+                billDate: new Date(billDate),
+                description: description.trim(),
+            }
+        });
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.delete('/api/erp/billsOfProduct/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await prisma.billOfProduct.delete({
+            where: {
+                id: parseInt(id),
+            },
+        });
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+//-------------------------------------------------------
+
+// Fetch items for a Bill of Product
+app.get('api/erp/:billOfProductId/items', async (req, res) => {
+    const { billOfProductId } = req.params;
+    try {
+        const items = await prisma.billOfProductItem.findMany({
+            where: { billOfProductId: parseInt(billOfProductId) },
+            include: { stock: true },
+        });
+        res.json(items);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to fetch items' });
+    }
+});
 
 
 

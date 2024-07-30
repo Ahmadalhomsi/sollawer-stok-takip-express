@@ -6,8 +6,9 @@ import React from 'react';
 
 import { ERPallTabs } from '../../components/ERP/ERPallTabs';
 import TabNavigation from '../../components/TabNavigation';
+import StockTable from '../../components/ERP/Tables/StockTable';
 
-import StockTable from '../../components/Tables/ERP/StockTable';
+
 
 
 

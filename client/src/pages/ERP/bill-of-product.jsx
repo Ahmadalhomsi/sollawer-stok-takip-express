@@ -6,20 +6,25 @@ import React from 'react';
 
 import { ERPallTabs } from '../../components/ERP/ERPallTabs';
 import TabNavigation from '../../components/TabNavigation';
-import StockMovementTable from '../../components/ERP/Tables/StockMovementTable';
+
+import BillOfProductTable from '../../components/ERP/Tables/BillOfProductTable';
 
 
 
-const ERPstockMovementPage = () => {
+
+
+const ERPbillOfProductPage = () => {
 
     return (
         <div>
             <TabNavigation tabs={ERPallTabs} />
-            <h1>Stok Hareketleri İşlemleri</h1>
-            <StockMovementTable />
+
+                <h1>Urun Recetesi islemleri</h1>
+
+            <BillOfProductTable />
 
         </div>
     );
 };
 
-export default ERPstockMovementPage;
+export default ERPbillOfProductPage;

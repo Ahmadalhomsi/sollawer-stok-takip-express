@@ -5,7 +5,7 @@ import { TextField, Checkbox, Button, Link, Box, IconButton } from '@mui/materia
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import toast from "react-hot-toast";
-import NewStockMovementModal from '../../Modals/ERP/NewStockMovementModal';
+import NewStockMovementModal from '../../ERP/Modals/NewStockMovementModal';
 
 
 const StockMovementTable = () => {

@@ -13,6 +13,7 @@ import ProjectPage from './pages/project';
 import ERPstockPage from './pages/ERP/stock';
 import ERPstockMovementPage from './pages/ERP/stock-movement';
 import ERPanalyticsPage from './pages/ERP/analytics';
+import ERPbillOfProductPage from './pages/ERP/bill-of-product';
 
 
 
@@ -35,6 +36,7 @@ export default function App() {
                 {/* ERP Routes */}
                 <Route path='/erp/stock' element={<ERPstockPage />} />
                 <Route path='/erp/stockMovement' element={<ERPstockMovementPage />} />
+                <Route path='/erp/billOfProduct' element={<ERPbillOfProductPage />} />
                 <Route path='/erp/analytics' element={<ERPanalyticsPage />} />
 
             </Routes>
