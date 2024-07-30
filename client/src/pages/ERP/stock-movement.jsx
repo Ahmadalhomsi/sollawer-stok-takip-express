@@ -16,7 +16,7 @@ const ERPstockMovementPage = () => {
     return (
         <div>
             <TabNavigation tabs={ERPallTabs} />
-            <h1>Stok İşlemleri</h1>
+            <h1>Stok Hareketleri İşlemleri</h1>
             <StockMovementTable />
 
         </div>

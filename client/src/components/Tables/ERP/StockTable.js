@@ -340,10 +340,10 @@ const StockTable = () => {
     ];
 
     return (
-        <div>
+        <Box sx={{ height: 600, width: '100%' }}>
             <Box m={2}>
                 <Button onClick={handleModalOpen} variant="contained" color="primary">
-                    YENİ ARIZALI KART EKLE
+                    YENİ STOK EKLE
                 </Button>
             </Box>
 
@@ -353,15 +353,17 @@ const StockTable = () => {
                 onRowCreated={handleRowCreated}
             />
 
-            <Box m={2} style={{ height: 600, width: '100%' }}>
-                <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    loading={loading}
-                    pageSize={10}
-                    rowsPerPageOptions={[10, 25, 50]}
-                />
-            </Box>
+            <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={10}
+                rowsPerPageOptions={[5, 10, 20]}
+                // checkboxSelection
+                disableSelectionOnClick
+                loading={loading}
+                getRowId={(row) => row.id}
+
+            />
 
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Photo Preview</DialogTitle>
@@ -421,7 +423,7 @@ const StockTable = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </Box>
     );
 };
 

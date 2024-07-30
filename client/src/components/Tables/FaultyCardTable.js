@@ -279,11 +279,11 @@ const FaultyCardsTable = () => {
     ];
 
     return (
-        <div>
+        <Box sx={{ height: 600, width: '100%' }}>
             <Box m={2}>
                 <Button onClick={handleModalOpen} variant="contained" color="primary">
                     YENİ ARIZALI KART EKLE
-                    </Button>
+                </Button>
             </Box>
 
             <NewFaultyCardModal
@@ -292,15 +292,17 @@ const FaultyCardsTable = () => {
                 onRowCreated={handleRowCreated}
             />
 
-            <Box m={2} style={{ height: 600, width: '100%' }}>
-                <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    loading={loading}
-                    pageSize={10}
-                    rowsPerPageOptions={[10, 25, 50]}
-                />
-            </Box>
+            <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={10}
+                rowsPerPageOptions={[5, 10, 20]}
+                // checkboxSelection
+                disableSelectionOnClick
+                loading={loading}
+                getRowId={(row) => row.id}
+
+            />
 
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Photo Preview</DialogTitle>
@@ -332,10 +334,10 @@ const FaultyCardsTable = () => {
                             accept="image/*"
                         />
                     </Button>
-                    <Button onClick={handleURLSubmit} variant="contained" color="primary" style={{ marginLeft: '1rem', marginBottom: '1rem'}}>
+                    <Button onClick={handleURLSubmit} variant="contained" color="primary" style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
                         Upload
                     </Button>
-        
+
                     <Box>
                         {editRow.photoURL && editRow.photoURL.map((url, index) => (
                             <Box key={index} display="flex" alignItems="center">
@@ -360,7 +362,7 @@ const FaultyCardsTable = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </Box>
     );
 };
 
