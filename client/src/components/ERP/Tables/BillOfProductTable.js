@@ -1,11 +1,12 @@
 // src/EditableTable.js
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, Checkbox, Button, Link, Box, IconButton } from '@mui/material';
+import { TextField, Checkbox, Button, Link, Box, IconButton, Modal, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import toast from "react-hot-toast";
 import NewBillOfProductModal from '../Modals/NewBillOfProductModal';
+
 
 
 const BillOfProductTable = () => {
@@ -14,6 +15,52 @@ const BillOfProductTable = () => {
     const [editRow, setEditRow] = useState({});
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
+
+    // Modal state
+    const [isItemsModalOpen, setItemsModalOpen] = useState(false);
+    const [modalItems, setModalItems] = useState([]);
+
+    const ItemsModal = ({ open, onClose, items }) => {
+        return (
+            <Modal
+                open={open}
+                onClose={onClose}
+                aria-labelledby="items-modal-title"
+                aria-describedby="items-modal-description"
+            >
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 600, // Adjust width as needed
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
+                    p: 4, // Adjust padding as needed
+                    borderRadius: 2,
+                    overflow: 'auto', // Enable scrolling
+                    maxHeight: 'calc(100vh - 100px)', // Set max height (adjust as needed)
+                }}>
+                    <Typography id="items-modal-title" variant="h6" component="h2" mb={2}>
+                        Items
+                    </Typography>
+                    <ul>
+                        {items.map((item, index) => (
+                            <li key={index}>{`Stock Name: ${item.stock.stockName}, Quantity: ${item.quantity}`}</li>
+                        ))}
+                    </ul>
+                    <Button onClick={onClose} color="primary">Close</Button>
+                </Box>
+            </Modal>
+        );
+    };
+
+    const handleItemsClick = (items) => {
+        setModalItems(items);
+        setItemsModalOpen(true);
+    };
+
+
 
 
     useEffect(() => {
@@ -137,7 +184,7 @@ const BillOfProductTable = () => {
                 />
             ) : new Date(params.value).toLocaleString()
         },
-        
+
         {
             field: 'items',
             headerName: 'Stoklar',
@@ -161,15 +208,20 @@ const BillOfProductTable = () => {
                     // Convert the array of objects to a string
                     const itemsString = params.value.map(item => {
                         // Customize this part based on the structure of your item object
-                        return `Stock ID: ${item.stockId}, Quantity: ${item.quantity}`;
+                        return `Stock Name: ${item.stock.stockName}, Quantity: ${item.quantity}`;
                     }).join('; ');
-                    return itemsString;
+
+                    return (
+                        <Button onClick={() => handleItemsClick(params.value)}>
+                            {itemsString}
+                        </Button>
+                    );
                 }
 
                 return params.value;
             }
         },
-        
+
         {
             field: 'description', headerName: 'Ek Bilgi', width: 150, renderCell: (params) => params.row.id === editIdx ? (
                 <TextField
@@ -229,7 +281,16 @@ const BillOfProductTable = () => {
                 onClose={handleModalClose}
                 onRowCreated={handleRowCreated}
             />
+
+
+            <ItemsModal
+                open={isItemsModalOpen}
+                onClose={() => setItemsModalOpen(false)}
+                items={modalItems}
+            />
         </Box>
+
+
     );
 };
 

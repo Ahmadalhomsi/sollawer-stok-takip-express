@@ -1167,9 +1167,13 @@ app.get('/api/erp/billsOfProduct', async (req, res) => { // Get all cards
     try {
         const orders = await prisma.billOfProduct.findMany({
             include: {
-                items: true,
-            },
-        });
+              items: {
+                include: {
+                  stock: true
+                }
+              }
+            }
+          });
         res.json(orders);
     } catch (error) {
         console.error(error);
@@ -1248,20 +1252,20 @@ app.delete('/api/erp/billsOfProduct/:id', async (req, res) => {
 
 //-------------------------------------------------------
 
-// Fetch items for a Bill of Product
-app.get('api/erp/:billOfProductId/items', async (req, res) => {
-    const { billOfProductId } = req.params;
-    try {
-        const items = await prisma.billOfProductItem.findMany({
-            where: { billOfProductId: parseInt(billOfProductId) },
-            include: { stock: true },
-        });
-        res.json(items);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to fetch items' });
-    }
-});
+// // Fetch items for a Bill of Product
+// app.get('api/erp/:billOfProductId/items', async (req, res) => {
+//     const { billOfProductId } = req.params;
+//     try {
+//         const items = await prisma.billOfProductItem.findMany({
+//             where: { billOfProductId: parseInt(billOfProductId) },
+//             include: { stock: true },
+//         });
+//         res.json(items);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Failed to fetch items' });
+//     }
+// });
 
 
 
