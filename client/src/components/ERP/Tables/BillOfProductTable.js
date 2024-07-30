@@ -46,7 +46,12 @@ const BillOfProductTable = () => {
                     </Typography>
                     <ul>
                         {items.map((item, index) => (
-                            <li key={index}>{`Stock Name: ${item.stock.stockName}, Quantity: ${item.quantity}`}</li>
+                            <li key={index}>
+                                Stock Name: {item.stock.stockName} <br />
+                                Quantity: {item.quantity} <br />
+                                Cost: ${item.stock.cost}  <br />
+                                ----
+                            </li>
                         ))}
                     </ul>
                     <Button onClick={onClose} color="primary">Close</Button>
@@ -147,6 +152,8 @@ const BillOfProductTable = () => {
         setRows((prevRows) => [...prevRows, newRow]);
     };
 
+
+
     const columns = [
         {
             field: 'id', headerName: 'ID', width: 10, renderCell: (params) => params.row.id === editIdx ? (
@@ -188,7 +195,7 @@ const BillOfProductTable = () => {
         {
             field: 'items',
             headerName: 'Stoklar',
-            width: 150,
+            width: 300,
             renderCell: (params) => {
                 // Check if the row is in edit mode
                 if (params.row.id === editIdx) {
@@ -208,8 +215,9 @@ const BillOfProductTable = () => {
                     // Convert the array of objects to a string
                     const itemsString = params.value.map(item => {
                         // Customize this part based on the structure of your item object
-                        return `Stock Name: ${item.stock.stockName}, Quantity: ${item.quantity}`;
-                    }).join('; ');
+                        // return `Stock Name: ${item.stock.stockName}, Quantity: ${item.quantity}`;
+                        return `${item.stock.stockName},Q: ${item.quantity}, C: ${item.stock.cost}`;
+                    }).join(' | ');
 
                     return (
                         <Button onClick={() => handleItemsClick(params.value)}>
@@ -219,6 +227,26 @@ const BillOfProductTable = () => {
                 }
 
                 return params.value;
+            }
+        },
+        {
+            field: 'totalCost',
+            headerName: 'Toplam Maliyet',
+            width: 150,
+            renderCell: (params) => {
+                console.log("AAAAA");
+                console.log(params.row.items);
+                if (Array.isArray(params.row.items) && params.row.items.length > 0) {
+                    let totalCost = 0;
+                    params.row.items.forEach(item => {
+                        // Customize this part based on the structure of your item object
+                        console.log("QQQ: " + item.stock.cost);
+                        totalCost += item.stock.cost * item.quantity;
+                        console.log("TOTAL COST: " + totalCost);
+                    });
+                    return totalCost.toFixed(2); // Adjust the decimal places as needed
+                }
+                return 0;
             }
         },
 
