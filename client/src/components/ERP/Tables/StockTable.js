@@ -216,16 +216,16 @@ const StockTable = () => {
         //     />
         //   ) : params.value
         // },
-        {
-            field: 'inStock', headerName: 'Stokta', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    type="number"
-                    name="inStock"
-                    value={editRow.inStock}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
+        // {
+        //     field: 'inStock', headerName: 'Stokta', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+        //         <TextField
+        //             type="number"
+        //             name="inStock"
+        //             value={editRow.inStock}
+        //             onChange={handleChange}
+        //         />
+        //     ) : params.value
+        // },
         // {
         //   field: 'boxQuantity', headerName: 'Kutu Adet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
         //     <TextField

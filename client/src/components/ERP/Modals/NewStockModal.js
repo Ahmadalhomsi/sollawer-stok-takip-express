@@ -12,7 +12,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
         stockType: '',
         quantity: 0,
         duration: '',
-        inStock: 0,
+        // inStock: 0,
         cost: 0,
         // deliveryDate: '',
         company: '',
@@ -30,7 +30,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                 stockType: '',
                 quantity: 0,
                 duration: '',
-                inStock: 0,
+                // inStock: 0,
                 cost: 0,
                 // deliveryDate: '',
                 company: '',
@@ -178,14 +178,14 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                         name="duration"
                         onChange={handleChange}
                     />
-                    <TextField
+                    {/* <TextField
                         fullWidth
                         margin="normal"
                         label="Stokta"
                         name="inStock"
                         type="number"
                         onChange={handleChange}
-                    />
+                    /> */}
                     <TextField
                         fullWidth
                         margin="normal"

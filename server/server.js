@@ -954,7 +954,7 @@ app.post('/api/erp/stocks', async (req, res) => { // Endpoint to create a card
             stockType,
             quantity,
             duration,
-            inStock,
+            // inStock,
             cost,
             // deliveryDate,
             company,
@@ -969,7 +969,7 @@ app.post('/api/erp/stocks', async (req, res) => { // Endpoint to create a card
                 stockType: stockType.trim(),
                 quantity: parseInt(quantity),
                 duration: duration.trim(),
-                inStock: parseInt(inStock),
+                // inStock: parseInt(inStock),
                 cost: parseFloat(cost),
                 // deliveryDate: deliveryDate.trim(),
                 company: company.trim(),
@@ -993,7 +993,7 @@ app.put('/api/erp/stocks/:id', async (req, res) => { // Updates without creating
         stockType,
         quantity,
         duration,
-        inStock,
+        // inStock,
         cost,
         // deliveryDate,
         company,
@@ -1014,7 +1014,7 @@ app.put('/api/erp/stocks/:id', async (req, res) => { // Updates without creating
                 stockType: stockType.trim(),
                 quantity: parseInt(quantity),
                 duration: duration.trim(),
-                inStock: parseInt(inStock),
+                // inStock: parseInt(inStock),
                 cost: parseFloat(cost),
                 // deliveryDate: deliveryDate.trim(),
                 company: company.trim(),
@@ -1167,13 +1167,13 @@ app.get('/api/erp/billsOfProduct', async (req, res) => { // Get all cards
     try {
         const orders = await prisma.billOfProduct.findMany({
             include: {
-              items: {
-                include: {
-                  stock: true
+                items: {
+                    include: {
+                        stock: true
+                    }
                 }
-              }
             }
-          });
+        });
         res.json(orders);
     } catch (error) {
         console.error(error);
@@ -1196,7 +1196,7 @@ app.post('/api/erp/billsOfProduct', async (req, res) => { // Endpoint to create 
                     })),
                 },
             },
-            include: { items: true },
+            include: { items: { include: { stock: true } } }, // Include stock information
         });
         res.json(billOfProduct);
     } catch (error) {
@@ -1236,13 +1236,24 @@ app.put('/api/erp/billsOfProduct/:id', async (req, res) => { // Updates without 
 
 app.delete('/api/erp/billsOfProduct/:id', async (req, res) => {
     const { id } = req.params;
+    console.log("-------------------------------");
+    console.log("ID: " + id);
     try {
+        // First, delete the associated items
+        await prisma.billOfProductItem.deleteMany({
+            where: {
+                billOfProductId: parseInt(id), // Assuming the foreign key in items is named billOfProductId
+            },
+        });
+
+        // Then, delete the BillOfProduct
         await prisma.billOfProduct.delete({
             where: {
                 id: parseInt(id),
             },
         });
-        res.json({ message: 'User deleted successfully' });
+
+        res.json({ message: 'Bill of Product deleted successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });

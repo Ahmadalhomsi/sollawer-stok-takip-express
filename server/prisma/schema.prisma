@@ -118,7 +118,7 @@ model Stock {
   stockType   String
   quantity    Int
   duration    String?
-  inStock     Int?
+  // inStock     Int?
   cost        Float?
   company     String?
   description String?
@@ -160,17 +160,17 @@ model BillOfProductItem {
 
   quantity Int // Quantity of the stock required for the BillOfProduct
 
-  BillOfProductId Int
+  billOfProductId Int
   stockId         Int
 
   // Relations
-  BillOfProduct BillOfProduct @relation(fields: [BillOfProductId], references: [id])
+  BillOfProduct BillOfProduct @relation(fields: [billOfProductId], references: [id])
   stock         Stock         @relation(fields: [stockId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([BillOfProductId, stockId])
+  @@unique([billOfProductId, stockId])
 }
 
 // model ProductionOrder {
