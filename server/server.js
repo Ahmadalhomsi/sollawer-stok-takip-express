@@ -1205,19 +1205,19 @@ app.post('/api/erp/billsOfProduct', async (req, res) => { // Endpoint to create 
     }
 });
 
-app.put('/api/erp/billsOfProduct/:id', async (req, res) => { // Updates without creating new 
-
+app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
+    console.log(req.body);
     const {
+        id,
         billName,
         billDate,
-        description
+        description,
+        items // Ensure items are included in the request body
     } = req.body;
 
-    const photoURLArray = Array.isArray(photoURL) ? photoURL : [photoURL]; // Convert photoURL to an array
-
-
     try {
-        const user = await prisma.billOfProduct.update({
+        // Update the BillOfProduct
+        const updatedBill = await prisma.billOfProduct.update({
             where: {
                 id: parseInt(id),
             },
@@ -1225,14 +1225,41 @@ app.put('/api/erp/billsOfProduct/:id', async (req, res) => { // Updates without 
                 billName: billName.trim(),
                 billDate: new Date(billDate),
                 description: description.trim(),
-            }
+            },
+            include: { items: { include: { stock: true } } }, // Include stock information
         });
-        res.json(user);
+
+        // Delete all existing items for this BillOfProduct
+        await prisma.billOfProductItem.deleteMany({
+            where: {
+                billOfProductId: parseInt(id),
+            },
+        });
+
+        // Add the new items
+        const newItems = items.map(item => ({
+            quantity: parseInt(item.quantity),
+            stockId: item.stock.id,
+            billOfProductId: parseInt(id),
+        }));
+
+        await prisma.billOfProductItem.createMany({
+            data: newItems,
+        });
+
+        // Fetch updated BillOfProduct with items
+        const result = await prisma.billOfProduct.findUnique({
+            where: { id: parseInt(id) },
+            include: { items: { include: { stock: true } } },
+        });
+
+        res.json(result);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 app.delete('/api/erp/billsOfProduct/:id', async (req, res) => {
     const { id } = req.params;

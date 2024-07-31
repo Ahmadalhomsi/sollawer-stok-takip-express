@@ -6,7 +6,111 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import toast from "react-hot-toast";
 import NewBillOfProductModal from '../Modals/NewBillOfProductModal';
+import { Autocomplete } from '@mui/material';
 
+let outLocalItems = [];
+const EditStockModal = ({ open, onClose, items, onSave }) => {
+    const [localItems, setLocalItems] = useState(items);
+    const [stocks, setStocks] = useState([]);
+
+    useEffect(() => {
+        // Fetch stocks data on mount
+        axios.get('http://localhost:5000/api/erp/stocks')
+            .then((response) => {
+                setStocks(response.data);
+            })
+            .catch((error) => {
+                console.error('There was an error fetching the stocks!', error);
+            });
+    }, []);
+
+    // Synchronize localItems with the incoming items prop
+    useEffect(() => {
+        setLocalItems(items);
+    }, [items]);
+
+    const handleAddItem = () => {
+        setLocalItems([...localItems, { stock: null, quantity: 0 }]);
+    };
+
+    const handleDeleteItem = (index) => {
+        setLocalItems(localItems.filter((_, idx) => idx !== index));
+    };
+
+    const handleStockChange = (index, value) => {
+        const newItems = [...localItems];
+        newItems[index].stock = value;
+        setLocalItems(newItems);
+    };
+
+    const handleQuantityChange = (index, event) => {
+        const newItems = [...localItems];
+        newItems[index].quantity = event.target.value;
+        setLocalItems(newItems);
+    };
+
+    const handleSave = () => {
+        console.log("Saving items:", localItems);  // Check if items are updated
+        outLocalItems = localItems;
+        onSave(localItems);  // Pass updated items to the parent
+        onClose();
+    };
+
+    return (
+        <Modal
+            open={open}
+            onClose={onClose}
+            aria-labelledby="edit-stock-modal-title"
+            aria-describedby="edit-stock-modal-description"
+        >
+            <Box sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 600,
+                bgcolor: 'background.paper',
+                boxShadow: 24,
+                p: 4,
+                borderRadius: 2,
+                overflow: 'auto',
+                maxHeight: 'calc(100vh - 100px)',
+            }}>
+                <Typography id="edit-stock-modal-title" variant="h6" component="h2" mb={2}>
+                    Edit Stock Items
+                </Typography>
+                {localItems.map((item, index) => (
+                    <Box key={index} display="flex" alignItems="center" mb={2}>
+                        <Autocomplete
+                            disablePortal
+                            options={stocks}
+                            getOptionLabel={(option) => option.stockName}
+                            value={item.stock}
+                            onChange={(event, value) => handleStockChange(index, value)}
+                            sx={{ width: 300, marginRight: 2 }}
+                            renderInput={(params) => <TextField {...params} label="Stock" />}
+                        />
+                        <TextField
+                            label="Quantity"
+                            type="number"
+                            value={item.quantity}
+                            onChange={(event) => handleQuantityChange(index, event)}
+                            sx={{ width: 100, marginRight: 2 }}
+                        />
+                        <IconButton onClick={() => handleDeleteItem(index)} color="error">
+                            <DeleteIcon />
+                        </IconButton>
+                    </Box>
+                ))}
+                <Button onClick={handleAddItem} color="primary">Add Item</Button>
+                <Box mt={2}>
+                    <Button onClick={handleSave} color="primary" variant="contained">Save</Button>
+                    <Button onClick={onClose} color="secondary" variant="contained" sx={{ marginLeft: 2 }}>Cancel</Button>
+                </Box>
+            </Box>
+        </Modal>
+    );
+};
 
 
 const BillOfProductTable = () => {
@@ -16,7 +120,7 @@ const BillOfProductTable = () => {
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
 
-    // Modal state
+    // Show Items Modal state
     const [isItemsModalOpen, setItemsModalOpen] = useState(false);
     const [modalItems, setModalItems] = useState([]);
 
@@ -66,6 +170,24 @@ const BillOfProductTable = () => {
     };
 
 
+    // Stock Edit Modal state
+
+    const [isStockModalOpen, setStockModalOpen] = useState(false);
+    const [editingStockItems, setEditingStockItems] = useState([]);
+
+    const handleStockEdit = (row) => {
+        setEditingStockItems(row.items);
+        setStockModalOpen(true);
+    };
+
+    const handleStockSave = (newItems) => {
+        const updatedRows = rows.map(row =>
+            row.id === editIdx ? { ...row, items: newItems } : row
+        );
+        setRows(updatedRows);
+    };
+
+
 
 
     useEffect(() => {
@@ -91,18 +213,15 @@ const BillOfProductTable = () => {
         // Convert necessary fields to the appropriate types
         const dataToUpdate = {
             ...editRow,
-            quantity: parseInt(editRow.quantity),
-            requested: parseInt(editRow.requested),
-            boxQuantity: parseInt(editRow.boxQuantity),
-            need: parseInt(editRow.need),
-            date: new Date(editRow.date).toISOString(),
+            billDate: new Date(editRow.billDate).toISOString(),  // Ensure proper Date conversion
+            items: outLocalItems,  // Add updated items here
         };
-
+    
+        console.log("Data to Update:", dataToUpdate);  // Check if items are updated
+    
         try {
-            // Await the Axios PUT request
             const response = await axios.put(`http://localhost:5000/api/erp/billsOfProduct/${editIdx}`, dataToUpdate);
-
-            // Update rows state only if the request is successful
+    
             if (response.status === 200) {
                 const updatedRows = rows.map((row) => (row.id === editIdx ? dataToUpdate : row));
                 setRows(updatedRows);
@@ -114,7 +233,6 @@ const BillOfProductTable = () => {
             console.error('Error updating row:', error);
         }
     };
-
 
     const handleCancel = () => {
         setEditIdx(-1);
@@ -200,13 +318,9 @@ const BillOfProductTable = () => {
                 // Check if the row is in edit mode
                 if (params.row.id === editIdx) {
                     return (
-                        editRow.items && (
-                            <TextField
-                                name="items"
-                                value={editRow.items}
-                                onChange={handleChange}
-                            />
-                        )
+                        <Button onClick={() => handleStockEdit(editRow)} variant="contained" color="primary" size="small">
+                            Edit Stock Items
+                        </Button>
                     );
                 }
 
@@ -214,8 +328,6 @@ const BillOfProductTable = () => {
                 if (Array.isArray(params.value) && params.value.length > 0) {
                     // Convert the array of objects to a string
                     const itemsString = params.value.map(item => {
-                        // Customize this part based on the structure of your item object
-                        // return `Stock Name: ${item.stock.stockName}, Quantity: ${item.quantity}`;
                         return `${item.stock.stockName},Q: ${item.quantity}, C: ${item.stock.cost}`;
                     }).join(' | ');
 
@@ -234,15 +346,11 @@ const BillOfProductTable = () => {
             headerName: 'Toplam Maliyet',
             width: 150,
             renderCell: (params) => {
-                console.log("AAAAA");
-                console.log(params.row.items);
                 if (Array.isArray(params.row.items) && params.row.items.length > 0) {
                     let totalCost = 0;
                     params.row.items.forEach(item => {
                         // Customize this part based on the structure of your item object
-                        console.log("QQQ: " + item.stock.cost);
                         totalCost += item.stock.cost * item.quantity;
-                        console.log("TOTAL COST: " + totalCost);
                     });
                     return totalCost.toFixed(2); // Adjust the decimal places as needed
                 }
@@ -310,11 +418,17 @@ const BillOfProductTable = () => {
                 onRowCreated={handleRowCreated}
             />
 
-
             <ItemsModal
                 open={isItemsModalOpen}
                 onClose={() => setItemsModalOpen(false)}
                 items={modalItems}
+            />
+
+            <EditStockModal
+                open={isStockModalOpen}
+                onClose={() => setStockModalOpen(false)}
+                items={editingStockItems}
+                onSave={handleStockSave}
             />
         </Box>
 
