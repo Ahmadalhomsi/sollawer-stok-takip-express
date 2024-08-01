@@ -164,7 +164,7 @@ model BillOfProductItem {
   stockId         Int
 
   // Relations
-  BillOfProduct BillOfProduct @relation(fields: [billOfProductId], references: [id])
+  BillOfProduct BillOfProduct @relation(fields: [billOfProductId], references: [id], onDelete: Cascade)
   stock         Stock         @relation(fields: [stockId], references: [id])
 
   createdAt DateTime @default(now())

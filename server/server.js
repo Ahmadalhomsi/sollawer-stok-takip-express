@@ -1206,45 +1206,34 @@ app.post('/api/erp/billsOfProduct', async (req, res) => { // Endpoint to create 
 });
 
 app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
-    console.log(req.body);
-    const {
-        id,
-        billName,
-        billDate,
-        description,
-        items // Ensure items are included in the request body
-    } = req.body;
+    const { id, billName, billDate, description, items } = req.body;
 
     try {
-        // Update the BillOfProduct
-        const updatedBill = await prisma.billOfProduct.update({
-            where: {
-                id: parseInt(id),
-            },
-            data: {
-                billName: billName.trim(),
-                billDate: new Date(billDate),
-                description: description.trim(),
-            },
-            include: { items: { include: { stock: true } } }, // Include stock information
-        });
+        // Update the BillOfProduct and delete existing items in a transaction
+        const updatedBill = await prisma.$transaction(async (prisma) => {
+            const bill = await prisma.billOfProduct.update({
+                where: { id: parseInt(id) },
+                data: {
+                    billName: billName.trim(),
+                    billDate: new Date(billDate),
+                    description: description.trim(),
+                },
+                include: { items: { include: { stock: true } } },
+            });
 
-        // Delete all existing items for this BillOfProduct
-        await prisma.billOfProductItem.deleteMany({
-            where: {
+            await prisma.billOfProductItem.deleteMany({
+                where: { billOfProductId: parseInt(id) },
+            });
+
+            const newItems = items.map(item => ({
+                quantity: parseInt(item.quantity),
+                stockId: item.stock.id,
                 billOfProductId: parseInt(id),
-            },
-        });
+            }));
 
-        // Add the new items
-        const newItems = items.map(item => ({
-            quantity: parseInt(item.quantity),
-            stockId: item.stock.id,
-            billOfProductId: parseInt(id),
-        }));
+            await prisma.billOfProductItem.createMany({ data: newItems });
 
-        await prisma.billOfProductItem.createMany({
-            data: newItems,
+            return bill;
         });
 
         // Fetch updated BillOfProduct with items
@@ -1259,6 +1248,7 @@ app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 
 app.delete('/api/erp/billsOfProduct/:id', async (req, res) => {
