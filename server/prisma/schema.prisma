@@ -58,6 +58,8 @@ model Project {
   latitude    Float
   longitude   Float
 
+  EPC         String?
+
   // Relation fields
   customerName String?
   customer     Customer? @relation("CustomerToProject", fields: [customerName], references: [name])

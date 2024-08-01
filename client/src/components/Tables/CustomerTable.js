@@ -110,7 +110,7 @@ const CustomerTable = () => {
             ) : params.value
         },
         {
-            field: 'name', headerName: 'Müşteri İsmi', width: 140, renderCell: (params) => params.row.id === editIdx ? (
+            field: 'name', headerName: 'Müşteri Adı', width: 220, renderCell: (params) => params.row.id === editIdx ? (
                 <TextField
                     name="name"
                     value={editRow.name}
@@ -119,7 +119,7 @@ const CustomerTable = () => {
             ) : params.value
         },
         {
-            field: 'companyName', headerName: 'Firma', width: 140, renderCell: (params) => params.row.id === editIdx ? (
+            field: 'companyName', headerName: 'Firma', width: 180, renderCell: (params) => params.row.id === editIdx ? (
                 <TextField
                     name="companyName"
                     value={editRow.companyName}
@@ -128,7 +128,7 @@ const CustomerTable = () => {
             ) : params.value
         },
         {
-            field: 'email', headerName: 'Email', width: 140, renderCell: (params) => params.row.id === editIdx ? (
+            field: 'email', headerName: 'Email', width: 220, renderCell: (params) => params.row.id === editIdx ? (
                 <TextField
                     name="email"
                     value={editRow.email}
@@ -137,7 +137,7 @@ const CustomerTable = () => {
             ) : params.value
         },
         {
-            field: 'phone', headerName: 'Telefon Numarası', width: 140, renderCell: (params) => params.row.id === editIdx ? (
+            field: 'phone', headerName: 'Telefon Numarası', width: 180, renderCell: (params) => params.row.id === editIdx ? (
                 <TextField
                     name="phone"
                     value={editRow.phone}

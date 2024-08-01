@@ -12,6 +12,8 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
         manufacturer: '',
         latitude: 0,
         longitude: 0,
+        EPC: '',
+        customerName: '',
     });
 
     const handleChange = (e) => {
@@ -37,7 +39,16 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
             })
             .catch((error) => {
                 console.error('There was an error creating the new row!', error);
-                toast.error('There was an error creating the new row!');
+                if (error.response && error.response.data && error.response.data.error) {
+                    // Check for specific foreign key constraint error
+                    if (error.response.data.error.includes('Foreign key constraint violation')) {
+                        toast.error('Foreign key constraint violation: the referenced key does not exist.');
+                    } else {
+                        toast.error(error.response.data.error);
+                    }
+                } else {
+                    toast.error('There was an error creating the new row!');
+                }
             });
     };
 
@@ -110,6 +121,20 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         label="Boylam"
                         name="longitude"
                         inputProps={{ step: "any" }} // Allow any step for float numbers
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="EPC"
+                        name="EPC"
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Müşteri Adı"
+                        name="customerName"
                         onChange={handleChange}
                     />
 

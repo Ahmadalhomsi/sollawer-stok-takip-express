@@ -6,16 +6,12 @@ const { addDays, isValid, parse } = require('date-fns');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+const { Prisma } = require('@prisma/client'); // for error handling & Foreign key constraint violation
+
 app.use(cors())
 app.use(express.json());
 
-
-// GET route
-app.get('/api', (req, res) => { // for test
-    //res.send('Hello, world!');
-    res.json({ "users": ["userOne", "UserTwo"] });
-});
-
+// Orders table
 
 // GET route
 app.get('/api/orders', async (req, res) => { // Get all orders
@@ -838,6 +834,7 @@ app.get('/api/projects', async (req, res) => { // Get all cards
 });
 
 app.post('/api/projects', async (req, res) => { // Endpoint to create a card
+    console.log("Bingooo");
     try {
         const {
             projectNO,
@@ -846,6 +843,7 @@ app.post('/api/projects', async (req, res) => { // Endpoint to create a card
             city,
             latitude,
             longitude,
+            EPC,
             customerName,
         } = req.body;
 
@@ -857,13 +855,20 @@ app.post('/api/projects', async (req, res) => { // Endpoint to create a card
                 city: city.trim(),
                 latitude: parseFloat(latitude),
                 longitude: parseFloat(longitude),
+                EPC: EPC.trim(),
                 customerName: customerName.trim(),
             }
         });
 
         res.status(201).json(newUser);
     } catch (error) {
-        console.error('Error creating user:', error);
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2003') { // Foreign key constraint violation code in Prisma
+                return res.status(400).json({ error: 'Foreign key constraint violation: the referenced key does not exist.' });
+            }
+        }
+
+        console.log('Error creating user:', error);
         res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
@@ -878,6 +883,7 @@ app.put('/api/projects/:id', async (req, res) => { // Updates without creating n
         city,
         latitude,
         longitude,
+        EPC,
         customerName,
     } = req.body;
 
@@ -893,6 +899,7 @@ app.put('/api/projects/:id', async (req, res) => { // Updates without creating n
                 city: city.trim(),
                 latitude: parseFloat(latitude),
                 longitude: parseFloat(longitude),
+                EPC: EPC.trim(),
                 customerName: customerName.trim(),
             }
         });
@@ -1060,7 +1067,7 @@ app.get('/api/erp/stockMovements', async (req, res) => { // Get all cards
     }
 });
 
-const { Prisma } = require('@prisma/client');
+
 app.post('/api/erp/stockMovements', async (req, res) => {
     try {
         const {
@@ -1207,7 +1214,6 @@ app.post('/api/erp/billsOfProduct', async (req, res) => { // Endpoint to create 
 
 app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
     const { id, billName, billDate, description, items } = req.body;
-
     try {
         // Update the BillOfProduct and delete existing items in a transaction
         const updatedBill = await prisma.$transaction(async (prisma) => {
@@ -1249,19 +1255,17 @@ app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
     }
 });
 
-
-
 app.delete('/api/erp/billsOfProduct/:id', async (req, res) => {
     const { id } = req.params;
     console.log("-------------------------------");
-    console.log("ID: " + id);
+    console.log("Deleting ID: " + id);
     try {
-        // First, delete the associated items
-        await prisma.billOfProductItem.deleteMany({
-            where: {
-                billOfProductId: parseInt(id), // Assuming the foreign key in items is named billOfProductId
-            },
-        });
+        // // First, delete the associated items
+        // await prisma.billOfProductItem.deleteMany({
+        //     where: {
+        //         billOfProductId: parseInt(id), // Assuming the foreign key in items is named billOfProductId
+        //     },
+        // });
 
         // Then, delete the BillOfProduct
         await prisma.billOfProduct.delete({
