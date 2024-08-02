@@ -128,13 +128,15 @@ const CustomerTable = () => {
             ) : params.value
         },
         {
-            field: 'email', headerName: 'Email', width: 220, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="email"
-                    value={editRow.email}
-                    onChange={handleChange}
-                />
-            ) : params.value
+            field: 'email',
+            headerName: 'Email',
+            width: 220,
+            renderCell: (params) =>
+                params.row.id === editIdx ? (
+                    <TextField name="email" value={editRow.email} onChange={handleChange} />
+                ) : (
+                    <a href={`mailto:${params.value}`}>{params.value}</a>
+                ),
         },
         {
             field: 'phone', headerName: 'Telefon Numarası', width: 180, renderCell: (params) => params.row.id === editIdx ? (

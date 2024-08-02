@@ -92,7 +92,7 @@ const NewProductionOrderModal = ({ open, onClose, onRowCreated }) => {
                 maxHeight: 'calc(100vh - 100px)',
             }}>
                 <Typography id="modal-modal-title" variant="h6" component="h2" mb={2}>
-                    Yeni Üretim Siparişi Oluştur
+                    Yeni Üretim Emri Oluştur
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField

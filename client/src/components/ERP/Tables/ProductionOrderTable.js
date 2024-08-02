@@ -44,8 +44,6 @@ const ProductionOrderTable = () => {
             items: outLocalItems,
         };
 
-        console.log("Data to Update:", dataToUpdate);
-
         try {
             const response = await axios.put(`http://localhost:5000/api/erp/productionOrders/${editIdx}`, dataToUpdate);
 

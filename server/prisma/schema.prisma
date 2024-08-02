@@ -36,6 +36,9 @@ model OrderTracker {
   city      String
   latitude  Float // Enlem
   longitude Float // Boylam
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Customer {
@@ -47,6 +50,9 @@ model Customer {
 
   // Relation fields
   projects Project[] @relation("CustomerToProject")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Project {
@@ -65,6 +71,9 @@ model Project {
   customer     Customer? @relation("CustomerToProject", fields: [customerName], references: [name])
 
   controlCards ControlCard[] @relation("ProjectToControlCards")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ControlCard {
@@ -81,6 +90,9 @@ model ControlCard {
   // Relation fields
   cardParameters CardParameter[] @relation("ControlCardToCardParameters")
   project        Project?        @relation("ProjectToControlCards", fields: [projectNO], references: [projectNO])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model CardParameter {
@@ -92,6 +104,9 @@ model CardParameter {
 
   // Relation fields
   controlCard ControlCard? @relation("ControlCardToCardParameters", fields: [UNID], references: [UNID])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([UNID, parameter])
   // Index to speed up queries on UNID
@@ -107,6 +122,9 @@ model FaultyCard {
   fault      String
   photoURL   String[]
   projectNO  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // actuator      String
@@ -128,6 +146,9 @@ model Stock {
   movements   StockMovement[] // Relation to StockMovement
 
   BillOfProductItems BillOfProductItem[] // Relation to BillOfProductItem
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model StockMovement {
@@ -143,6 +164,9 @@ model StockMovement {
   description  String?
   // Relation to Stock
   stock        Stock     @relation(fields: [stockName], references: [stockName])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model BillOfProduct {
@@ -151,7 +175,7 @@ model BillOfProduct {
   billDate    DateTime
   description String?
 
-  totalCost Float?
+  totalCost       Float?
   // Relations
   items           BillOfProductItem[]
   productionOrder ProductionOrder[]
@@ -184,8 +208,8 @@ model ProductionOrder {
   quantity  Int
   orderDate DateTime
 
-  description String?
-  totalCost   Float?
+  description     String?
+  totalCost       Float?
   // Relations
   billOfProductId Int
   BillOfProduct   BillOfProduct @relation(fields: [billOfProductId], references: [id], onDelete: Cascade)
