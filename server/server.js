@@ -1329,8 +1329,6 @@ app.post('/api/erp/productionOrders', async (req, res) => {
                 id: parseInt(billOfProductId),
             },
         });
-
-
         const totalCost = quantity * billOfProduct.totalCost;
 
 
@@ -1341,7 +1339,7 @@ app.post('/api/erp/productionOrders', async (req, res) => {
                 orderDate: new Date(orderDate),
                 description,
                 billOfProductId: parseInt(billOfProductId),
-                totalCost,
+                totalCost : totalCost,
             },
             include: { BillOfProduct: true },
         });
@@ -1367,6 +1365,14 @@ app.put('/api/erp/productionOrders/:id', async (req, res) => { // Updates withou
 
 
     try {
+        const billOfProduct = await prisma.billOfProduct.findUnique({
+            where: {
+                id: parseInt(billOfProductId),
+            },
+        });
+        const totalCost = quantity * billOfProduct.totalCost;
+
+
         const order = await prisma.productionOrder.update({
             where: {
                 id: parseInt(id),
@@ -1377,7 +1383,9 @@ app.put('/api/erp/productionOrders/:id', async (req, res) => { // Updates withou
                 orderDate: new Date(orderDate),
                 description: description.trim(),
                 billOfProductId: parseInt(billOfProductId),
-            }
+                totalCost : totalCost,
+            },
+            include: { BillOfProduct: true },
         });
         res.json(order);
     } catch (error) {

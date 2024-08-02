@@ -50,7 +50,7 @@ const ProductionOrderTable = () => {
             const response = await axios.put(`http://localhost:5000/api/erp/productionOrders/${editIdx}`, dataToUpdate);
 
             if (response.status === 200) {
-                const updatedRows = rows.map((row) => (row.id === editIdx ? dataToUpdate : row));
+                const updatedRows = rows.map((row) => (row.id === editIdx ? response.data : row));
                 setRows(updatedRows);
                 setEditIdx(-1);
             } else {
