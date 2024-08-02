@@ -58,7 +58,7 @@ model Project {
   latitude    Float
   longitude   Float
 
-  EPC         String?
+  EPC String?
 
   // Relation fields
   customerName String?
@@ -146,12 +146,15 @@ model StockMovement {
 }
 
 model BillOfProduct {
-  id          Int                 @id @default(autoincrement())
-  billName    String              @unique
+  id          Int      @id @default(autoincrement())
+  billName    String   @unique
   billDate    DateTime
   description String?
-  
-  items       BillOfProductItem[] // Relation to BillOfProductItem
+
+  totalCost Float?
+  // Relations
+  items           BillOfProductItem[]
+  productionOrder ProductionOrder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -175,14 +178,18 @@ model BillOfProductItem {
   @@unique([billOfProductId, stockId])
 }
 
-// model ProductionOrder {
-//   id           Int       @id @default(autoincrement())
-//   orderNO      String
-//   orderDate    DateTime
-//   BillOfProduct  BillOfProduct @relation(fields: [BillOfProductId], references: [id])
-//   BillOfProductId Int
-//   quantity     Int
+model ProductionOrder {
+  id        Int      @id @default(autoincrement())
+  orderNO   String
+  quantity  Int
+  orderDate DateTime
 
-//   createdAt    DateTime  @default(now())
-//   updatedAt    DateTime  @updatedAt
-// }
+  description String?
+  totalCost   Float?
+  // Relations
+  billOfProductId Int
+  BillOfProduct   BillOfProduct @relation(fields: [billOfProductId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

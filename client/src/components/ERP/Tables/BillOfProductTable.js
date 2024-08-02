@@ -211,17 +211,20 @@ const BillOfProductTable = () => {
 
     const handleSave = async () => {
         // Convert necessary fields to the appropriate types
+        const totalCost = outLocalItems.reduce((acc, item) => acc + item.quantity * item.stock.cost, 0);
+
         const dataToUpdate = {
             ...editRow,
             billDate: new Date(editRow.billDate).toISOString(),  // Ensure proper Date conversion
             items: outLocalItems,  // Add updated items here
+            totalCost: totalCost
         };
-    
+
         console.log("Data to Update:", dataToUpdate);  // Check if items are updated
-    
+
         try {
             const response = await axios.put(`http://localhost:5000/api/erp/billsOfProduct/${editIdx}`, dataToUpdate);
-    
+
             if (response.status === 200) {
                 const updatedRows = rows.map((row) => (row.id === editIdx ? dataToUpdate : row));
                 setRows(updatedRows);
@@ -341,21 +344,32 @@ const BillOfProductTable = () => {
                 return params.value;
             }
         },
+        // {
+        //     field: 'totalCost',
+        //     headerName: 'Toplam Maliyet',
+        //     width: 150,
+        //     renderCell: (params) => {
+        //         if (Array.isArray(params.row.items) && params.row.items.length > 0) {
+        //             let totalCost = 0;
+        //             params.row.items.forEach(item => {
+        //                 // Customize this part based on the structure of your item object
+        //                 totalCost += item.stock.cost * item.quantity;
+        //             });
+        //             return totalCost.toFixed(2); // Adjust the decimal places as needed
+        //         }
+        //         return 0;
+        //     }
+        // },
+
         {
-            field: 'totalCost',
-            headerName: 'Toplam Maliyet',
-            width: 150,
-            renderCell: (params) => {
-                if (Array.isArray(params.row.items) && params.row.items.length > 0) {
-                    let totalCost = 0;
-                    params.row.items.forEach(item => {
-                        // Customize this part based on the structure of your item object
-                        totalCost += item.stock.cost * item.quantity;
-                    });
-                    return totalCost.toFixed(2); // Adjust the decimal places as needed
-                }
-                return 0;
-            }
+            field: 'totalCost', headerName: 'Toplam Maliyet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    type="number"
+                    name="totalCost"
+                    value={editRow.totalCost}
+                    onChange={handleChange}
+                />
+            ) : params.value
         },
 
         {

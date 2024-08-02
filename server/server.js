@@ -1067,7 +1067,6 @@ app.get('/api/erp/stockMovements', async (req, res) => { // Get all cards
     }
 });
 
-
 app.post('/api/erp/stockMovements', async (req, res) => {
     try {
         const {
@@ -1172,7 +1171,7 @@ app.delete('/api/erp/stockMovements/:id', async (req, res) => {
 
 app.get('/api/erp/billsOfProduct', async (req, res) => { // Get all cards
     try {
-        const orders = await prisma.billOfProduct.findMany({
+        const bills = await prisma.billOfProduct.findMany({
             include: {
                 items: {
                     include: {
@@ -1181,30 +1180,44 @@ app.get('/api/erp/billsOfProduct', async (req, res) => { // Get all cards
                 }
             }
         });
-        res.json(orders);
+        res.json(bills);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-app.post('/api/erp/billsOfProduct', async (req, res) => { // Endpoint to create a card
+app.post('/api/erp/billsOfProduct', async (req, res) => {
     const { billName, billDate, description, items } = req.body;
     try {
+        // Fetch stock information for each item
+        const itemsWithStock = await Promise.all(items.map(async item => {
+            const stock = await prisma.stock.findUnique({
+                where: { id: parseInt(item.stockId) }
+            });
+            return { ...item, stock };
+        }));
+
+        // Calculate the total cost
+        const totalCost = itemsWithStock.reduce((acc, item) => acc + item.quantity * item.stock.cost, 0);
+
+        // Create the BillOfProduct
         const billOfProduct = await prisma.billOfProduct.create({
             data: {
                 billName,
                 billDate: new Date(billDate),
                 description,
                 items: {
-                    create: items.map(item => ({
+                    create: itemsWithStock.map(item => ({
                         stockId: parseInt(item.stockId),
                         quantity: parseInt(item.quantity),
                     })),
                 },
+                totalCost,
             },
             include: { items: { include: { stock: true } } }, // Include stock information
         });
+
         res.json(billOfProduct);
     } catch (error) {
         console.error(error);
@@ -1212,9 +1225,11 @@ app.post('/api/erp/billsOfProduct', async (req, res) => { // Endpoint to create 
     }
 });
 
+
 app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
-    const { id, billName, billDate, description, items } = req.body;
+    const { id, billName, billDate, description, items, totalCost } = req.body;
     try {
+
         // Update the BillOfProduct and delete existing items in a transaction
         const updatedBill = await prisma.$transaction(async (prisma) => {
             const bill = await prisma.billOfProduct.update({
@@ -1223,9 +1238,11 @@ app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
                     billName: billName.trim(),
                     billDate: new Date(billDate),
                     description: description.trim(),
+                    totalCost: totalCost,
                 },
                 include: { items: { include: { stock: true } } },
             });
+
 
             await prisma.billOfProductItem.deleteMany({
                 where: { billOfProductId: parseInt(id) },
@@ -1248,6 +1265,8 @@ app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
             include: { items: { include: { stock: true } } },
         });
 
+
+        console.log("Updated Bill: ", result);
         res.json(result);
     } catch (error) {
         console.error(error);
@@ -1272,6 +1291,7 @@ app.delete('/api/erp/billsOfProduct/:id', async (req, res) => {
             where: {
                 id: parseInt(id),
             },
+
         });
 
         res.json({ message: 'Bill of Product deleted successfully' });
@@ -1284,21 +1304,102 @@ app.delete('/api/erp/billsOfProduct/:id', async (req, res) => {
 
 //-------------------------------------------------------
 
-// // Fetch items for a Bill of Product
-// app.get('api/erp/:billOfProductId/items', async (req, res) => {
-//     const { billOfProductId } = req.params;
-//     try {
-//         const items = await prisma.billOfProductItem.findMany({
-//             where: { billOfProductId: parseInt(billOfProductId) },
-//             include: { stock: true },
-//         });
-//         res.json(items);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Failed to fetch items' });
-//     }
-// });
+// ERP Production Order Table
+app.get('/api/erp/productionOrders', async (req, res) => { // Get all cards
+    try {
+        const orders = await prisma.productionOrder.findMany({
+            include: {
+                BillOfProduct: true
+            }
+        });
+        res.json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
+app.post('/api/erp/productionOrders', async (req, res) => {
+    const { orderNO, quantity, orderDate, description, billOfProductId } = req.body;
+
+    try {
+
+        const billOfProduct = await prisma.billOfProduct.findUnique({
+            where: {
+                id: parseInt(billOfProductId),
+            },
+        });
+
+
+        const totalCost = quantity * billOfProduct.totalCost;
+
+
+        const productionOrder = await prisma.productionOrder.create({
+            data: {
+                orderNO,
+                quantity: parseInt(quantity),
+                orderDate: new Date(orderDate),
+                description,
+                billOfProductId: parseInt(billOfProductId),
+                totalCost,
+            },
+            include: { BillOfProduct: true },
+        });
+        res.json(productionOrder);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to create Production Order' });
+    }
+});
+
+
+app.put('/api/erp/productionOrders/:id', async (req, res) => { // Updates without creating new 
+
+    const {
+        id,
+        orderNO,
+        quantity,
+        orderDate,
+        description,
+        billOfProductId,
+    } = req.body;
+    console.log(billOfProductId);
+
+
+    try {
+        const order = await prisma.productionOrder.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                orderNO: orderNO.trim(),
+                quantity: parseInt(quantity),
+                orderDate: new Date(orderDate),
+                description: description.trim(),
+                billOfProductId: parseInt(billOfProductId),
+            }
+        });
+        res.json(order);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.delete('/api/erp/productionOrders/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await prisma.productionOrder.delete({
+            where: {
+                id: parseInt(id),
+            },
+        });
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 
 
