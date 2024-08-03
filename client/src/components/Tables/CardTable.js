@@ -221,6 +221,11 @@ const CardTable = () => {
 
   return (
     <Box sx={{ height: 600, width: '100%' }}>
+
+      <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+        YENİ KONTROL KARTI EKLE
+      </Button>
+
       <TextField
         label="UNID Filter"
         variant="outlined"
@@ -235,12 +240,10 @@ const CardTable = () => {
         value={projectNoFilter}
         onChange={handleProjectNoFilterChange}
         size='small'
-        style={{ marginBottom: 16, marginRight: 35}}
+        style={{ marginBottom: 16, marginRight: 35 }}
       />
 
-      <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
-        YENİ KONTROL KARTI EKLE
-      </Button>
+
 
 
       <DataGrid

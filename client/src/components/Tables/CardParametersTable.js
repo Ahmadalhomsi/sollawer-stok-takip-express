@@ -185,23 +185,24 @@ const CardParametersTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
+            <Button disabled={!isCartSelected} onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+                YENİ KART PARAMETRESİ EKLE
+            </Button>
+
             <TextField
                 label="UNID Filter"
                 value={unidFilter}
                 onChange={handleFilterChange}
                 variant="outlined"
                 size='small'
-                style={{ marginBottom: 16, marginRight: 35, marginLeft: 10 }}
+                style={{ marginBottom: 16, marginRight: 10, marginLeft: 15 }}
             />
-            <Button disabled={!isCartSelected} onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
-                YENİ KART PARAMETRESİ EKLE
-            </Button>
 
             <Button
                 variant="contained"
                 color="primary"
                 onClick={() => setUNIDSearchModalOpen(true)}
-                style={{ marginBottom: 16, marginLeft: 35 }}
+                style={{ marginBottom: 20, marginTop: 2 }}
             >
                 UNID İLE KART SEÇ
             </Button>

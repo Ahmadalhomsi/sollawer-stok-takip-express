@@ -7,7 +7,7 @@ import React from 'react';
 import { ERPallTabs } from '../../components/ERP/ERPallTabs';
 import TabNavigation from '../../components/TabNavigation';
 import StockMovementTable from '../../components/ERP/Tables/StockMovementTable';
-
+import { Typography } from '@mui/material';
 
 
 const ERPstockMovementPage = () => {
@@ -15,7 +15,9 @@ const ERPstockMovementPage = () => {
     return (
         <div>
             <TabNavigation tabs={ERPallTabs} />
-            <h1>Stok Hareketleri İşlemleri</h1>
+            <Typography variant="h4" fontWeight="bold" style={{ padding: 5 }}>
+                Stok Hareketleri İşlemleri
+            </Typography>
             <StockMovementTable />
 
         </div>

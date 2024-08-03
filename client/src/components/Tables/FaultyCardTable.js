@@ -280,11 +280,9 @@ const FaultyCardsTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
-            <Box m={2}>
-                <Button onClick={handleModalOpen} variant="contained" color="primary">
-                    YENİ ARIZALI KART EKLE
-                </Button>
-            </Box>
+            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+                YENİ ARIZALI KART EKLE
+            </Button>
 
             <NewFaultyCardModal
                 open={isModalOpen}

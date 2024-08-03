@@ -93,12 +93,13 @@ const ProjectTable = () => {
     );
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 10, renderCell: (params) => params.row.id === editIdx ? (
-            <TextField
-                name="id"
-                value={editRow.id}
-            />
-        ) : params.value
+        {
+            field: 'id', headerName: 'ID', width: 10, renderCell: (params) => params.row.id === editIdx ? (
+                <TextField
+                    name="id"
+                    value={editRow.id}
+                />
+            ) : params.value
         },
         {
             field: 'projectNO', headerName: 'Proje NO', width: 140, renderCell: (params) => params.row.id === editIdx ? (
@@ -209,6 +210,10 @@ const ProjectTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
+            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+                YENİ PROJE EKLE
+            </Button>
+            
             <TextField
                 label="EPC Filter"
                 value={epcFilter}
@@ -217,9 +222,7 @@ const ProjectTable = () => {
                 size='small'
                 style={{ marginBottom: 16, marginRight: 35, marginLeft: 10 }}
             />
-            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
-                YENİ PROJE EKLE
-            </Button>
+
             <DataGrid
                 rows={filteredRows}
                 columns={columns}

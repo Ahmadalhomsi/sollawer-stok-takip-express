@@ -2,7 +2,7 @@ import React from 'react'
 import TabNavigation from '../components/TabNavigation';
 import { allTabs } from '../components/allTabs';
 import ProjectTable from '../components/Tables/ProjectTable';
-
+import { Typography } from '@mui/material';
 
 const ProjectPage = () => {
 
@@ -10,9 +10,12 @@ const ProjectPage = () => {
 
     return (
         <div>
-
             <TabNavigation tabs={allTabs} />
-            <h1>Proje Islemleri</h1>
+
+            <Typography variant="h4" fontWeight="bold" style={{ padding: 5 }}>
+                Proje İşlemleri
+            </Typography>
+
             <ProjectTable />
 
         </div>

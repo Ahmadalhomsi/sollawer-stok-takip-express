@@ -341,11 +341,9 @@ const StockTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
-            <Box m={2}>
-                <Button onClick={handleModalOpen} variant="contained" color="primary">
-                    YENİ STOK EKLE
-                </Button>
-            </Box>
+            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+                YENİ STOK EKLE
+            </Button>
 
             <NewStockModal
                 open={isModalOpen}

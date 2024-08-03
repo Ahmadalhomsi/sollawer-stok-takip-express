@@ -1225,7 +1225,6 @@ app.post('/api/erp/billsOfProduct', async (req, res) => {
     }
 });
 
-
 app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
     const { id, billName, billDate, description, items, totalCost } = req.body;
     try {

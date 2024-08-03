@@ -2,7 +2,7 @@ import React from 'react'
 import CardParametersTable from '../components/Tables/CardParametersTable';
 import TabNavigation from '../components/TabNavigation';
 import { allTabs } from '../components/allTabs';
-
+import { Typography } from '@mui/material';
 
 
 const CardParameterPage = () => {
@@ -12,7 +12,9 @@ const CardParameterPage = () => {
         <div>
 
             <TabNavigation tabs={allTabs} />
-            <h1>Kart Parametre Islemleri</h1>
+            <Typography variant="h4" fontWeight="bold" style={{ padding: 5 }}>
+                Kart Parametre İşlemleri
+            </Typography>
             <CardParametersTable />
 
         </div>

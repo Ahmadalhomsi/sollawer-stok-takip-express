@@ -8,7 +8,7 @@ import { ERPallTabs } from '../../components/ERP/ERPallTabs';
 import TabNavigation from '../../components/TabNavigation';
 
 import BillOfProductTable from '../../components/ERP/Tables/BillOfProductTable';
-
+import { Typography } from '@mui/material';
 
 
 
@@ -19,7 +19,9 @@ const ERPbillOfProductPage = () => {
         <div>
             <TabNavigation tabs={ERPallTabs} />
 
-                <h1>Urun Recetesi islemleri</h1>
+            <Typography variant="h4" fontWeight="bold" style={{ padding: 5 }}>
+                Urun Recetesi islemleri
+            </Typography>
 
             <BillOfProductTable />
 
