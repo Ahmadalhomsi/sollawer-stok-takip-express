@@ -32,35 +32,38 @@ const ProductionOrderTable = () => {
             });
     }, []);
 
-    const handleEdit = (params) => {
-        setEditIdx(params.id);
-        setEditRow(rows.find((row) => row.id === params.id));
+    let isReadyForSubmit = true;
+    const processRowUpdate = async (newRow, oldRow) => {
+        if ((newRow !== oldRow) && isReadyForSubmit) {
+            await handleSave(newRow);
+        }
+        return newRow;
     };
 
-    const handleSave = async () => {
+
+    const handleSave = async (updatedRow) => {
+        console.log("Updated Row:", updatedRow);
         const dataToUpdate = {
-            ...editRow,
-            orderDate: new Date(editRow.orderDate).toISOString(),
+            ...updatedRow,
+            orderDate: new Date(updatedRow.orderDate).toISOString(),
             items: outLocalItems,
         };
 
         try {
-            const response = await axios.put(`http://localhost:5000/api/erp/productionOrders/${editIdx}`, dataToUpdate);
+            const response = await axios.put(`http://localhost:5000/api/erp/productionOrders/${updatedRow.id}`, dataToUpdate);
 
             if (response.status === 200) {
-                const updatedRows = rows.map((row) => (row.id === editIdx ? response.data : row));
+                const updatedRows = rows.map((row) => (row.id === updatedRow.id ? response.data : row));
                 setRows(updatedRows);
-                setEditIdx(-1);
+                toast.success('Row updated successfully!');
+                return updatedRow;
             } else {
                 console.error(`Failed to update row: ${response.statusText}`);
             }
         } catch (error) {
             console.error('Error updating row:', error);
         }
-    };
-
-    const handleCancel = () => {
-        setEditIdx(-1);
+        return updatedRow;
     };
 
     const handleDelete = (id) => {
@@ -83,17 +86,29 @@ const ProductionOrderTable = () => {
     const handleBillEdit = (row) => {
         console.log("Editing Bill for row:", row.BillOfProduct.billName);
         setEditingBillItem(row.BillOfProduct); // Assume there's only one item for simplification
+        setEditIdx(row.id); // Ensure editIdx is set
+
         setBillModalOpen(true);
     };
 
     const handleBillSave = (newItem) => {
-        // Update the editRow with the new bill information
-        setEditRow((prev) => ({
-            ...prev,
-            BillOfProduct: newItem.bill,
-            billOfProductId: newItem.bill.id,
-        }));
+
+        // Find the row being edited and update its items
+        const updatedRows = rows.map(row =>
+            row.id === editIdx ? {
+                ...row,
+                BillOfProduct: newItem.bill,
+                billOfProductId: newItem.bill.id,
+            } : row
+        );
+
+        // Find the row with the updated items
+        const updatedRow = updatedRows.find(row => row.id === editIdx);
+
         setBillModalOpen(false);
+        isReadyForSubmit = true;
+
+        handleSave(updatedRow);
     };
 
     const handleModalOpen = () => {
@@ -108,109 +123,63 @@ const ProductionOrderTable = () => {
         setRows((prevRows) => [...prevRows, newRow]);
     };
 
+
+
     const columns = [
-        {
-            field: 'id', headerName: 'ID', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="id"
-                    value={editRow.id}
-                    disabled
-                />
-            ) : params.value
-        },
-        {
-            field: 'orderNO', headerName: 'Order NO', width: 180, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="orderNO"
-                    value={editRow.orderNO}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        {
-            field: 'quantity', headerName: 'Quantity', width: 180, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="quantity"
-                    value={editRow.quantity}
-                    onChange={handleChange}
-                    type='number'
-                />
-            ) : params.value
-        },
+        { field: 'id', headerName: 'ID', width: 100, editable: false },
+        { field: 'orderNO', headerName: 'Order NO', width: 180, editable: true },
+        { field: 'quantity', headerName: 'Quantity', width: 180, editable: true, type: 'number' },
         {
             field: 'orderDate',
             headerName: 'Order Date',
             width: 180,
-            renderCell: (params) => params.row.id === editIdx ? (
+            editable: true,
+            renderEditCell: (params) => (
                 <TextField
                     fullWidth
                     type="datetime-local"
-                    name="orderDate"
-                    value={new Date(editRow.orderDate).toISOString().slice(0, 16)}
-                    onChange={handleChange}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
+                    value={params.value ? new Date(params.value).toISOString().slice(0, 16) : ''}
+                    onChange={(e) => params.api.setEditCellValue({ id: params.id, field: params.field, value: e.target.value })}
+                    InputLabelProps={{ shrink: true }}
                 />
-            ) : new Date(params.value).toLocaleString()
+            ),
         },
         {
             field: 'BillOfProduct.billName',
             headerName: 'Reçete',
             width: 150,
-            renderCell: (params) => params.row.id === editIdx ? (
-                <Button onClick={() => handleBillEdit(editRow)} variant="contained" color="primary" size="small">
-                    Edit Bill
-                </Button>
-            ) : (
+            editable: true,
+
+            renderCell: (params) => (
                 <span>{params.row.BillOfProduct.billName || "Default Bill Name"}</span>
+            ),
+            renderEditCell: (params) => (
+                <>
+                    {isReadyForSubmit = false}
+                    {handleBillEdit(params.row)}
+                </>
+
             )
         },
-        {
-            field: 'totalCost', headerName: 'Toplam Maliyet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    type="number"
-                    name="totalCost"
-                    value={editRow.totalCost}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        {
-            field: 'description', headerName: 'Description', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="description"
-                    value={editRow.description}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
+        { field: 'totalCost', headerName: 'Toplam Maliyet', width: 100, editable: false, type: 'number' },
+        { field: 'description', headerName: 'Description', width: 150, editable: true },
         {
             field: 'actions',
             headerName: 'Actions',
             width: 164,
             renderCell: (params) => (
-                params.row.id === editIdx ? (
-                    <>
-                        <Button onClick={handleSave} variant="contained" color="primary" size="small" style={{ marginRight: 8 }}>
-                            Save
-                        </Button>
-                        <Button onClick={handleCancel} variant="contained" color="secondary" size="small">
-                            Cancel
-                        </Button>
-                    </>
-                ) : (
-                    <>
-                        <Button onClick={() => handleEdit(params)} variant="contained" size="small" style={{ marginRight: 8 }}>
-                            Edit
-                        </Button>
-                        <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
-                            <DeleteIcon />
-                        </IconButton>
-                    </>
-                )
+                <>
+                    <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
+                        <DeleteIcon />
+                    </IconButton>
+                </>
             )
-        }
+            // renderEditCell: (params) => (
+            //     <Button onClick={() => handleStockEdit(params)} variant="contained" size="small" style={{ marginRight: 8 }}>
+            //         Edit Stock Items URL
+            //     </Button>
+            // )
+        },
     ];
 
     return (
@@ -227,6 +196,7 @@ const ProductionOrderTable = () => {
                 disableSelectionOnClick
                 loading={loading}
                 getRowId={(row) => row.id}
+                processRowUpdate={processRowUpdate}
             />
 
             <NewProductionOrderModal

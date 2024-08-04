@@ -74,7 +74,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                 maxHeight: 'calc(100vh - 100px)', /* Set max height (adjust as needed) */
             }}>
                 <Typography id="modal-modal-title" variant="h6" component="h2" mb={2}>
-                    Yeni Sipariş Oluştur
+                    Yeni Stok Hareketi Oluştur
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField

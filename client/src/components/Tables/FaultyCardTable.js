@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, Link, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Link, TextField, IconButton } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import NewFaultyCardModal from '../Modals/NewFaultyCardModal';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const FaultyCardsTable = () => {
     const [rows, setRows] = useState([]);
-    const [editIdx, setEditIdx] = useState(-1);
+
     const [editRow, setEditRow] = useState({});
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
@@ -30,48 +29,6 @@ const FaultyCardsTable = () => {
                 setLoading(false);
             });
     }, []);
-
-    const handleEdit = (params) => {
-        setEditIdx(params.id);
-        setEditRow(rows.find((row) => row.id === params.id));
-    };
-
-    const handleSave = async () => {
-        const dataToUpdate = { ...editRow };
-        try {
-            const response = await axios.put(`http://localhost:5000/api/faultyCards/${editIdx}`, dataToUpdate);
-            if (response.status === 200) {
-                const updatedRows = rows.map((row) => (row.id === editIdx ? dataToUpdate : row));
-                setRows(updatedRows);
-                setEditIdx(-1);
-            } else {
-                console.error(`Failed to update row: ${response.statusText}`);
-            }
-        } catch (error) {
-            console.error('Error updating row:', error);
-        }
-    };
-
-    const handleCancel = () => {
-        setEditIdx(-1);
-    };
-
-    const handleDelete = (id) => {
-        setRows(rows.filter((row) => row.id !== id));
-        try {
-            axios.delete(`http://localhost:5000/api/faultyCards/${id}`);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setEditRow((prev) => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
-    };
 
     const handleModalOpen = () => {
         setModalOpen(true);
@@ -95,13 +52,23 @@ const FaultyCardsTable = () => {
         setSelectedPhoto('');
     };
 
-    const handleAddURL = () => {
-        setURLDialogOpen(true);
-    };
-
     const handleURLDialogClose = () => {
         setURLDialogOpen(false);
+
+        console.log(editRow);
+        isReadyForSubmit = true;
+        handleProcessRowUpdate(editRow);
         setNewPhotoFile(null);
+
+    };
+
+    const handleDelete = (id) => {
+        setRows(rows.filter((row) => row.id !== id));
+        try {
+            axios.delete(`http://localhost:5000/api/erp/stocks/${id}`);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleURLSubmit = async () => {
@@ -117,7 +84,7 @@ const FaultyCardsTable = () => {
 
                 const photoName = response.data.fileName;
 
-                console.log("XXXXXXXXXX");
+                console.log("VVVVVVVVVV");
                 console.log(photoName);
 
                 const updatedPhotoURLs = [...editRow.photoURL, photoName];
@@ -126,7 +93,7 @@ const FaultyCardsTable = () => {
                     photoURL: updatedPhotoURLs
                 }));
 
-                handleURLDialogClose();
+
                 toast.success('Photo uploaded successfully!');
             } catch (error) {
                 console.error('Error uploading photo:', error);
@@ -142,7 +109,6 @@ const FaultyCardsTable = () => {
             photoURL: updatedPhotoURLs
         }));
 
-
         try {
             await axios.delete('http://localhost:5000/deleteFile', {
                 data: { filePath: urlToDelete }
@@ -151,81 +117,72 @@ const FaultyCardsTable = () => {
             toast.error('Error deleting file');
         }
 
-
         toast.success('Photo deleted successfully!');
     };
 
-    const handleEditURLs = () => {
+    const handleEdit = (params) => {
+        setEditRow(rows.find((row) => row.id === params.id));
+    };
+
+
+    const handleEditURLs = (params) => {
         setURLDialogOpen(true);
+        handleEdit(params)
+    };
+
+
+    let isReadyForSubmit = true;
+    const handleProcessRowUpdate = async (newRow) => {
+        if (isReadyForSubmit) {
+            try {
+                const response = await axios.put(`http://localhost:5000/api/faultyCards/${newRow.id}`, newRow);
+                if (response.status === 200) {
+                    const updatedRows = rows.map((row) => (row.id === newRow.id ? newRow : row));
+                    setRows(updatedRows);
+                    toast.success('Row updated successfully!');
+                    return newRow;
+                } else {
+                    console.error(`Failed to update row: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Error updating row:', error);
+            }
+            return newRow;
+        }
+        return newRow;
     };
 
     const columns = [
-        {
-            field: 'id', headerName: 'ID', width: 10, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="id"
-                    value={editRow.id}
-                    disabled
-                />
-            ) : params.value
-        },
-        {
-            field: 'cardID', headerName: 'Kart ID', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="cardID"
-                    value={editRow.cardID}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
+        { field: 'id', headerName: 'ID', width: 100, editable: false },
+        { field: 'cardID', headerName: 'Kart ID', width: 120, editable: true },
         {
             field: 'servisDate',
-            headerName: 'Servis Tarih',
+            headerName: 'Servis Tarihi',
             width: 140,
-            renderCell: (params) => params.row.id === editIdx ? (
+            editable: true,
+            renderCell: (params) => new Date(params.value).toLocaleString(),
+            renderEditCell: (params) => (
                 <TextField
+                    style={{ width: 140 }}
                     fullWidth
                     type="datetime-local"
                     name="servisDate"
-                    value={new Date(editRow.servisDate).toISOString().slice(0, 16)}
-                    onChange={handleChange}
+                    value={params.value ? new Date(params.value).toISOString().slice(0, 16) : ''}
+                    onChange={(e) => params.api.setEditCellValue({ id: params.id, field: params.field, value: e.target.value })}
                     InputLabelProps={{
                         shrink: true,
                     }}
                 />
-            ) : new Date(params.value).toLocaleString()
+            ),
         },
-        {
-            field: 'status', headerName: 'Durum', width: 110, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="status"
-                    value={editRow.status}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        {
-            field: 'fault', headerName: 'Arıza', width: 140, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="fault"
-                    value={editRow.fault}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
+        { field: 'status', headerName: 'Durum', width: 110, editable: true },
+        { field: 'fault', headerName: 'Arıza', width: 140, editable: true },
         {
             field: 'photoURL',
             headerName: 'Photo URL',
             width: 300,
-            renderCell: (params) => params.row.id === editIdx ? (
-                <>
-                    <Box>
-                        <Button onClick={handleEditURLs} variant="contained" color="primary" size="small">
-                            Edit Photo URLs
-                        </Button>
-                    </Box>
-                </>
-            ) : (
+            editable: true,
+            renderCell: (params) => (
                 <Box>
                     {params.value.map((url, index) => (
                         <Link
@@ -239,44 +196,42 @@ const FaultyCardsTable = () => {
                         </Link>
                     ))}
                 </Box>
-            )
+            ),
+            renderEditCell: (params) => (
+                <>
+                    <Box style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingLeft: 80,
+                    }}>
+                        {params.value}
+                        {isReadyForSubmit = false}
+                        {handleEditURLs(params)}
+                    </Box>
+                </>
+            ),
         },
-        {
-            field: 'projectNO', headerName: 'Proje NO', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="projectNO"
-                    value={editRow.projectNO}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
+        { field: 'projectNO', headerName: 'Proje NO', width: 120, editable: true },
         {
             field: 'actions',
             headerName: 'Actions',
             width: 164,
             renderCell: (params) => (
-                params.row.id === editIdx ? (
-                    <>
-                        <Button onClick={handleSave} variant="contained" color="primary" size="small" style={{ marginRight: 8 }}>
-                            Save
-                        </Button>
-                        <Button onClick={handleCancel} variant="contained" color="secondary" size="small">
-                            Cancel
-                        </Button>
-                    </>
-                ) : (
-                    <>
-                        <Button onClick={() => handleEdit(params)} variant="contained" size="small" style={{ marginRight: 8 }}>
-                            Edit
-                        </Button>
-                        <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
-                            <DeleteIcon />
-                        </IconButton>
-                    </>
-                )
-            )
-        }
+                <>
+                    <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
+                        <DeleteIcon />
+                    </IconButton>
+                </>
+            ),
+            // renderEditCell: (params) => (
+            //     <Button onClick={() => handleEditURLs(params)} variant="contained" size="small" style={{ marginRight: 8 }}>
+            //         Edit Photo URL
+            //     </Button>
+            // )
+        },
     ];
+
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
@@ -295,10 +250,10 @@ const FaultyCardsTable = () => {
                 columns={columns}
                 pageSize={10}
                 rowsPerPageOptions={[5, 10, 20]}
-                // checkboxSelection
                 disableSelectionOnClick
                 loading={loading}
                 getRowId={(row) => row.id}
+                processRowUpdate={handleProcessRowUpdate}
 
             />
 

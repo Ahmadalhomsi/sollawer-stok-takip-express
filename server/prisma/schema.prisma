@@ -89,7 +89,7 @@ model ControlCard {
 
   // Relation fields
   cardParameters CardParameter[] @relation("ControlCardToCardParameters")
-  project        Project?        @relation("ProjectToControlCards", fields: [projectNO], references: [projectNO])
+  project        Project?        @relation("ProjectToControlCards", fields: [projectNO], references: [projectNO], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -103,7 +103,7 @@ model CardParameter {
   value       String
 
   // Relation fields
-  controlCard ControlCard? @relation("ControlCardToCardParameters", fields: [UNID], references: [UNID])
+  controlCard ControlCard? @relation("ControlCardToCardParameters", fields: [UNID], references: [UNID], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

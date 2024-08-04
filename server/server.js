@@ -337,7 +337,7 @@ app.get('/api/faultyCards', async (req, res) => { // Get all cards
 app.post('/api/faultyCards', async (req, res) => { // Endpoint to create a card
     try {
         const {
-            UNID,
+            cardID,
             servisDate,
             status,
             fault,
@@ -347,7 +347,7 @@ app.post('/api/faultyCards', async (req, res) => { // Endpoint to create a card
 
         const newUser = await prisma.faultyCard.create({
             data: {
-                UNID: UNID.trim(),
+                cardID: cardID.trim(),
                 servisDate: new Date(servisDate),    // Remove extra spaces
                 status: status.trim(),
                 fault: fault.trim(),
@@ -368,7 +368,7 @@ app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creatin
 
     const {
         id,
-        UNID,
+        cardID,
         servisDate,
         status,
         fault,
@@ -384,7 +384,7 @@ app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creatin
                 id: parseInt(id),
             },
             data: {
-                UNID: UNID.trim(),
+                cardID: cardID.trim(),
                 servisDate: new Date(servisDate),    // Remove extra spaces
                 status: status.trim(),
                 fault: fault.trim(),

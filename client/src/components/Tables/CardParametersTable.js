@@ -9,8 +9,6 @@ import UNIDSearchModal from '../Modals/UNIDSearchModal';
 
 const CardParametersTable = () => {
     const [rows, setRows] = useState([]);
-    const [editIdx, setEditIdx] = useState(-1);
-    const [editRow, setEditRow] = useState({});
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
     const [unidSearchModalOpen, setUNIDSearchModalOpen] = useState(false);
@@ -40,33 +38,16 @@ const CardParametersTable = () => {
             });
     };
 
-    const handleEdit = (params) => {
-        setEditIdx(params.id);
-        setEditRow(rows.find((row) => row.id === params.id));
-    };
-
-    const handleSave = async () => {
-        const dataToUpdate = {
-            ...editRow,
-        };
-
+    const handleRowUpdate = async (newRow, oldRow) => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/cardParameters/${editIdx}`, dataToUpdate);
-
-            if (response.status === 200) {
-                const updatedRows = rows.map((row) => (row.id === editIdx ? dataToUpdate : row));
-                setRows(updatedRows);
-                setEditIdx(-1);
-            } else {
-                console.error(`Failed to update row: ${response.statusText}`);
-            }
+            await axios.put(`http://localhost:5000/api/cardParameters/${newRow.id}`, newRow);
+            toast.success("Row updated successfully");
+            return newRow;
         } catch (error) {
+            toast.error("Failed to update row");
             console.error('Error updating row:', error);
+            return oldRow;
         }
-    };
-
-    const handleCancel = () => {
-        setEditIdx(-1);
     };
 
     const handleDelete = (id) => {
@@ -76,14 +57,6 @@ const CardParametersTable = () => {
         } catch (error) {
             console.log(error);
         }
-    };
-
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setEditRow((prev) => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value,
-        }));
     };
 
     const handleModalOpen = () => {
@@ -100,7 +73,7 @@ const CardParametersTable = () => {
         setSelectedUNID(null); // Clear the selected UNID
     };
 
-    const handleUNIDSelect = (selectedUNID, selectedCardName) => {
+    const handleUNIDSelect = (selectedUNID) => {
         setSelectedUNID(selectedUNID);
         setShowLabel(true);
         setUNIDSearchModalOpen(false); // Close the modal after selecting
@@ -110,77 +83,28 @@ const CardParametersTable = () => {
         setUnidFilter(event.target.value);
     };
 
+    const filteredRows = rows.filter(row =>
+        row.UNID.toLowerCase().includes(unidFilter.toLowerCase())
+    );
+
     const columns = [
-        {
-            field: 'id', headerName: 'ID', width: 10, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="id"
-                    value={editRow.id}
-                />
-            ) : params.value
-        },
-        {
-            field: 'UNID', headerName: 'UNID', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="UNID"
-                    value={editRow.UNID}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        {
-            field: 'parameterNO', headerName: 'Parametre NO', width: 110, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="parameterNO"
-                    value={editRow.parameterNO}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        {
-            field: 'parameter', headerName: 'Parametre', width: 110, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="parameter"
-                    value={editRow.parameter}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        {
-            field: 'value', headerName: 'Değer', width: 80, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="value"
-                    value={editRow.value}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
+        { field: 'id', headerName: 'ID', width: 10, editable: false },
+        { field: 'UNID', headerName: 'UNID', width: 120, editable: true },
+        { field: 'parameterNO', headerName: 'Parametre NO', width: 110, editable: true },
+        { field: 'parameter', headerName: 'Parametre', width: 110, editable: true },
+        { field: 'value', headerName: 'Değer', width: 120, editable: true },
         {
             field: 'actions',
             headerName: 'Actions',
             width: 164,
             renderCell: (params) => (
-                params.row.id === editIdx ? (
-                    <>
-                        <Button onClick={handleSave} variant="contained" color="primary" size="small" style={{ marginRight: 8 }}>
-                            Save
-                        </Button>
-                        <Button onClick={handleCancel} variant="contained" color="secondary" size="small">
-                            Cancel
-                        </Button>
-                    </>
-                ) : (
-                    <>
-                        <Button onClick={() => handleEdit(params)} variant="contained" size="small" style={{ marginRight: 8 }}>
-                            Edit
-                        </Button>
-                        <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
-                            <DeleteIcon />
-                        </IconButton>
-                    </>
-                )
+                <>
+                    <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
+                        <DeleteIcon />
+                    </IconButton>
+                </>
             )
-        },
+        }
     ];
 
     return (
@@ -214,13 +138,19 @@ const CardParametersTable = () => {
             )}
 
             <DataGrid
-                rows={rows}
+                rows={filteredRows}
                 columns={columns}
                 pageSize={10}
                 rowsPerPageOptions={[5, 10, 20]}
                 disableSelectionOnClick
                 loading={loading}
                 getRowId={(row) => row.id}
+                processRowUpdate={handleRowUpdate}
+                onProcessRowUpdateError={(error) => {
+                    toast.error("Error updating row");
+                    console.error('Error updating row:', error);
+                }}
+                experimentalFeatures={{ newEditingApi: true }}
             />
             <NewCardParameterModal
                 open={isModalOpen}
@@ -232,7 +162,7 @@ const CardParametersTable = () => {
             <UNIDSearchModal
                 open={unidSearchModalOpen}
                 onClose={() => setUNIDSearchModalOpen(false)}
-                onSelect={(selectedUNID) => handleUNIDSelect(selectedUNID, selectedUNID)} // Adjust 'Card Name' to be the actual card name
+                onSelect={handleUNIDSelect} // Adjust 'Card Name' to be the actual card name
             />
         </Box>
     );

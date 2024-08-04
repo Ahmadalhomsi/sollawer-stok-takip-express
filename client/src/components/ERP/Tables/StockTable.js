@@ -9,7 +9,6 @@ import NewStockModal from '../Modals/NewStockModal';
 
 const StockTable = () => {
     const [rows, setRows] = useState([]);
-    const [editIdx, setEditIdx] = useState(-1);
     const [editRow, setEditRow] = useState({});
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
@@ -32,29 +31,9 @@ const StockTable = () => {
     }, []);
 
     const handleEdit = (params) => {
-        setEditIdx(params.id);
         setEditRow(rows.find((row) => row.id === params.id));
     };
 
-    const handleSave = async () => {
-        const dataToUpdate = { ...editRow };
-        try {
-            const response = await axios.put(`http://localhost:5000/api/erp/stocks/${editIdx}`, dataToUpdate);
-            if (response.status === 200) {
-                const updatedRows = rows.map((row) => (row.id === editIdx ? dataToUpdate : row));
-                setRows(updatedRows);
-                setEditIdx(-1);
-            } else {
-                console.error(`Failed to update row: ${response.statusText}`);
-            }
-        } catch (error) {
-            console.error('Error updating row:', error);
-        }
-    };
-
-    const handleCancel = () => {
-        setEditIdx(-1);
-    };
 
     const handleDelete = (id) => {
         setRows(rows.filter((row) => row.id !== id));
@@ -63,14 +42,6 @@ const StockTable = () => {
         } catch (error) {
             console.log(error);
         }
-    };
-
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setEditRow((prev) => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
     };
 
     const handleModalOpen = () => {
@@ -99,9 +70,36 @@ const StockTable = () => {
         setURLDialogOpen(true);
     };
 
+    let isReadyForSubmit = true;
     const handleURLDialogClose = () => {
         setURLDialogOpen(false);
+
+        console.log(editRow);
+        isReadyForSubmit = true;
+        handleProcessRowUpdate(editRow);
         setNewPhotoFile(null);
+
+    };
+
+    const handleProcessRowUpdate = async (newRow) => {
+        if (isReadyForSubmit) {
+            try {
+                console.log("Entereeeeed");
+                const response = await axios.put(`http://localhost:5000/api/erp/stocks/${newRow.id}`, newRow);
+                if (response.status === 200) {
+                    const updatedRows = rows.map((row) => (row.id === newRow.id ? newRow : row));
+                    setRows(updatedRows);
+                    toast.success('Row updated successfully!');
+                    return newRow;
+                } else {
+                    console.error(`Failed to update row: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Error updating row:', error);
+            }
+            return newRow;
+        }
+        return newRow;
     };
 
     const handleURLSubmit = async () => {
@@ -126,7 +124,7 @@ const StockTable = () => {
                     photoURL: updatedPhotoURLs
                 }));
 
-                handleURLDialogClose();
+
                 toast.success('Photo uploaded successfully!');
             } catch (error) {
                 console.error('Error uploading photo:', error);
@@ -153,149 +151,31 @@ const StockTable = () => {
 
 
         toast.success('Photo deleted successfully!');
+
     };
 
-    const handleEditURLs = () => {
+    const handleEditURLs = (params) => {
         setURLDialogOpen(true);
+        handleEdit(params)
     };
+
+
 
     const columns = [
-        {
-            field: 'id', headerName: 'ID', width: 10, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="id"
-                    value={editRow.id}
-                    disabled
-                />
-            ) : params.value
-        },
-        {
-            field: 'stockName', headerName: 'Parça Adı', width: 240, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="stockName"
-                    value={editRow.stockName}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        {
-            field: 'stockType', headerName: 'Stok Tipi', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="stockType"
-                    value={editRow.stockType}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        {
-            field: 'quantity', headerName: 'Adet', width: 80, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    type="number"
-                    name="quantity"
-                    value={editRow.quantity}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        {
-            field: 'duration', headerName: 'Süre', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="duration"
-                    value={editRow.duration}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        // {
-        //   field: 'requested', headerName: 'Talep Edilen', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-        //     <TextField
-        //       type="number"
-        //       name="requested"
-        //       value={editRow.requested}
-        //       onChange={handleChange}
-        //     />
-        //   ) : params.value
-        // },
-        // {
-        //     field: 'inStock', headerName: 'Stokta', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-        //         <TextField
-        //             type="number"
-        //             name="inStock"
-        //             value={editRow.inStock}
-        //             onChange={handleChange}
-        //         />
-        //     ) : params.value
-        // },
-        // {
-        //   field: 'boxQuantity', headerName: 'Kutu Adet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-        //     <TextField
-        //       type="number"
-        //       name="boxQuantity"
-        //       value={editRow.boxQuantity}
-        //       onChange={handleChange}
-        //     />
-        //   ) : params.value
-        // },
-        // {
-        //   field: 'need', headerName: 'İhtiyaç', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-        //     <TextField
-        //       type="number"
-        //       name="need"
-        //       value={editRow.need}
-        //       onChange={handleChange}
-        //     />
-        //   ) : params.value
-        // },
-        {
-            field: 'cost', headerName: 'Maliyet', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    type="number"
-                    name="cost"
-                    value={editRow.cost}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        // {
-        //     field: 'deliveryDate', headerName: 'Teslim Süresi', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-        //         <TextField
-        //             name="deliveryDate"
-        //             value={editRow.deliveryDate}
-        //             onChange={handleChange}
-        //         />
-        //     ) : params.value
-        // },
-        {
-            field: 'company', headerName: 'Firma', width: 140, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="company"
-                    value={editRow.company}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
-        {
-            field: 'description', headerName: 'Açıklama', width: 180, renderCell: (params) => params.row.id === editIdx ? (
-                <TextField
-                    name="description"
-                    value={editRow.description}
-                    onChange={handleChange}
-                />
-            ) : params.value
-        },
+        { field: 'id', headerName: 'ID', width: 10, editable: false },
+        { field: 'stockName', headerName: 'Parça Adı', width: 240, editable: true },
+        { field: 'stockType', headerName: 'Stok Tipi', width: 100, editable: true },
+        { field: 'quantity', headerName: 'Adet', width: 80, editable: true, type: 'number' },
+        { field: 'duration', headerName: 'Süre', width: 100, editable: true },
+        { field: 'cost', headerName: 'Maliyet', width: 100, editable: true, type: 'number' },
+        { field: 'company', headerName: 'Firma', width: 140, editable: true },
+        { field: 'description', headerName: 'Açıklama', width: 180, editable: true },
         {
             field: 'photoURL',
             headerName: 'Photo URL',
             width: 300,
-            renderCell: (params) => params.row.id === editIdx ? (
-                <>
-                    <Box>
-                        <Button onClick={handleEditURLs} variant="contained" color="primary" size="small">
-                            Edit Photo URLs
-                        </Button>
-                    </Box>
-                </>
-            ) : (
+            editable: true,
+            renderCell: (params) => (
                 <Box>
                     {params.value.map((url, index) => (
                         <Link
@@ -309,34 +189,40 @@ const StockTable = () => {
                         </Link>
                     ))}
                 </Box>
-            )
+            ),
+            renderEditCell: (params) => (
+                <>
+                    <Box style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingLeft: 80,
+                    }}>
+                        {params.value}
+                        {isReadyForSubmit = false}
+                        {handleEditURLs(params)}
+                    </Box>
+                </>
+            ),
         },
+
         {
             field: 'actions',
             headerName: 'Actions',
             width: 164,
             renderCell: (params) => (
-                params.row.id === editIdx ? (
-                    <>
-                        <Button onClick={handleSave} variant="contained" color="primary" size="small" style={{ marginRight: 8 }}>
-                            Save
-                        </Button>
-                        <Button onClick={handleCancel} variant="contained" color="secondary" size="small">
-                            Cancel
-                        </Button>
-                    </>
-                ) : (
-                    <>
-                        <Button onClick={() => handleEdit(params)} variant="contained" size="small" style={{ marginRight: 8 }}>
-                            Edit
-                        </Button>
-                        <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
-                            <DeleteIcon />
-                        </IconButton>
-                    </>
-                )
-            )
-        }
+                <>
+                    <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
+                        <DeleteIcon />
+                    </IconButton>
+                </>
+            ),
+            // renderEditCell: (params) => (
+            //     <Button onClick={() => handleEditURLs(params)} variant="contained" size="small" style={{ marginRight: 8 }}>
+            //         Edit Photo URL
+            //     </Button>
+            // )
+        },
     ];
 
     return (
@@ -360,6 +246,7 @@ const StockTable = () => {
                 disableSelectionOnClick
                 loading={loading}
                 getRowId={(row) => row.id}
+                processRowUpdate={handleProcessRowUpdate}
 
             />
 
