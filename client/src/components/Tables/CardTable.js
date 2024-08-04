@@ -27,26 +27,29 @@ const CardTable = () => {
   }, []);
 
   const handleRowUpdate = async (newRow, oldRow) => {
-    const dataToUpdate = {
-      ...newRow,
-      orderNumber: parseInt(newRow.orderNumber, 10),
-      revisionDate: new Date(newRow.revisionDate).toISOString(),
-    };
+    if (JSON.stringify(newRow) !== JSON.stringify(oldRow)) {
+      const dataToUpdate = {
+        ...newRow,
+        orderNumber: parseInt(newRow.orderNumber, 10),
+        revisionDate: new Date(newRow.revisionDate).toISOString(),
+      };
 
-    try {
-      const response = await axios.put(`http://localhost:5000/api/controlCards/${newRow.id}`, dataToUpdate);
-      if (response.status === 200) {
-        toast.success("Row updated successfully");
-        return dataToUpdate;
-      } else {
-        toast.error(`Failed to update row: ${response.statusText}`);
+      try {
+        const response = await axios.put(`http://localhost:5000/api/controlCards/${newRow.id}`, dataToUpdate);
+        if (response.status === 200) {
+          toast.success("Row updated successfully");
+          return dataToUpdate;
+        } else {
+          toast.error(`Failed to update row: ${response.statusText}`);
+          return oldRow;
+        }
+      } catch (error) {
+        toast.error("Error updating row");
+        console.error('Error updating row:', error);
         return oldRow;
       }
-    } catch (error) {
-      toast.error("Error updating row");
-      console.error('Error updating row:', error);
-      return oldRow;
     }
+    return oldRow;
   };
 
   const handleDelete = (id) => {
@@ -96,7 +99,7 @@ const CardTable = () => {
       renderCell: (params) => new Date(params.value).toLocaleString(),
       renderEditCell: (params) => (
         <TextField
-        style={{ width: 140 }}
+          style={{ width: 140 }}
           fullWidth
           type="datetime-local"
           name="revisionDate"
@@ -139,25 +142,25 @@ const CardTable = () => {
   return (
     <Box sx={{ height: 600, width: '100%' }}>
 
-        <Button onClick={handleModalOpen} variant="contained" color="primary" sx={{ marginBottom: 2 }}>
-          YENİ KONTROL KARTI EKLE
-        </Button>
-        <TextField
-          label="UNID Filter"
-          variant="outlined"
-          value={unidFilter}
-          onChange={handleUnidFilterChange}
-          size='small'
-          sx={{ marginBottom: 2, marginRight: 2, marginLeft: 2 }}
-        />
-        <TextField
-          label="Proje NO Filter"
-          variant="outlined"
-          value={projectNoFilter}
-          onChange={handleProjectNoFilterChange}
-          size='small'
-          sx={{ marginBottom: 2, marginRight: 2 }}
-        />
+      <Button onClick={handleModalOpen} variant="contained" color="primary" sx={{ marginBottom: 2 }}>
+        YENİ KONTROL KARTI EKLE
+      </Button>
+      <TextField
+        label="UNID Filter"
+        variant="outlined"
+        value={unidFilter}
+        onChange={handleUnidFilterChange}
+        size='small'
+        sx={{ marginBottom: 2, marginRight: 2, marginLeft: 2 }}
+      />
+      <TextField
+        label="Proje NO Filter"
+        variant="outlined"
+        value={projectNoFilter}
+        onChange={handleProjectNoFilterChange}
+        size='small'
+        sx={{ marginBottom: 2, marginRight: 2 }}
+      />
 
 
       <DataGrid

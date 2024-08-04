@@ -3,8 +3,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Button, Box, IconButton, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import toast from   
- "react-hot-toast";
+import toast from
+  "react-hot-toast";
 import NewCustomerModal from '../Modals/NewCustomerModal';
 
 const CustomerTable = () => {
@@ -26,18 +26,21 @@ const CustomerTable = () => {
   }, []);
 
   const handleRowUpdate = async (newRow, oldRow) => {
-    try {
-      await axios.put(`http://localhost:5000/api/customers/${newRow.id}`, newRow);
-      toast.success("Row updated successfully");
-      setRows((prevRows) =>
-        prevRows.map((row) => (row.id === newRow.id ? newRow : row))
-      ); // Update local state
-      return newRow;
-    } catch (error) {
-      toast.error("Failed to update row");
-      console.error('Error updating row:', error);
-      return oldRow;
+    if (JSON.stringify(newRow) !== JSON.stringify(oldRow)) {
+      try {
+        await axios.put(`http://localhost:5000/api/customers/${newRow.id}`, newRow);
+        toast.success("Row updated successfully");
+        setRows((prevRows) =>
+          prevRows.map((row) => (row.id === newRow.id ? newRow : row))
+        ); // Update local state
+        return newRow;
+      } catch (error) {
+        toast.error("Failed to update row");
+        console.error('Error updating row:', error);
+
+      }
     }
+    return oldRow;
   };
 
   const handleDelete = (id) => {
@@ -57,10 +60,10 @@ const CustomerTable = () => {
     setModalOpen(false);
   };
 
-  const handleRowCreated   
- = (newRow) => {
-    setRows((prevRows) => [...prevRows, { ...newRow, emailLink: `mailto:${newRow.email}` }]); // Add emailLink during creation
-  };
+  const handleRowCreated
+    = (newRow) => {
+      setRows((prevRows) => [...prevRows, { ...newRow, emailLink: `mailto:${newRow.email}` }]); // Add emailLink during creation
+    };
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 10, editable: false },
@@ -91,33 +94,33 @@ const CustomerTable = () => {
       ),
     },
   ];
-    return (
-        <Box sx={{ height: 600, width: '100%' }}>
-            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
-                YENİ MÜŞTERİ EKLE
-            </Button>
-            <DataGrid
-                rows={rows}
-                columns={columns}
-                pageSize={10}
-                rowsPerPageOptions={[5, 10, 20]}
-                disableSelectionOnClick
-                loading={loading}
-                getRowId={(row) => row.id}
-                processRowUpdate={handleRowUpdate}
-                onProcessRowUpdateError={(error) => {
-                    toast.error("Error updating row");
-                    console.error('Error updating row:', error);
-                }}
+  return (
+    <Box sx={{ height: 600, width: '100%' }}>
+      <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+        YENİ MÜŞTERİ EKLE
+      </Button>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        pageSize={10}
+        rowsPerPageOptions={[5, 10, 20]}
+        disableSelectionOnClick
+        loading={loading}
+        getRowId={(row) => row.id}
+        processRowUpdate={handleRowUpdate}
+        onProcessRowUpdateError={(error) => {
+          toast.error("Error updating row");
+          console.error('Error updating row:', error);
+        }}
 
-            />
-            <NewCustomerModal
-                open={isModalOpen}
-                onClose={handleModalClose}
-                onRowCreated={handleRowCreated}
-            />
-        </Box>
-    );
+      />
+      <NewCustomerModal
+        open={isModalOpen}
+        onClose={handleModalClose}
+        onRowCreated={handleRowCreated}
+      />
+    </Box>
+  );
 };
 
 export default CustomerTable;

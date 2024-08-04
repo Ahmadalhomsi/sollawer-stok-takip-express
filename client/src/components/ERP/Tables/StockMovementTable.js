@@ -36,19 +36,22 @@ const StockMovementTable = () => {
     setRows((prevRows) => [...prevRows, newRow]);
   };
 
-  const handleProcessRowUpdate = async (newRow) => {
-    try {
-      const response = await axios.put(`http://localhost:5000/api/erp/stockMovements/${newRow.id}`, newRow);
-      if (response.status === 200) {
-        const updatedRows = rows.map((row) => (row.id === newRow.id ? newRow : row));
-        setRows(updatedRows);
-        toast.success('Row updated successfully!');
-        return newRow;
-      } else {
-        console.error(`Failed to update row: ${response.statusText}`);
+  const handleProcessRowUpdate = async (newRow, oldRow) => {
+
+    if (JSON.stringify(newRow) !== JSON.stringify(oldRow)) {
+      try {
+        const response = await axios.put(`http://localhost:5000/api/erp/stockMovements/${newRow.id}`, newRow);
+        if (response.status === 200) {
+          const updatedRows = rows.map((row) => (row.id === newRow.id ? newRow : row));
+          setRows(updatedRows);
+          toast.success('Row updated successfully!');
+          return newRow;
+        } else {
+          console.error(`Failed to update row: ${response.statusText}`);
+        }
+      } catch (error) {
+        console.error('Error updating row:', error);
       }
-    } catch (error) {
-      console.error('Error updating row:', error);
     }
     return newRow;
   };
@@ -56,11 +59,11 @@ const StockMovementTable = () => {
   const handleDelete = (id) => {
     setRows(rows.filter((row) => row.id !== id));
     try {
-        axios.delete(`http://localhost:5000/api/erp/stockMovements/${id}`);
+      axios.delete(`http://localhost:5000/api/erp/stockMovements/${id}`);
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-};
+  };
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 100, editable: false },

@@ -33,8 +33,9 @@ const ProductionOrderTable = () => {
     }, []);
 
     let isReadyForSubmit = true;
+    
     const processRowUpdate = async (newRow, oldRow) => {
-        if ((newRow !== oldRow) && isReadyForSubmit) {
+        if (JSON.stringify(newRow) !== JSON.stringify(oldRow) && isReadyForSubmit) {
             await handleSave(newRow);
         }
         return newRow;

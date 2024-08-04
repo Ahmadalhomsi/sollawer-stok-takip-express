@@ -132,8 +132,8 @@ const FaultyCardsTable = () => {
 
 
     let isReadyForSubmit = true;
-    const handleProcessRowUpdate = async (newRow) => {
-        if (isReadyForSubmit) {
+    const handleProcessRowUpdate = async (newRow, oldRow) => {
+        if (JSON.stringify(newRow) !== JSON.stringify(oldRow) && isReadyForSubmit) {
             try {
                 const response = await axios.put(`http://localhost:5000/api/faultyCards/${newRow.id}`, newRow);
                 if (response.status === 200) {
@@ -149,7 +149,7 @@ const FaultyCardsTable = () => {
             }
             return newRow;
         }
-        return newRow;
+        return oldRow;
     };
 
     const columns = [

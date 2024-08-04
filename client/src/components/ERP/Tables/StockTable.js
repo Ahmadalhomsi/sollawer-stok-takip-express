@@ -81,8 +81,8 @@ const StockTable = () => {
 
     };
 
-    const handleProcessRowUpdate = async (newRow) => {
-        if (isReadyForSubmit) {
+    const handleProcessRowUpdate = async (newRow, oldRow) => {
+        if (JSON.stringify(newRow) !== JSON.stringify(oldRow) && isReadyForSubmit) {
             try {
                 console.log("Entereeeeed");
                 const response = await axios.put(`http://localhost:5000/api/erp/stocks/${newRow.id}`, newRow);

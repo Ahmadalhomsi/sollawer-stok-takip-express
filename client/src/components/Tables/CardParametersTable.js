@@ -39,15 +39,18 @@ const CardParametersTable = () => {
     };
 
     const handleRowUpdate = async (newRow, oldRow) => {
-        try {
-            await axios.put(`http://localhost:5000/api/cardParameters/${newRow.id}`, newRow);
-            toast.success("Row updated successfully");
-            return newRow;
-        } catch (error) {
-            toast.error("Failed to update row");
-            console.error('Error updating row:', error);
-            return oldRow;
+        if (JSON.stringify(newRow) !== JSON.stringify(oldRow)) {
+            try {
+                await axios.put(`http://localhost:5000/api/cardParameters/${newRow.id}`, newRow);
+                toast.success("Row updated successfully");
+                return newRow;
+            } catch (error) {
+                toast.error("Failed to update row");
+                console.error('Error updating row:', error);
+                return oldRow;
+            }
         }
+        return oldRow;
     };
 
     const handleDelete = (id) => {

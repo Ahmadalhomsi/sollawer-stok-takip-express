@@ -56,18 +56,21 @@ const ProjectTable = () => {
     );
 
     const handleRowUpdate = async (newRow, oldRow) => {
-        try {
-            await axios.put(`http://localhost:5000/api/projects/${newRow.id}`, newRow);
-            toast.success("Row updated successfully");
-            setRows((prevRows) =>
-                prevRows.map((row) => (row.id === newRow.id ? newRow : row))
-            ); // Update local state
-            return newRow;
-        } catch (error) {
-            toast.error("Failed to update row");
-            console.error('Error updating row:', error);
-            return oldRow;
+        if (JSON.stringify(newRow) !== JSON.stringify(oldRow)) {
+            try {
+                await axios.put(`http://localhost:5000/api/projects/${newRow.id}`, newRow);
+                toast.success("Row updated successfully");
+                setRows((prevRows) =>
+                    prevRows.map((row) => (row.id === newRow.id ? newRow : row))
+                ); // Update local state
+                return newRow;
+            } catch (error) {
+                toast.error("Failed to update row");
+                console.error('Error updating row:', error);
+                return oldRow;
+            }
         }
+        return oldRow;
     };
 
     const columns = [
@@ -80,17 +83,17 @@ const ProjectTable = () => {
             field: 'tableCount', headerName: 'Masa Sayısı', width: 140, editable: true, type: 'number'
         },
         {
-            field: 'projectLink', headerName: 'Proje Linki', width: 200, editable: true, 
+            field: 'projectLink', headerName: 'Proje Linki', width: 200, editable: true,
             renderCell: (params) => (
                 <Link href={params.value} target="_blank" rel="noopener noreferrer">
                     {params.value}
                 </Link>
-            ) ,
-            renderEditCell : (params) => (
+            ),
+            renderEditCell: (params) => (
                 <>
-                {params.value}
+                    {params.value}
                 </>
-                
+
             )
         },
         {

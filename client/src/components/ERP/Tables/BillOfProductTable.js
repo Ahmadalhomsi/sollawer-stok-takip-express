@@ -239,25 +239,27 @@ const BillOfProductTable = () => {
         }
     };
 
-    const handleProcessRowUpdate = async (newRow) => {
-        const totalCost = newRow.items.reduce((acc, item) => acc + item.quantity * item.stock.cost, 0);
-        newRow.totalCost = totalCost;
+    const handleProcessRowUpdate = async (newRow, oldRow) => {
+        if (JSON.stringify(newRow) !== JSON.stringify(oldRow)) {
+            const totalCost = newRow.items.reduce((acc, item) => acc + item.quantity * item.stock.cost, 0);
+            newRow.totalCost = totalCost;
 
-        if (isReadyForSubmit) {
-            try {
-                const response = await axios.put(`http://localhost:5000/api/erp/billsOfProduct/${newRow.id}`, newRow);
-                if (response.status === 200) {
-                    const updatedRows = rows.map((row) => (row.id === newRow.id ? newRow : row));
-                    setRows(updatedRows);
-                    toast.success('Row updated successfully!');
-                    return newRow;
-                } else {
-                    console.error(`Failed to update row: ${response.statusText}`);
+            if (isReadyForSubmit) {
+                try {
+                    const response = await axios.put(`http://localhost:5000/api/erp/billsOfProduct/${newRow.id}`, newRow);
+                    if (response.status === 200) {
+                        const updatedRows = rows.map((row) => (row.id === newRow.id ? newRow : row));
+                        setRows(updatedRows);
+                        toast.success('Row updated successfully!');
+                        return newRow;
+                    } else {
+                        console.error(`Failed to update row: ${response.statusText}`);
+                    }
+                } catch (error) {
+                    console.error('Error updating row:', error);
                 }
-            } catch (error) {
-                console.error('Error updating row:', error);
+                return newRow;
             }
-            return newRow;
         }
         return newRow;
     };
