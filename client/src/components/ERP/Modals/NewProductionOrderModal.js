@@ -23,7 +23,7 @@ const NewProductionOrderModal = ({ open, onClose, onRowCreated }) => {
                 console.log('Bills data:', response.data);
             })
             .catch((error) => {
-                console.error('There was an error fetching the bills data!', error);
+                console.log('There was an error fetching the bills data!', error);
                 toast.error('Error fetching bills data');
             });
     }, []);
@@ -62,7 +62,7 @@ const NewProductionOrderModal = ({ open, onClose, onRowCreated }) => {
                 onClose();
             })
             .catch((error) => {
-                console.error('There was an error creating the new row!', error);
+                console.log('There was an error creating the new row!', error);
                 if (error.response && error.response.data && error.response.data.error) {
                     toast.error(error.response.data.error);
                 } else {

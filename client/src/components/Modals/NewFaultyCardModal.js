@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 
 const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
-        cardID: '',
+        UNID: '',
         servisDate: '',
         status: '',
         fault: '',
@@ -18,7 +18,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
         if (!open) {
             // Reset the form and files when the modal is closed
             setNewRow({
-                cardID: '',
+                UNID: '',
                 servisDate: '',
                 status: '',
                 fault: '',
@@ -65,7 +65,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                     photoURL: [...prev.photoURL, fileName]
                 }));
             } catch (err) {
-                console.error('Error uploading files', err);
+                console.log('Error uploading files', err);
                 toast.error('Error uploading files');
             }
         }
@@ -93,8 +93,17 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                 onClose();
             })
             .catch((error) => {
-                console.error('There was an error creating the new row!', error);
-                toast.error('There was an error creating the new row!');
+                console.log('There was an error creating the new row!', error);
+                if (error.response && error.response.data && error.response.data.error) {
+                    // Check for specific foreign key constraint error
+                    if (error.response.data.error.includes('Foreign key constraint violation')) {
+                        toast.error('Foreign key constraint violation: the referenced key does not exist.');
+                    } else {
+                        toast.error(error.response.data.error);
+                    }
+                } else {
+                    toast.error('There was an error creating the new row!');
+                }
             });
     };
 
@@ -141,8 +150,8 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Kart ID"
-                        name="cardID"
+                        label="UNID"
+                        name="UNID"
                         onChange={handleChange}
                     />
                     <TextField

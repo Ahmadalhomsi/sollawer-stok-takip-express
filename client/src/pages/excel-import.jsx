@@ -58,7 +58,7 @@ const ExcelImport = () => {
             if (error.response && error.response.status === 400) {
                 toast.error(error.response.data.message); // Display toast notification
             } else {
-                console.error(error); // Log unexpected errors
+                console.log(error); // Log unexpected errors
             }
         }
     };

@@ -33,7 +33,7 @@ const NewCustomerModal = ({ open, onClose, onRowCreated }) => {
                 onClose();
             })
             .catch((error) => {
-                console.error('There was an error creating the new row!', error);
+                console.log('There was an error creating the new row!', error);
                 toast.error('There was an error creating the new row!');
             });
     };

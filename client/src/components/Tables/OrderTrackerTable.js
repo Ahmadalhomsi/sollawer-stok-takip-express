@@ -24,7 +24,7 @@ const OrderTrackerTable = () => {
       })
       .catch((error) => {
         toast.error(error.message)
-        console.error('There was an error fetching the data!', error);
+        console.log('There was an error fetching the data!', error);
         setLoading(false);
       });
   }, []);
@@ -53,10 +53,10 @@ const OrderTrackerTable = () => {
         setRows(updatedRows);
         setEditIdx(-1);
       } else {
-        console.error(`Failed to update row: ${response.statusText}`);
+        console.log(`Failed to update row: ${response.statusText}`);
       }
     } catch (error) {
-      console.error('Error updating row:', error);
+      console.log('Error updating row:', error);
     }
   };
 

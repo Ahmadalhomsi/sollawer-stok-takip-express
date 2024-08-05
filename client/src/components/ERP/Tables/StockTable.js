@@ -25,7 +25,7 @@ const StockTable = () => {
             })
             .catch((error) => {
                 toast.error(error.message);
-                console.error('There was an error fetching the data!', error);
+                console.log('There was an error fetching the data!', error);
                 setLoading(false);
             });
     }, []);
@@ -84,7 +84,6 @@ const StockTable = () => {
     const handleProcessRowUpdate = async (newRow, oldRow) => {
         if (JSON.stringify(newRow) !== JSON.stringify(oldRow) && isReadyForSubmit) {
             try {
-                console.log("Entereeeeed");
                 const response = await axios.put(`http://localhost:5000/api/erp/stocks/${newRow.id}`, newRow);
                 if (response.status === 200) {
                     const updatedRows = rows.map((row) => (row.id === newRow.id ? newRow : row));
@@ -92,10 +91,14 @@ const StockTable = () => {
                     toast.success('Row updated successfully!');
                     return newRow;
                 } else {
-                    console.error(`Failed to update row: ${response.statusText}`);
+                    console.log(`Failed to update row: ${response.statusText}`);
+                    toast.error('Failed to update row');
+                    return oldRow;
                 }
             } catch (error) {
-                console.error('Error updating row:', error);
+                console.log('Error updating row:', error);
+                toast.error('Error updating row');
+                return oldRow;
             }
             return newRow;
         }
@@ -127,7 +130,7 @@ const StockTable = () => {
 
                 toast.success('Photo uploaded successfully!');
             } catch (error) {
-                console.error('Error uploading photo:', error);
+                console.log('Error uploading photo:', error);
                 toast.error('Error uploading photo');
             }
         }

@@ -13,7 +13,7 @@ const EditStockModal = ({ open, onClose, item, onSave }) => {
                 setBills(response.data);
             })
             .catch((error) => {
-                console.error('There was an error fetching the bills!', error);
+                console.log('There was an error fetching the bills!', error);
             });
     }, []);
 

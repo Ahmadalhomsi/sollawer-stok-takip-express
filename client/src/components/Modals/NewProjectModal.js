@@ -38,7 +38,7 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                 onClose();
             })
             .catch((error) => {
-                console.error('There was an error creating the new row!', error);
+                console.log('There was an error creating the new row!', error);
                 if (error.response && error.response.data && error.response.data.error) {
                     // Check for specific foreign key constraint error
                     if (error.response.data.error.includes('Foreign key constraint violation')) {

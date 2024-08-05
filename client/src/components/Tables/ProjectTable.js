@@ -20,7 +20,7 @@ const ProjectTable = () => {
             })
             .catch((error) => {
                 toast.error(error.message)
-                console.error('There was an error fetching the data!', error);
+                console.log('There was an error fetching the data!', error);
                 setLoading(false);
             });
     }, []);
@@ -66,7 +66,7 @@ const ProjectTable = () => {
                 return newRow;
             } catch (error) {
                 toast.error("Failed to update row");
-                console.error('Error updating row:', error);
+                console.log('Error updating row:', error);
                 return oldRow;
             }
         }
@@ -151,7 +151,7 @@ const ProjectTable = () => {
                 processRowUpdate={handleRowUpdate}
                 onProcessRowUpdateError={(error) => {
                     toast.error("Error updating row");
-                    console.error('Error updating row:', error);
+                    console.log('Error updating row:', error);
                 }}
             />
             <NewProjectModal

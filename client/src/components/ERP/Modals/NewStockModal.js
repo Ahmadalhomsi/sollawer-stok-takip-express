@@ -76,7 +76,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                     photoURL: [...prev.photoURL, fileName]
                 }));
             } catch (err) {
-                console.error('Error uploading files', err);
+                console.log('Error uploading files', err);
                 toast.error('Error uploading files');
             }
         }
@@ -105,7 +105,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                 onClose();
             })
             .catch((error) => {
-                console.error('There was an error creating the new row!', error);
+                console.log('There was an error creating the new row!', error);
                 toast.error('There was an error creating the new row!');
             });
     };

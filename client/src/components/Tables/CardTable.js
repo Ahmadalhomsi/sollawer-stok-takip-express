@@ -21,7 +21,7 @@ const CardTable = () => {
       })
       .catch((error) => {
         toast.error(error.message);
-        console.error('There was an error fetching the data!', error);
+        console.log('There was an error fetching the data!', error);
         setLoading(false);
       });
   }, []);
@@ -45,7 +45,7 @@ const CardTable = () => {
         }
       } catch (error) {
         toast.error("Error updating row");
-        console.error('Error updating row:', error);
+        console.log('Error updating row:', error);
         return oldRow;
       }
     }
@@ -174,7 +174,7 @@ const CardTable = () => {
         processRowUpdate={handleRowUpdate}
         onProcessRowUpdateError={(error) => {
           toast.error("Error updating row");
-          console.error('Error updating row:', error);
+          console.log('Error updating row:', error);
         }}
         experimentalFeatures={{ newEditingApi: true }}
       />

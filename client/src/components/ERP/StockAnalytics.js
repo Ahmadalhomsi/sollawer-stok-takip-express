@@ -12,7 +12,7 @@ const StockMovementAnalytics = () => {
         console.log('Stock movement data:', data);
         setStockMovements(data);
       } catch (error) {
-        console.error('Error fetching stock movement data:', error);
+        console.log('Error fetching stock movement data:', error);
       }
     };
 

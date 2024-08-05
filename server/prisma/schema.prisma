@@ -72,6 +72,8 @@ model Project {
 
   controlCards ControlCard[] @relation("ProjectToControlCards")
 
+  faultyCards FaultyCard[] @relation("ProjectToFaultyCards")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -90,6 +92,7 @@ model ControlCard {
   // Relation fields
   cardParameters CardParameter[] @relation("ControlCardToCardParameters")
   project        Project?        @relation("ProjectToControlCards", fields: [projectNO], references: [projectNO], onDelete: SetNull)
+  faultyCards    FaultyCard[]    @relation("ControlCardToFaultyCards")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -116,15 +119,21 @@ model CardParameter {
 model FaultyCard {
   id Int @id @default(autoincrement())
 
-  cardID     String
+  UNID       String
   servisDate DateTime
   status     String
   fault      String
   photoURL   String[]
-  projectNO  String
+
+  projectNO String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  Project     Project?     @relation(fields: [projectNO], references: [projectNO], onDelete: Cascade, "ProjectToFaultyCards")
+  ControlCard ControlCard? @relation(fields: [UNID], references: [UNID], onDelete: Cascade, "ControlCardToFaultyCards")
+
+  projectId Int?
 }
 
 // actuator      String

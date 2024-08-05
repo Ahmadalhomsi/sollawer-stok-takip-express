@@ -19,7 +19,7 @@ app.get('/api/orders', async (req, res) => { // Get all orders
         const orders = await prisma.orderTracker.findMany();
         res.json(orders);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -68,7 +68,7 @@ app.post('/api/orders', async (req, res) => {
 
         res.status(201).json(newUser);
     } catch (error) {
-        console.error('Error creating user:', error);
+        console.log('Error creating user:', error);
         res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
@@ -118,7 +118,7 @@ app.put('/api/orders/:id', async (req, res) => { // Updates without creating new
         });
         res.json(user);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -134,7 +134,7 @@ app.delete('/api/orders/:id', async (req, res) => {
         });
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -148,7 +148,7 @@ app.get('/api/controlCards', async (req, res) => { // Get all cards
         const orders = await prisma.controlCard.findMany();
         res.json(orders);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -181,7 +181,7 @@ app.post('/api/controlCards', async (req, res) => { // Endpoint to create a card
 
         res.status(201).json(newUser);
     } catch (error) {
-        console.error('Error creating user:', error);
+        console.log('Error creating user:', error);
         res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
@@ -218,7 +218,7 @@ app.put('/api/controlCards/:id', async (req, res) => { // Updates without creati
         });
         res.json(user);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -233,7 +233,7 @@ app.delete('/api/controlCards/:id', async (req, res) => {
         });
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -247,7 +247,7 @@ app.get('/api/cardParameters', async (req, res) => { // Get all cards
         const orders = await prisma.cardParameter.findMany();
         res.json(orders);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -272,7 +272,7 @@ app.post('/api/cardParameters', async (req, res) => { // Endpoint to create a ca
 
         res.status(201).json(newUser);
     } catch (error) {
-        console.error('Error creating user:', error);
+        console.log('Error creating user:', error);
         res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
@@ -301,7 +301,7 @@ app.put('/api/cardParameters/:id', async (req, res) => { // Updates without crea
         });
         res.json(user);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -316,7 +316,7 @@ app.delete('/api/cardParameters/:id', async (req, res) => {
         });
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -329,7 +329,7 @@ app.get('/api/faultyCards', async (req, res) => { // Get all cards
         const orders = await prisma.faultyCard.findMany();
         res.json(orders);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -337,7 +337,7 @@ app.get('/api/faultyCards', async (req, res) => { // Get all cards
 app.post('/api/faultyCards', async (req, res) => { // Endpoint to create a card
     try {
         const {
-            cardID,
+            UNID,
             servisDate,
             status,
             fault,
@@ -347,7 +347,7 @@ app.post('/api/faultyCards', async (req, res) => { // Endpoint to create a card
 
         const newUser = await prisma.faultyCard.create({
             data: {
-                cardID: cardID.trim(),
+                UNID: UNID.trim(),
                 servisDate: new Date(servisDate),    // Remove extra spaces
                 status: status.trim(),
                 fault: fault.trim(),
@@ -359,7 +359,13 @@ app.post('/api/faultyCards', async (req, res) => { // Endpoint to create a card
 
         res.status(201).json(newUser);
     } catch (error) {
-        console.error('Error creating user:', error);
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2003') { // Foreign key constraint violation code in Prisma
+                return res.status(400).json({ error: 'Foreign key constraint violation: the referenced key does not exist.' });
+            }
+        }
+
+        console.log('Error creating user:', error);
         res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
@@ -368,7 +374,7 @@ app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creatin
 
     const {
         id,
-        cardID,
+        UNID,
         servisDate,
         status,
         fault,
@@ -384,7 +390,7 @@ app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creatin
                 id: parseInt(id),
             },
             data: {
-                cardID: cardID.trim(),
+                UNID: UNID.trim(),
                 servisDate: new Date(servisDate),    // Remove extra spaces
                 status: status.trim(),
                 fault: fault.trim(),
@@ -394,8 +400,14 @@ app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creatin
         });
         res.json(user);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2003') { // Foreign key constraint violation code in Prisma
+                return res.status(400).json({ error: 'Foreign key constraint violation: the referenced key does not exist.' });
+            }
+        }
+
+        console.log('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
 
@@ -409,7 +421,7 @@ app.delete('/api/faultyCards/:id', async (req, res) => {
         });
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -498,7 +510,7 @@ app.post('/uploadControlCards', upload.single('file'), async (req, res) => { // 
             const revisionDate = excelSerialToDate(row['Revizyon Tarihi']);
 
             if (!isValid(revisionDate)) {
-                console.error(`Invalid date format for row: ${JSON.stringify(row)}`);
+                console.log(`Invalid date format for row: ${JSON.stringify(row)}`);
                 continue; // Skip this row if the date is invalid
             }
 
@@ -527,7 +539,7 @@ app.post('/uploadControlCards', upload.single('file'), async (req, res) => { // 
 
         res.status(200).send('File data inserted into database.');
     } catch (err) {
-        console.error(err);
+        console.log(err);
         res.status(500).send('Error inserting data into database.');
     }
 });
@@ -731,7 +743,7 @@ app.get('/exportData', async (req, res) => {
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.send(buffer);
     } catch (err) {
-        console.error(err);
+        console.log(err);
         res.status(500).send('Error exporting data.');
     }
 });
@@ -745,7 +757,7 @@ app.get('/api/customers', async (req, res) => { // Get all
         const orders = await prisma.customer.findMany();
         res.json(orders);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -770,7 +782,7 @@ app.post('/api/customers', async (req, res) => { // Endpoint to create a new cus
 
         res.status(201).json(newUser);
     } catch (error) {
-        console.error('Error creating user:', error);
+        console.log('Error creating user:', error);
         res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
@@ -799,7 +811,7 @@ app.put('/api/customers/:id', async (req, res) => { // Updates without creating 
         });
         res.json(user);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -814,7 +826,7 @@ app.delete('/api/customers/:id', async (req, res) => {
         });
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -828,7 +840,7 @@ app.get('/api/projects', async (req, res) => { // Get all cards
         const orders = await prisma.project.findMany();
         res.json(orders);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -905,7 +917,7 @@ app.put('/api/projects/:id', async (req, res) => { // Updates without creating n
         });
         res.json(user);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -920,7 +932,7 @@ app.delete('/api/projects/:id', async (req, res) => {
         });
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -949,7 +961,7 @@ app.get('/api/erp/stocks', async (req, res) => { // Get all cards
         const orders = await prisma.stock.findMany();
         res.json(orders);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -987,7 +999,7 @@ app.post('/api/erp/stocks', async (req, res) => { // Endpoint to create a card
 
         res.status(201).json(newUser);
     } catch (error) {
-        console.error('Error creating user:', error);
+        console.log('Error creating user:', error);
         res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
@@ -1031,7 +1043,7 @@ app.put('/api/erp/stocks/:id', async (req, res) => { // Updates without creating
         });
         res.json(user);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -1046,7 +1058,7 @@ app.delete('/api/erp/stocks/:id', async (req, res) => {
         });
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -1062,7 +1074,7 @@ app.get('/api/erp/stockMovements', async (req, res) => { // Get all cards
         const orders = await prisma.stockMovement.findMany();
         res.json(orders);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -1143,7 +1155,7 @@ app.put('/api/erp/stockMovements/:id', async (req, res) => { // Updates without 
         });
         res.json(user);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -1158,7 +1170,7 @@ app.delete('/api/erp/stockMovements/:id', async (req, res) => {
         });
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -1182,7 +1194,7 @@ app.get('/api/erp/billsOfProduct', async (req, res) => { // Get all cards
         });
         res.json(bills);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -1220,7 +1232,7 @@ app.post('/api/erp/billsOfProduct', async (req, res) => {
 
         res.json(billOfProduct);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Failed to create Bill of Product' });
     }
 });
@@ -1268,7 +1280,7 @@ app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
         console.log("Updated Bill: ", result);
         res.json(result);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -1295,7 +1307,7 @@ app.delete('/api/erp/billsOfProduct/:id', async (req, res) => {
 
         res.json({ message: 'Bill of Product deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -1313,7 +1325,7 @@ app.get('/api/erp/productionOrders', async (req, res) => { // Get all cards
         });
         res.json(orders);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -1344,7 +1356,7 @@ app.post('/api/erp/productionOrders', async (req, res) => {
         });
         res.json(productionOrder);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Failed to create Production Order' });
     }
 });
@@ -1387,7 +1399,7 @@ app.put('/api/erp/productionOrders/:id', async (req, res) => { // Updates withou
         });
         res.json(order);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -1402,7 +1414,7 @@ app.delete('/api/erp/productionOrders/:id', async (req, res) => {
         });
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

@@ -27,7 +27,7 @@ const PhotoUploadForm = ({ onUpload }) => {
 
       onUpload(response.data);  // Trigger callback to refresh data after upload
     } catch (error) {
-      console.error('Error uploading file:', error);
+      console.log('Error uploading file:', error);
     }
   };
 

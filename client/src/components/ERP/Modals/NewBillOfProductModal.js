@@ -20,7 +20,7 @@ const NewBillOfProductModal = ({ open, onClose, onRowCreated }) => {
                 setStocks(response.data);
             })
             .catch((error) => {
-                console.error('There was an error fetching the stocks data!', error);
+                console.log('There was an error fetching the stocks data!', error);
                 toast.error('Error fetching stocks data');
             });
     }, []);
@@ -77,7 +77,7 @@ const NewBillOfProductModal = ({ open, onClose, onRowCreated }) => {
                 onClose();
             })
             .catch((error) => {
-                console.error('There was an error creating the new row!', error);
+                console.log('There was an error creating the new row!', error);
                 if (error.response && error.response.data && error.response.data.error) {
                     // Check for specific foreign key constraint error
                     if (error.response.data.error.includes('Foreign key constraint violation')) {

@@ -25,7 +25,7 @@ const FaultyCardsTable = () => {
             })
             .catch((error) => {
                 toast.error(error.message);
-                console.error('There was an error fetching the data!', error);
+                console.log('There was an error fetching the data!', error);
                 setLoading(false);
             });
     }, []);
@@ -96,7 +96,7 @@ const FaultyCardsTable = () => {
 
                 toast.success('Photo uploaded successfully!');
             } catch (error) {
-                console.error('Error uploading photo:', error);
+                console.log('Error uploading photo:', error);
                 toast.error('Error uploading photo');
             }
         }
@@ -142,19 +142,31 @@ const FaultyCardsTable = () => {
                     toast.success('Row updated successfully!');
                     return newRow;
                 } else {
-                    console.error(`Failed to update row: ${response.statusText}`);
+                    console.log(`Failed to update row: ${response.statusText}`);
+                    toast.error('Failed to update row');
+                    return oldRow;
                 }
             } catch (error) {
-                console.error('Error updating row:', error);
+                console.log('There was an error creating the new row!', error);
+                if (error.response && error.response.data && error.response.data.error) {
+                    // Check for specific foreign key constraint error
+                    if (error.response.data.error.includes('Foreign key constraint violation')) {
+                        toast.error('Foreign key constraint violation: the referenced key does not exist.');
+                    } else {
+                        toast.error(error.response.data.error);
+                    }
+                } else {
+                    toast.error('There was an error creating the new row!');
+                }
             }
-            return newRow;
+            return oldRow;
         }
-        return oldRow;
+        return newRow;
     };
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 100, editable: false },
-        { field: 'cardID', headerName: 'Kart ID', width: 120, editable: true },
+        { field: 'UNID', headerName: 'UNID', width: 120, editable: true },
         {
             field: 'servisDate',
             headerName: 'Servis Tarihi',

@@ -28,7 +28,7 @@ const ExcelExport = () => {
             link.click();
             link.remove();
         } catch (error) {
-            console.error(error);
+            console.log(error);
             // alert('Error exporting data.');
             toast.error('Error exporting data.');
         }
