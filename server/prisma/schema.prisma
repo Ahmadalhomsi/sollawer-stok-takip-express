@@ -68,7 +68,7 @@ model Project {
 
   // Relation fields
   customerName String?
-  customer     Customer? @relation("CustomerToProject", fields: [customerName], references: [name])
+  customer     Customer? @relation("CustomerToProject", fields: [customerName], references: [name], onDelete: SetNull)
 
   controlCards ControlCard[] @relation("ProjectToControlCards")
 
@@ -139,7 +139,7 @@ model FaultyCard {
 // actuator      String
 // powerSupply    String
 // keyboard
-// screen
+// screen 
 
 model Stock {
   id          Int             @id @default(autoincrement())

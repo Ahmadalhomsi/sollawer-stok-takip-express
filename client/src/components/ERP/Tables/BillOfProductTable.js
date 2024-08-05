@@ -258,10 +258,10 @@ const BillOfProductTable = () => {
                 } catch (error) {
                     console.log('Error updating row:', error);
                 }
-                return newRow;
+                return oldRow;
             }
         }
-        return newRow;
+        return oldRow;
     };
 
     const columns = [

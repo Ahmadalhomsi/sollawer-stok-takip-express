@@ -50,10 +50,20 @@ const StockMovementTable = () => {
           console.log(`Failed to update row: ${response.statusText}`);
         }
       } catch (error) {
-        console.log('Error updating row:', error);
+        console.log('There was an error creating the new row!', error);
+        if (error.response && error.response.data && error.response.data.error) {
+          // Check for specific foreign key constraint error
+          if (error.response.data.error.includes('Foreign key constraint violation')) {
+            toast.error('Foreign key constraint violation: the referenced key does not exist.');
+          } else {
+            toast.error(error.response.data.error);
+          }
+        } else {
+          toast.error('There was an error creating the new row!');
+        }
       }
     }
-    return newRow;
+    return oldRow;
   };
 
   const handleDelete = (id) => {

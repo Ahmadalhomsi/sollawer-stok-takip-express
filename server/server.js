@@ -218,8 +218,14 @@ app.put('/api/controlCards/:id', async (req, res) => { // Updates without creati
         });
         res.json(user);
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal server error' });
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2003') { // Foreign key constraint violation code in Prisma
+                return res.status(400).json({ error: 'Foreign key constraint violation: the referenced key does not exist.' });
+            }
+        }
+
+        console.log('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
 
@@ -301,8 +307,14 @@ app.put('/api/cardParameters/:id', async (req, res) => { // Updates without crea
         });
         res.json(user);
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal server error' });
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2003') { // Foreign key constraint violation code in Prisma
+                return res.status(400).json({ error: 'Foreign key constraint violation: the referenced key does not exist.' });
+            }
+        }
+
+        console.log('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
 
@@ -917,8 +929,14 @@ app.put('/api/projects/:id', async (req, res) => { // Updates without creating n
         });
         res.json(user);
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal server error' });
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2003') { // Foreign key constraint violation code in Prisma
+                return res.status(400).json({ error: 'Foreign key constraint violation: the referenced key does not exist.' });
+            }
+        }
+
+        console.log('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
 
@@ -1155,8 +1173,14 @@ app.put('/api/erp/stockMovements/:id', async (req, res) => { // Updates without 
         });
         res.json(user);
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal server error' });
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2003') { // Foreign key constraint violation code in Prisma
+                return res.status(400).json({ error: 'Foreign key constraint violation: the referenced key does not exist.' });
+            }
+        }
+
+        console.log('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
 
@@ -1280,8 +1304,14 @@ app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
         console.log("Updated Bill: ", result);
         res.json(result);
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal server error' });
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2003') { // Foreign key constraint violation code in Prisma
+                return res.status(400).json({ error: 'Foreign key constraint violation: the referenced key does not exist.' });
+            }
+        }
+
+        console.log('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
 
@@ -1350,7 +1380,7 @@ app.post('/api/erp/productionOrders', async (req, res) => {
                 orderDate: new Date(orderDate),
                 description,
                 billOfProductId: parseInt(billOfProductId),
-                totalCost : totalCost,
+                totalCost: totalCost,
             },
             include: { BillOfProduct: true },
         });
@@ -1393,14 +1423,20 @@ app.put('/api/erp/productionOrders/:id', async (req, res) => { // Updates withou
                 orderDate: new Date(orderDate),
                 description: description.trim(),
                 billOfProductId: parseInt(billOfProductId),
-                totalCost : totalCost,
+                totalCost: totalCost,
             },
             include: { BillOfProduct: true },
         });
         res.json(order);
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal server error' });
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2003') { // Foreign key constraint violation code in Prisma
+                return res.status(400).json({ error: 'Foreign key constraint violation: the referenced key does not exist.' });
+            }
+        }
+
+        console.log('Error creating user:', error);
+        res.status(500).json({ error: 'An error occurred while creating the user.' });
     }
 });
 
