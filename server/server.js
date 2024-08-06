@@ -259,6 +259,7 @@ app.get('/api/cardParameters', async (req, res) => { // Get all cards
 });
 
 app.post('/api/cardParameters', async (req, res) => { // Endpoint to create a card
+
     try {
         const {
             UNID,
@@ -266,6 +267,8 @@ app.post('/api/cardParameters', async (req, res) => { // Endpoint to create a ca
             parameter,
             value,
         } = req.body;
+
+        console.log(req.body);
 
         const newUser = await prisma.cardParameter.create({
             data: {
@@ -425,6 +428,8 @@ app.put('/api/faultyCards/:id', async (req, res) => { // Updates without creatin
 
 app.delete('/api/faultyCards/:id', async (req, res) => {
     const { id } = req.params;
+
+    console.log("ID: " + id);
     try {
         await prisma.faultyCard.delete({
             where: {

@@ -71,7 +71,9 @@ const OrderTrackerTable = () => {
       axios.delete(`http://localhost:5000/api/orders/${id}`);
     } catch (error) {
       console.log(error);
+      toast.error('Error deleting row')
     }
+    toast.success('Row deleted successfully!');
   };
 
 
@@ -103,7 +105,7 @@ const OrderTrackerTable = () => {
         <TextField
           name="id"
           value={editRow.id}
-          // onChange={handleChange}
+        // onChange={handleChange}
         />
       ) : params.value
     },

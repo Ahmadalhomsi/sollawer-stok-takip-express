@@ -65,10 +65,12 @@ const FaultyCardsTable = () => {
     const handleDelete = (id) => {
         setRows(rows.filter((row) => row.id !== id));
         try {
-            axios.delete(`http://localhost:5000/api/erp/stocks/${id}`);
+            axios.delete(`http://localhost:5000/api/faultyCards/${id}`);
         } catch (error) {
             console.log(error);
+            toast.error('Error deleting row');
         }
+        toast.success('Row deleted successfully!');
     };
 
     const handleURLSubmit = async () => {

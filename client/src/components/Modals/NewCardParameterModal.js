@@ -1,22 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
+import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-
 const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) => {
     const [newRow, setNewRow] = useState({
-        cardID: '',
+        UNID: '',
         parameterNO: '',
         parameter: '',
         value: '',
     });
 
+    const [unidList, setUnidList] = useState([]);
+
+    useEffect(() => {
+        if (open) {
+            axios.get('http://localhost:5000/api/controlCards')
+                .then((response) => {
+                    setUnidList(response.data.map((card) => card.UNID));
+                })
+                .catch((error) => {
+                    console.error('There was an error fetching the UNID list!', error);
+                });
+        }
+    }, [open]);
+
     useEffect(() => {
         if (selectedUNID) {
             setNewRow((prev) => ({
                 ...prev,
-                cardID: selectedUNID, // Automatically set parameter field with selected UNID
+                UNID: selectedUNID, // Automatically set parameter field with selected UNID
             }));
         }
     }, [selectedUNID]);
@@ -26,6 +39,13 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) =>
         setNewRow((prev) => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value,
+        }));
+    };
+
+    const handleAutocompleteChange = (event, value) => {
+        setNewRow((prev) => ({
+            ...prev,
+            UNID: value || '', // Use the selected value or an empty string if none selected
         }));
     };
 
@@ -43,9 +63,17 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) =>
                 onClose();
             })
             .catch((error) => {
-                console.log('There was an error creating the new row!', error);
-                toast.error('There was an error creating the new row!');
-
+                console.error('There was an error creating the new row!', error);
+                if (error.response && error.response.data && error.response.data.error) {
+                    // Check for specific foreign key constraint error
+                    if (error.response.data.error.includes('Foreign key constraint violation')) {
+                        toast.error('Foreign key constraint violation: the referenced key does not exist.');
+                    } else {
+                        toast.error(error.response.data.error);
+                    }
+                } else {
+                    toast.error('There was an error creating the new row!');
+                }
             });
     };
 
@@ -73,13 +101,15 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) =>
                     Yeni Kart Parametresi Oluştur
                 </Typography>
                 <form onSubmit={handleSubmit}>
-                    <TextField
+                    <Autocomplete
                         fullWidth
                         margin="normal"
-                        label="Kart ID"
-                        value={newRow.cardID} // Set value from state
-                        name="cardID"
-                        onChange={handleChange}
+                        options={unidList}
+                        value={newRow.UNID}
+                        onChange={handleAutocompleteChange}
+                        renderInput={(params) => (
+                            <TextField {...params} label="Kart ID (UNID)" />
+                        )}
                     />
                     <TextField
                         fullWidth
@@ -93,7 +123,6 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) =>
                         margin="normal"
                         label="Parametre"
                         name="parameter"
-                        // value={newRow.parameter} // Set value from state
                         onChange={handleChange}
                     />
                     <TextField

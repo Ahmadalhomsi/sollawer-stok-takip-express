@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -15,11 +15,32 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
         projectNO: '',
     });
 
+    const [projects, setProjects] = useState([]);
+
+    useEffect(() => {
+        if (open) {
+            axios.get('http://localhost:5000/api/projects')
+                .then((response) => {
+                    setProjects(response.data);
+                })
+                .catch((error) => {
+                    console.error('There was an error fetching the projects!', error);
+                });
+        }
+    }, [open]);
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setNewRow((prev) => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value,
+        }));
+    };
+
+    const handleAutocompleteChange = (event, value) => {
+        setNewRow((prev) => ({
+            ...prev,
+            projectNO: value || '', // Use the selected value or an empty string if none selected
         }));
     };
 
@@ -117,12 +138,15 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
                         name="depotShelfNo"
                         onChange={handleChange}
                     />
-                    <TextField
+                    <Autocomplete
                         fullWidth
                         margin="normal"
-                        label="Project No"
-                        name="projectNO"
-                        onChange={handleChange}
+                        options={projects.map((project) => project.projectNO)}
+                        value={newRow.projectNO}
+                        onChange={handleAutocompleteChange}
+                        renderInput={(params) => (
+                            <TextField {...params} label="Project No" />
+                        )}
                     />
                     
                     <Box mt={2} display="flex" justifyContent="space-between">

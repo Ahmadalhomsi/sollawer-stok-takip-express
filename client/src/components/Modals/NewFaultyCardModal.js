@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Box, TextField, Button, Typography, List, ListItem, Link } from '@mui/material';
+import { Modal, Box, TextField, Button, Typography, List, ListItem, Link, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -13,6 +13,8 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
         projectNO: '',
     });
     const [files, setFiles] = useState([]);
+    const [controlCards, setControlCards] = useState([]);
+    const [projects, setProjects] = useState([]);
 
     useEffect(() => {
         if (!open) {
@@ -26,8 +28,32 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                 projectNO: '',
             });
             setFiles([]);
+        } else {
+            // Fetch control cards and projects when the modal opens
+            fetchControlCards();
+            fetchProjects();
         }
     }, [open]);
+
+    const fetchControlCards = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/controlCards');
+            setControlCards(response.data);
+        } catch (error) {
+            console.error('Error fetching control cards:', error);
+            toast.error('Error fetching control cards');
+        }
+    };
+
+    const fetchProjects = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/projects');
+            setProjects(response.data);
+        } catch (error) {
+            console.error('Error fetching projects:', error);
+            toast.error('Error fetching projects');
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -47,7 +73,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
 
         for (const file of files) {
             const formData = new FormData();
-            formData.append('file', file); 
+            formData.append('file', file);
 
             try {
                 const res = await axios.post('http://localhost:5000/api/upload', formData, {
@@ -56,10 +82,8 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                     }
                 });
 
-                // Extract filename from response
                 const { fileName } = res.data;
 
-                // Update photoURL state with filenames
                 setNewRow((prev) => ({
                     ...prev,
                     photoURL: [...prev.photoURL, fileName]
@@ -71,31 +95,22 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
         }
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Loop through each link in the photoURL array
-        const extractedFilenames = newRow.photoURL.map(link => {
-            // Use either Method 1 or Method 2 (explained below) to extract the filename
-            const filename = extractFilename(link); // Replace with your chosen method
-            return filename;
-        });
+        const extractedFilenames = newRow.photoURL.map(link => extractFilename(link));
 
-        // Send the data with extracted filenames
         axios.post('http://localhost:5000/api/faultyCards', {
             ...newRow,
             photoURL: extractedFilenames,
         })
             .then((response) => {
-                // If successful, update table and close modal
                 onRowCreated(response.data);
                 onClose();
             })
             .catch((error) => {
                 console.log('There was an error creating the new row!', error);
                 if (error.response && error.response.data && error.response.data.error) {
-                    // Check for specific foreign key constraint error
                     if (error.response.data.error.includes('Foreign key constraint violation')) {
                         toast.error('Foreign key constraint violation: the referenced key does not exist.');
                     } else {
@@ -107,21 +122,9 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
             });
     };
 
-    // Function to extract the filename (choose either method)
-
-    // Method 1: Using split() and pop()
     function extractFilename(link) {
-        return link.split('\\').pop() || link.split('/').pop(); // Handle both backslashes and forward slashes
+        return link.split('\\').pop() || link.split('/').pop();
     }
-
-    // Method 2: Using lastIndexOf() and substring()
-    function extractFilename(link) {
-        const lastSeparatorIndex = Math.max(link.lastIndexOf('\\'), link.lastIndexOf('/'));
-        return lastSeparatorIndex !== -1 ? link.substring(lastSeparatorIndex + 1) : link;
-    }
-
-
-
 
     return (
         <Modal
@@ -135,24 +138,32 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: 400, /* Adjust width as needed */
+                width: 400,
                 bgcolor: 'background.paper',
                 boxShadow: 24,
-                p: 4, /* Adjust padding as needed */
+                p: 4,
                 borderRadius: 2,
-                overflow: 'auto', /* Enable scrolling */
-                maxHeight: 'calc(100vh - 100px)', /* Set max height (adjust as needed) */
+                overflow: 'auto',
+                maxHeight: 'calc(100vh - 100px)',
             }}>
                 <Typography id="modal-modal-title" variant="h6" component="h2" mb={2}>
                     Yeni Arızalı Kart Oluştur
                 </Typography>
                 <form onSubmit={handleSubmit}>
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="UNID"
-                        name="UNID"
-                        onChange={handleChange}
+                    <Autocomplete
+                        options={controlCards.map((card) => card.UNID)}
+                        value={newRow.UNID}
+                        onChange={(event, newValue) => {
+                            setNewRow((prev) => ({ ...prev, UNID: newValue }));
+                        }}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                fullWidth
+                                margin="normal"
+                                label="UNID"
+                            />
+                        )}
                     />
                     <TextField
                         fullWidth
@@ -160,6 +171,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                         label="Servis Tarihi"
                         type="datetime-local"
                         name="servisDate"
+                        value={newRow.servisDate}
                         onChange={handleChange}
                         InputLabelProps={{
                             shrink: true,
@@ -170,6 +182,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                         margin="normal"
                         label="Durum"
                         name="status"
+                        value={newRow.status}
                         onChange={handleChange}
                     />
                     <TextField
@@ -177,6 +190,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                         margin="normal"
                         label="Arıza"
                         name="fault"
+                        value={newRow.fault}
                         onChange={handleChange}
                     />
                     <Typography variant="body1" sx={{ mt: 2 }}>Uploaded Photos:</Typography>
@@ -202,14 +216,21 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                             onChange={handleFileChange}
                         />
                     </Button>
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Project NO"
-                        name="projectNO"
-                        onChange={handleChange}
+                    <Autocomplete
+                        options={projects.map((project) => project.projectNO)}
+                        value={newRow.projectNO}
+                        onChange={(event, newValue) => {
+                            setNewRow((prev) => ({ ...prev, projectNO: newValue }));
+                        }}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                fullWidth
+                                margin="normal"
+                                label="Project NO"
+                            />
+                        )}
                     />
-
                     <Box mt={2} display="flex" justifyContent="space-between">
                         <Button onClick={onClose} color="secondary">Cancel</Button>
                         <Button type="submit" variant="contained" color="primary">Create</Button>

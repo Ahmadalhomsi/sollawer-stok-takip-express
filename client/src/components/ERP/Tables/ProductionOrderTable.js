@@ -33,7 +33,7 @@ const ProductionOrderTable = () => {
     }, []);
 
     let isReadyForSubmit = true;
-    
+
     const processRowUpdate = async (newRow, oldRow) => {
         if (JSON.stringify(newRow) !== JSON.stringify(oldRow) && isReadyForSubmit) {
             await handleSave(newRow, oldRow);
@@ -42,7 +42,7 @@ const ProductionOrderTable = () => {
     };
 
 
-    const handleSave = async (updatedRow , oldRow) => {
+    const handleSave = async (updatedRow, oldRow) => {
         console.log("Updated Row:", updatedRow);
         const dataToUpdate = {
             ...updatedRow,
@@ -63,16 +63,16 @@ const ProductionOrderTable = () => {
             }
         } catch (error) {
             console.log('There was an error creating the new row!', error);
-                if (error.response && error.response.data && error.response.data.error) {
-                    // Check for specific foreign key constraint error
-                    if (error.response.data.error.includes('Foreign key constraint violation')) {
-                        toast.error('Foreign key constraint violation: the referenced key does not exist.');
-                    } else {
-                        toast.error(error.response.data.error);
-                    }
+            if (error.response && error.response.data && error.response.data.error) {
+                // Check for specific foreign key constraint error
+                if (error.response.data.error.includes('Foreign key constraint violation')) {
+                    toast.error('Foreign key constraint violation: the referenced key does not exist.');
                 } else {
-                    toast.error('There was an error creating the new row!');
+                    toast.error(error.response.data.error);
                 }
+            } else {
+                toast.error('There was an error creating the new row!');
+            }
         }
         return oldRow;
     };
@@ -83,7 +83,9 @@ const ProductionOrderTable = () => {
             axios.delete(`http://localhost:5000/api/erp/productionOrders/${id}`);
         } catch (error) {
             console.log(error);
+            toast.error('Error deleting row')
         }
+        toast.success('Row deleted successfully!');
     };
 
     const handleChange = (e) => {

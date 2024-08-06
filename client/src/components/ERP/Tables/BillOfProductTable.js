@@ -236,7 +236,9 @@ const BillOfProductTable = () => {
             axios.delete(`http://localhost:5000/api/erp/billsOfProduct/${id}`);
         } catch (error) {
             console.log(error);
+            toast.error('Error deleting row')
         }
+        toast.success('Row deleted successfully!');
     };
 
     const handleProcessRowUpdate = async (newRow, oldRow) => {

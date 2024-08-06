@@ -41,7 +41,9 @@ const StockTable = () => {
             axios.delete(`http://localhost:5000/api/erp/stocks/${id}`);
         } catch (error) {
             console.log(error);
+            toast.error('Error deleting row')
         }
+        toast.success('Row deleted successfully!');
     };
 
     const handleModalOpen = () => {

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Modal, Box, TextField, Button, Typography, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -16,11 +16,32 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
         customerName: '',
     });
 
+    const [customers, setCustomers] = useState([]);
+
+    useEffect(() => {
+        if (open) {
+            axios.get('http://localhost:5000/api/customers')
+                .then((response) => {
+                    setCustomers(response.data);
+                })
+                .catch((error) => {
+                    console.error('There was an error fetching the customers!', error);
+                });
+        }
+    }, [open]);
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setNewRow((prev) => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value,
+        }));
+    };
+
+    const handleAutocompleteChange = (event, value) => {
+        setNewRow((prev) => ({
+            ...prev,
+            customerName: value || '', // Use the selected value or an empty string if none selected
         }));
     };
 
@@ -130,12 +151,15 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         name="EPC"
                         onChange={handleChange}
                     />
-                    <TextField
+                    <Autocomplete
                         fullWidth
                         margin="normal"
-                        label="Müşteri Adı"
-                        name="customerName"
-                        onChange={handleChange}
+                        options={customers.map((customer) => customer.name)}
+                        value={newRow.customerName}
+                        onChange={handleAutocompleteChange}
+                        renderInput={(params) => (
+                            <TextField {...params} label="Müşteri Adı" />
+                        )}
                     />
 
                     <Box mt={2} display="flex" justifyContent="space-between">

@@ -5,16 +5,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import NewCardParameterModal from '../Modals/NewCardParameterModal';
-import UNIDSearchModal from '../Modals/UNIDSearchModal';
 
 const CardParametersTable = () => {
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [unidSearchModalOpen, setUNIDSearchModalOpen] = useState(false);
     const [selectedUNID, setSelectedUNID] = useState(null);
-    const [isCartSelected, setShowLabel] = useState(false);
     const [unidFilter, setUnidFilter] = useState('');
+
 
     useEffect(() => {
         fetchData();
@@ -67,7 +65,9 @@ const CardParametersTable = () => {
             axios.delete(`http://localhost:5000/api/cardParameters/${id}`);
         } catch (error) {
             console.log(error);
+            toast.error('Error deleting row')
         }
+        toast.success('Row deleted successfully!');
     };
 
     const handleModalOpen = () => {
@@ -80,7 +80,6 @@ const CardParametersTable = () => {
 
     const handleRowCreated = (newRow) => {
         setRows((prevRows) => [...prevRows, newRow]);
-        setShowLabel(false); // Hide the label after creating a new row
         setSelectedUNID(null); // Clear the selected UNID
     };
 
@@ -120,9 +119,12 @@ const CardParametersTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
-            <Button disabled={!isCartSelected} onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
                 YENİ KART PARAMETRESİ EKLE
             </Button>
+
+
+
 
             <TextField
                 label="UNID Filter"
@@ -130,23 +132,8 @@ const CardParametersTable = () => {
                 onChange={handleFilterChange}
                 variant="outlined"
                 size='small'
-                style={{ marginBottom: 16, marginRight: 10, marginLeft: 15 }}
+                style={{ marginBottom: 16, marginLeft: 15 }}
             />
-
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setUNIDSearchModalOpen(true)}
-                style={{ marginBottom: 20, marginTop: 2 }}
-            >
-                UNID İLE KART SEÇ
-            </Button>
-
-            {isCartSelected && (
-                <Box sx={{ marginBottom: 2 }}>
-                    <strong>Selected UNID: {selectedUNID}</strong>
-                </Box>
-            )}
 
             <DataGrid
                 rows={filteredRows}
@@ -170,11 +157,6 @@ const CardParametersTable = () => {
                 selectedUNID={selectedUNID} // Pass selected UNID to the modal
             />
 
-            <UNIDSearchModal
-                open={unidSearchModalOpen}
-                onClose={() => setUNIDSearchModalOpen(false)}
-                onSelect={handleUNIDSelect} // Adjust 'Card Name' to be the actual card name
-            />
         </Box>
     );
 };
