@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, Link, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from '@mui/material';
+import { TextField, Link, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
@@ -296,6 +296,10 @@ const StockTable = () => {
                     <Button onClick={handleURLSubmit} variant="contained" color="primary" style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
                         Upload
                     </Button>
+
+                    <Typography variant="body2" color="textSecondary">
+                        {newPhotoFile ? `Current Photo: ${newPhotoFile.name}` : 'No photo selected'}
+                    </Typography>
 
                     <Box>
                         {editRow.photoURL && editRow.photoURL.map((url, index) => (

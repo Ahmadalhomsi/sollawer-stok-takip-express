@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Link, TextField, IconButton } from '@mui/material';
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Link, TextField, IconButton, Typography } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import NewFaultyCardModal from '../Modals/NewFaultyCardModal';
@@ -304,6 +304,10 @@ const FaultyCardsTable = () => {
                     <Button onClick={handleURLSubmit} variant="contained" color="primary" style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
                         Upload
                     </Button>
+
+                    <Typography variant="body2" color="textSecondary">
+                        {newPhotoFile ? `Current Photo: ${newPhotoFile.name}` : 'No photo selected'}
+                    </Typography>
 
                     <Box>
                         {editRow.photoURL && editRow.photoURL.map((url, index) => (

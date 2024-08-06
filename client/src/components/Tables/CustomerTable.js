@@ -46,7 +46,6 @@ const CustomerTable = () => {
         } else {
           toast.error('There was an error creating the new row!');
         }
-
       }
     }
     return oldRow;
