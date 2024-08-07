@@ -1278,7 +1278,7 @@ app.put('/api/erp/billsOfProduct/:id', async (req, res) => {
                     billName: billName.trim(),
                     billDate: new Date(billDate),
                     description: description.trim(),
-                    totalCost: totalCost,
+                    totalCost: parseFloat(totalCost),
                 },
                 include: { items: { include: { stock: true } } },
             });
@@ -1348,6 +1348,7 @@ app.delete('/api/erp/billsOfProduct/:id', async (req, res) => {
 });
 
 
+
 //-------------------------------------------------------
 
 // ERP Production Order Table
@@ -1355,7 +1356,15 @@ app.get('/api/erp/productionOrders', async (req, res) => { // Get all cards
     try {
         const orders = await prisma.productionOrder.findMany({
             include: {
-                BillOfProduct: true
+                BillOfProduct: {
+                    include: {
+                        items: {
+                            include: {
+                                stock: true
+                            }
+                        }
+                    }
+                }
             }
         });
         res.json(orders);
@@ -1375,7 +1384,7 @@ app.post('/api/erp/productionOrders', async (req, res) => {
                 id: parseInt(billOfProductId),
             },
         });
-        const totalCost = quantity * billOfProduct.totalCost;
+        // const totalCost = quantity * billOfProduct.totalCost;
 
 
         const productionOrder = await prisma.productionOrder.create({
@@ -1385,7 +1394,7 @@ app.post('/api/erp/productionOrders', async (req, res) => {
                 orderDate: new Date(orderDate),
                 description,
                 billOfProductId: parseInt(billOfProductId),
-                totalCost: totalCost,
+                // totalCost: totalCost,
             },
             include: { BillOfProduct: true },
         });

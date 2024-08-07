@@ -184,7 +184,7 @@ model BillOfProduct {
   billDate    DateTime
   description String?
 
-  totalCost       Float?
+  // totalCost       Float?
   // Relations
   items           BillOfProductItem[]
   productionOrder ProductionOrder[]
@@ -218,7 +218,7 @@ model ProductionOrder {
   orderDate DateTime
 
   description     String?
-  totalCost       Float?
+  // totalCost       Float?
   // Relations
   billOfProductId Int
   BillOfProduct   BillOfProduct @relation(fields: [billOfProductId], references: [id], onDelete: Cascade)

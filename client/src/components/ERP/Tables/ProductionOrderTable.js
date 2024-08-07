@@ -22,6 +22,17 @@ const ProductionOrderTable = () => {
     useEffect(() => {
         axios.get('http://localhost:5000/api/erp/productionOrders')
             .then((response) => {
+                for (const order of response.data) {
+                    let orderTotalCost = 0; // Initialize order total cost accumulator
+
+                    for (const bill of order.BillOfProduct.items) {
+                        // Check if totalCost exists on the bill object (assuming it's calculated earlier)
+                        orderTotalCost += bill.quantity * bill.stock.cost; // Add item totalCost to order total
+                    }
+                    order.totalCost = (order.quantity * orderTotalCost).toFixed(2); // Assign calculated order totalCost
+                    console.log("Order:", order);
+                }
+
                 setRows(response.data);
                 setLoading(false);
             })
