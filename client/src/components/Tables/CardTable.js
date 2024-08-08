@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, Checkbox, Button, Box, IconButton } from '@mui/material';
+import { TextField, Checkbox, Button, Box, IconButton, Autocomplete } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -12,6 +12,7 @@ const CardTable = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [unidFilter, setUnidFilter] = useState('');
   const [projectNoFilter, setProjectNoFilter] = useState('');
+  const [projectNos, setProjectNos] = useState([]); // State to store project numbers
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/controlCards')
@@ -23,6 +24,17 @@ const CardTable = () => {
         toast.error(error.message);
         console.log('There was an error fetching the data!', error);
         setLoading(false);
+      });
+
+    // Fetch the list of project numbers
+    axios.get('http://localhost:5000/api/projects')
+      .then((response) => {
+        const projectNumbers = response.data.map((project) => project.projectNO);
+        setProjectNos(projectNumbers);
+      })
+      .catch((error) => {
+        toast.error('Failed to fetch project numbers');
+        console.log('Error fetching project numbers:', error);
       });
   }, []);
 
@@ -46,7 +58,6 @@ const CardTable = () => {
       } catch (error) {
         console.log('There was an error creating the new row!', error);
         if (error.response && error.response.data && error.response.data.error) {
-          // Check for specific foreign key constraint error
           if (error.response.data.error.includes('Foreign key constraint violation')) {
             toast.error('Foreign key constraint violation: the referenced key does not exist.');
           } else {
@@ -66,7 +77,7 @@ const CardTable = () => {
       axios.delete(`http://localhost:5000/api/controlCards/${id}`);
     } catch (error) {
       console.log(error);
-      toast.error('Error deleting row')
+      toast.error('Error deleting row');
     }
     toast.success('Row deleted successfully!');
   };
@@ -136,7 +147,21 @@ const CardTable = () => {
       ),
     },
     { field: 'depotShelfNo', headerName: 'Depo Raf No', width: 110, editable: true },
-    { field: 'projectNO', headerName: 'Proje NO', width: 110, editable: true },
+    {
+      field: 'projectNO',
+      headerName: 'Proje NO',
+      width: 150,
+      editable: true,
+      renderEditCell: (params) => (
+        <Autocomplete
+          value={params.value || ''}
+          onChange={(event, newValue) => params.api.setEditCellValue({ id: params.id, field: params.field, value: newValue })}
+          options={projectNos}
+          renderInput={(params) => <TextField {...params}/>}
+          style={{ width: 200 }}
+        />
+      ),
+    },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -151,7 +176,6 @@ const CardTable = () => {
 
   return (
     <Box sx={{ height: 600, width: '100%' }}>
-
       <Button onClick={handleModalOpen} variant="contained" color="primary" sx={{ marginBottom: 2 }}>
         YENİ KONTROL KARTI EKLE
       </Button>
@@ -171,7 +195,6 @@ const CardTable = () => {
         size='small'
         sx={{ marginBottom: 2, marginRight: 2 }}
       />
-
 
       <DataGrid
         rows={filteredRows}

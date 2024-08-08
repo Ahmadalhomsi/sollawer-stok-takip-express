@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Box, Button, IconButton, TextField } from '@mui/material';
+import { Box, Button, IconButton, TextField, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import NewStockMovementModal from '../../ERP/Modals/NewStockMovementModal';
@@ -10,8 +10,10 @@ const StockMovementTable = () => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [stockOptions, setStockOptions] = useState([]);
 
   useEffect(() => {
+    // Fetch stock movements data
     axios.get('http://localhost:5000/api/erp/stockMovements')
       .then((response) => {
         setRows(response.data);
@@ -21,6 +23,16 @@ const StockMovementTable = () => {
         toast.error(error.message);
         console.log('There was an error fetching the data!', error);
         setLoading(false);
+      });
+
+    // Fetch stock names for autocomplete options
+    axios.get('http://localhost:5000/api/erp/stocks')
+      .then((response) => {
+        setStockOptions(response.data.map(stock => stock.stockName));
+      })
+      .catch((error) => {
+        toast.error('Error fetching stock names!');
+        console.log('There was an error fetching stock names!', error);
       });
   }, []);
 
@@ -37,7 +49,6 @@ const StockMovementTable = () => {
   };
 
   const handleProcessRowUpdate = async (newRow, oldRow) => {
-
     if (JSON.stringify(newRow) !== JSON.stringify(oldRow)) {
       try {
         const response = await axios.put(`http://localhost:5000/api/erp/stockMovements/${newRow.id}`, newRow);
@@ -50,16 +61,15 @@ const StockMovementTable = () => {
           console.log(`Failed to update row: ${response.statusText}`);
         }
       } catch (error) {
-        console.log('There was an error creating the new row!', error);
+        console.log('There was an error updating the row!', error);
         if (error.response && error.response.data && error.response.data.error) {
-          // Check for specific foreign key constraint error
           if (error.response.data.error.includes('Foreign key constraint violation')) {
             toast.error('Foreign key constraint violation: the referenced key does not exist.');
           } else {
             toast.error(error.response.data.error);
           }
         } else {
-          toast.error('There was an error creating the new row!');
+          toast.error('There was an error updating the row!');
         }
       }
     }
@@ -84,6 +94,15 @@ const StockMovementTable = () => {
       headerName: 'Parça Adı',
       width: 120,
       editable: true,
+      renderEditCell: (params) => (
+        <Autocomplete
+          options={stockOptions}
+          value={params.value || ''}
+          onChange={(event, newValue) => params.api.setEditCellValue({ id: params.id, field: params.field, value: newValue })}
+          renderInput={(params) => <TextField {...params} />}
+          style={{ width: 200 }}
+        />
+      ),
     },
     {
       field: 'movementType',

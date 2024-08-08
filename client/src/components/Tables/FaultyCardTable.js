@@ -5,6 +5,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import NewFaultyCardModal from '../Modals/NewFaultyCardModal';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Autocomplete } from '@mui/material';
 
 const FaultyCardsTable = () => {
     const [rows, setRows] = useState([]);
@@ -17,7 +18,30 @@ const FaultyCardsTable = () => {
     const [isURLDialogOpen, setURLDialogOpen] = useState(false);
     const [newPhotoFile, setNewPhotoFile] = useState(null);
 
+
+    const [unidOptions, setUnidOptions] = useState([]);
+    const [projectNoOptions, setProjectNoOptions] = useState([]);
+
     useEffect(() => {
+        // Fetch UNID options
+        axios.get('http://localhost:5000/api/controlCards')
+            .then((response) => {
+                setUnidOptions(response.data);
+            })
+            .catch((error) => {
+                toast.error('Error fetching UNID options');
+            });
+
+        // Fetch Project NO options
+        axios.get('http://localhost:5000/api/projects')
+            .then((response) => {
+                setProjectNoOptions(response.data);
+            })
+            .catch((error) => {
+                toast.error('Error fetching Project NO options');
+            });
+
+        // Fetch Faulty Cards
         axios.get('http://localhost:5000/api/faultyCards')
             .then((response) => {
                 setRows(response.data);
@@ -25,7 +49,6 @@ const FaultyCardsTable = () => {
             })
             .catch((error) => {
                 toast.error(error.message);
-                console.log('There was an error fetching the data!', error);
                 setLoading(false);
             });
     }, []);
@@ -144,31 +167,43 @@ const FaultyCardsTable = () => {
                     toast.success('Row updated successfully!');
                     return newRow;
                 } else {
-                    console.log(`Failed to update row: ${response.statusText}`);
                     toast.error('Failed to update row');
                     return oldRow;
                 }
             } catch (error) {
-                console.log('There was an error creating the new row!', error);
-                if (error.response && error.response.data && error.response.data.error) {
-                    // Check for specific foreign key constraint error
-                    if (error.response.data.error.includes('Foreign key constraint violation')) {
-                        toast.error('Foreign key constraint violation: the referenced key does not exist.');
-                    } else {
-                        toast.error(error.response.data.error);
-                    }
-                } else {
-                    toast.error('There was an error creating the new row!');
-                }
+                toast.error('There was an error updating the row!');
+                return oldRow;
             }
-            return oldRow;
         }
         return newRow;
     };
 
+
     const columns = [
         { field: 'id', headerName: 'ID', width: 100, editable: false },
-        { field: 'UNID', headerName: 'UNID', width: 120, editable: true },
+        {
+            field: 'UNID',
+            headerName: 'UNID',
+            width: 180,
+            editable: true,
+            renderEditCell: (params) => {
+                const currentUNID = unidOptions.find(option => option.UNID === params.value) || {};
+                return (
+                    <Autocomplete
+                        value={currentUNID}
+                        onChange={(event, newValue) => {
+                            params.api.setEditCellValue({ id: params.id, field: params.field, value: newValue.UNID });
+                        }}
+                        options={unidOptions}
+                        getOptionLabel={(option) => option.UNID || ''}
+                        renderInput={(params) => (
+                            <TextField {...params} placeholder="Select UNID" />
+                        )}
+                        style={{ width: 200 }}
+                    />
+                );
+            },
+        },
         {
             field: 'servisDate',
             headerName: 'Servis Tarihi',
@@ -226,7 +261,29 @@ const FaultyCardsTable = () => {
                 </>
             ),
         },
-        { field: 'projectNO', headerName: 'Proje NO', width: 120, editable: true },
+        {
+            field: 'projectNO',
+            headerName: 'Proje NO',
+            width: 180,
+            editable: true,
+            renderEditCell: (params) => {
+                const currentProjectNO = projectNoOptions.find(option => option.projectNO === params.value) || {};
+                return (
+                    <Autocomplete
+                        value={currentProjectNO}
+                        onChange={(event, newValue) => {
+                            params.api.setEditCellValue({ id: params.id, field: params.field, value: newValue.projectNO });
+                        }}
+                        options={projectNoOptions}
+                        getOptionLabel={(option) => option.projectNO || ''}
+                        renderInput={(params) => (
+                            <TextField {...params} placeholder="Select Project NO" />
+                        )}
+                        style={{ width: 200 }}
+                    />
+                );
+            },
+        },
         {
             field: 'actions',
             headerName: 'Actions',

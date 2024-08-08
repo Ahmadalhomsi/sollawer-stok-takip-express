@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, Checkbox, Button, Link, Box, IconButton } from '@mui/material';
+import { TextField, Checkbox, Button, Link, Box, IconButton, Autocomplete } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import toast from "react-hot-toast";
@@ -10,9 +10,11 @@ const ProjectTable = () => {
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [epcFilter, setEpcFilter] = useState(''); // State for EPC filter
+    const [epcFilter, setEpcFilter] = useState('');
+    const [customers, setCustomers] = useState([]); // State for customer options
 
     useEffect(() => {
+        // Fetch projects
         axios.get('http://localhost:5000/api/projects')
             .then((response) => {
                 setRows(response.data);
@@ -22,6 +24,16 @@ const ProjectTable = () => {
                 toast.error(error.message)
                 console.log('There was an error fetching the data!', error);
                 setLoading(false);
+            });
+
+        // Fetch customers
+        axios.get('http://localhost:5000/api/customers')
+            .then((response) => {
+                setCustomers(response.data);
+            })
+            .catch((error) => {
+                toast.error("Failed to load customers");
+                console.log('There was an error fetching the customers!', error);
             });
     }, []);
 
@@ -36,7 +48,6 @@ const ProjectTable = () => {
         toast.success('Row deleted successfully!');
     };
 
-
     const handleModalOpen = () => {
         setModalOpen(true);
     };
@@ -50,7 +61,7 @@ const ProjectTable = () => {
     };
 
     const handleFilterChange = (e) => {
-        setEpcFilter(e.target.value); // Update EPC filter state
+        setEpcFilter(e.target.value);
     };
 
     const filteredRows = rows.filter((row) =>
@@ -64,20 +75,11 @@ const ProjectTable = () => {
                 toast.success("Row updated successfully");
                 setRows((prevRows) =>
                     prevRows.map((row) => (row.id === newRow.id ? newRow : row))
-                ); // Update local state
+                );
                 return newRow;
             } catch (error) {
-                console.log('There was an error creating the new row!', error);
-                if (error.response && error.response.data && error.response.data.error) {
-                    // Check for specific foreign key constraint error
-                    if (error.response.data.error.includes('Foreign key constraint violation')) {
-                        toast.error('Foreign key constraint violation: the referenced key does not exist.');
-                    } else {
-                        toast.error(error.response.data.error);
-                    }
-                } else {
-                    toast.error('There was an error creating the new row!');
-                }
+                console.log('There was an error updating the row!', error);
+                toast.error('There was an error updating the row!');
             }
         }
         return oldRow;
@@ -85,13 +87,8 @@ const ProjectTable = () => {
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 10, editable: false },
-
-        {
-            field: 'projectNO', headerName: 'Proje NO', width: 140, editable: true
-        },
-        {
-            field: 'tableCount', headerName: 'Masa Sayısı', width: 140, editable: true, type: 'number'
-        },
+        { field: 'projectNO', headerName: 'Proje NO', width: 140, editable: true },
+        { field: 'tableCount', headerName: 'Masa Sayısı', width: 140, editable: true, type: 'number' },
         {
             field: 'projectLink', headerName: 'Proje Linki', width: 200, editable: true,
             renderCell: (params) => (
@@ -99,38 +96,34 @@ const ProjectTable = () => {
                     {params.value}
                 </Link>
             ),
+            renderEditCell: (params) => <>{params.value}</>
+        },
+        { field: 'city', headerName: 'Şehir', width: 140, editable: true },
+        { field: 'latitude', headerName: 'Enlem', width: 140, editable: true, type: 'number' },
+        { field: 'longitude', headerName: 'Boylam', width: 140, editable: true, type: 'number' },
+        { field: 'EPC', headerName: 'EPC', width: 140, editable: true },
+        {
+            field: 'customerName', headerName: 'Müşteri Adı', width: 140, editable: true,
             renderEditCell: (params) => (
-                <>
-                    {params.value}
-                </>
-
+                <Autocomplete
+                    value={params.value || ''}
+                    onChange={(event, newValue) => {
+                        params.api.setEditCellValue({ id: params.id, field: 'customerName', value: newValue });
+                    }}
+                    options={customers.map((customer) => customer.name)}
+                    renderInput={(params) => <TextField {...params} />}
+                    style={{ width: 200 }}
+                />
             )
-        },
-        {
-            field: 'city', headerName: 'Şehir', width: 140, editable: true
-        },
-        {
-            field: 'latitude', headerName: 'Enlem', width: 140, editable: true, type: 'number'
-        },
-        {
-            field: 'longitude', headerName: 'Boylam', width: 140, editable: true, type: 'number'
-        },
-        {
-            field: 'EPC', headerName: 'EPC', width: 140, editable: true
-        },
-        {
-            field: 'customerName', headerName: 'Müşteri Adı', width: 140, editable: true
         },
         {
             field: 'actions',
             headerName: 'Actions',
             width: 164,
             renderCell: (params) => (
-                <>
-                    <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
-                        <DeleteIcon />
-                    </IconButton>
-                </>
+                <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
+                    <DeleteIcon />
+                </IconButton>
             ),
         },
     ];

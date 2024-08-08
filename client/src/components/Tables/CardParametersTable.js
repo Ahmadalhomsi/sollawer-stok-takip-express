@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, Button, Box, IconButton } from '@mui/material';
+import { TextField, Button, Box, IconButton, Autocomplete } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -10,12 +10,12 @@ const CardParametersTable = () => {
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [selectedUNID, setSelectedUNID] = useState(null);
+    const [unidOptions, setUnidOptions] = useState([]); // For storing UNID options
     const [unidFilter, setUnidFilter] = useState('');
-
 
     useEffect(() => {
         fetchData();
+        fetchUnidOptions(); // Fetch UNID options on component mount
     }, [unidFilter]);
 
     const fetchData = () => {
@@ -33,6 +33,18 @@ const CardParametersTable = () => {
                 toast.error(error.message);
                 console.log('There was an error fetching the data!', error);
                 setLoading(false);
+            });
+    };
+
+    const fetchUnidOptions = () => {
+        axios.get('http://localhost:5000/api/controlCards') // Assuming UNID options come from this endpoint
+            .then((response) => {
+                const options = response.data.map(card => card.UNID);
+                setUnidOptions(options);
+            })
+            .catch((error) => {
+                toast.error('Error fetching UNID options');
+                console.log('There was an error fetching UNID options!', error);
             });
     };
 
@@ -80,26 +92,31 @@ const CardParametersTable = () => {
 
     const handleRowCreated = (newRow) => {
         setRows((prevRows) => [...prevRows, newRow]);
-        setSelectedUNID(null); // Clear the selected UNID
-    };
-
-    const handleUNIDSelect = (selectedUNID) => {
-        setSelectedUNID(selectedUNID);
-        setShowLabel(true);
-        setUNIDSearchModalOpen(false); // Close the modal after selecting
     };
 
     const handleFilterChange = (event) => {
         setUnidFilter(event.target.value);
     };
 
-    const filteredRows = rows.filter(row =>
-        row.UNID.toLowerCase().includes(unidFilter.toLowerCase())
-    );
-
     const columns = [
         { field: 'id', headerName: 'ID', width: 10, editable: false },
-        { field: 'UNID', headerName: 'UNID', width: 120, editable: true },
+        {
+            field: 'UNID',
+            headerName: 'UNID',
+            width: 120,
+            editable: true,
+            renderEditCell: (params) => (
+                <Autocomplete
+                    options={unidOptions}
+                    value={params.value || ''}
+                    onChange={(event, newValue) => {
+                        params.api.setEditCellValue({ id: params.id, field: params.field, value: newValue });
+                    }}
+                    renderInput={(params) => <TextField {...params}/>}
+                    style={{ width: 200 }}
+                />
+            ),
+        },
         { field: 'parameterNO', headerName: 'Parametre NO', width: 110, editable: true },
         { field: 'parameter', headerName: 'Parametre', width: 110, editable: true },
         { field: 'value', headerName: 'Değer', width: 120, editable: true },
@@ -113,8 +130,8 @@ const CardParametersTable = () => {
                         <DeleteIcon />
                     </IconButton>
                 </>
-            )
-        }
+            ),
+        },
     ];
 
     return (
@@ -122,9 +139,6 @@ const CardParametersTable = () => {
             <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
                 YENİ KART PARAMETRESİ EKLE
             </Button>
-
-
-
 
             <TextField
                 label="UNID Filter"
@@ -136,7 +150,7 @@ const CardParametersTable = () => {
             />
 
             <DataGrid
-                rows={filteredRows}
+                rows={rows}
                 columns={columns}
                 pageSize={10}
                 rowsPerPageOptions={[5, 10, 20]}
@@ -154,9 +168,7 @@ const CardParametersTable = () => {
                 open={isModalOpen}
                 onClose={handleModalClose}
                 onRowCreated={handleRowCreated}
-                selectedUNID={selectedUNID} // Pass selected UNID to the modal
             />
-
         </Box>
     );
 };
