@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Modal, Box, TextField, Button, Typography, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -16,11 +16,32 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
         description: '',
     });
 
+    const [stockOptions, setStockOptions] = useState([]);
+
+    useEffect(() => {
+        // Fetch stock names for the autocomplete options
+        axios.get('http://localhost:5000/api/erp/stocks')
+            .then((response) => {
+                setStockOptions(response.data.map(stock => stock.stockName));
+            })
+            .catch((error) => {
+                toast.error('Error fetching stock names!');
+                console.log('There was an error fetching stock names!', error);
+            });
+    }, []);
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setNewRow((prev) => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value,
+        }));
+    };
+
+    const handleStockNameChange = (event, newValue) => {
+        setNewRow((prev) => ({
+            ...prev,
+            stockName: newValue,
         }));
     };
 
@@ -33,15 +54,12 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
         // Send the new row data to the backend
         axios.post('http://localhost:5000/api/erp/stockMovements', newRow)
             .then((response) => {
-                // If the request is successful, call the onRowCreated function to update the table
-                onRowCreated(response.data);
-                // Close the modal
-                onClose();
+                onRowCreated(response.data); // Update the table with the new row
+                onClose(); // Close the modal
             })
             .catch((error) => {
                 console.log('There was an error creating the new row!', error);
                 if (error.response && error.response.data && error.response.data.error) {
-                    // Check for specific foreign key constraint error
                     if (error.response.data.error.includes('Foreign key constraint violation')) {
                         toast.error('Foreign key constraint violation: the referenced key does not exist.');
                     } else {
@@ -65,24 +83,25 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: 400, /* Adjust width as needed */
+                width: 400,
                 bgcolor: 'background.paper',
                 boxShadow: 24,
-                p: 4, /* Adjust padding as needed */
+                p: 4,
                 borderRadius: 2,
-                overflow: 'auto', /* Enable scrolling */
-                maxHeight: 'calc(100vh - 100px)', /* Set max height (adjust as needed) */
+                overflow: 'auto',
+                maxHeight: 'calc(100vh - 100px)',
             }}>
                 <Typography id="modal-modal-title" variant="h6" component="h2" mb={2}>
                     Yeni Stok Hareketi Oluştur
                 </Typography>
                 <form onSubmit={handleSubmit}>
-                    <TextField
+                    <Autocomplete
                         fullWidth
                         margin="normal"
-                        label="Parça Adı"
-                        name="stockName"
-                        onChange={handleChange}
+                        options={stockOptions}
+                        value={newRow.stockName}
+                        onChange={handleStockNameChange}
+                        renderInput={(params) => <TextField {...params} label="Parça Adı" />}
                     />
                     <TextField
                         fullWidth

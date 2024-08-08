@@ -26,8 +26,8 @@ const ProductionOrderTable = () => {
                     let orderTotalCost = 0; // Initialize order total cost accumulator
 
                     for (const bill of order.BillOfProduct.items) {
-                        // Check if totalCost exists on the bill object (assuming it's calculated earlier)
-                        orderTotalCost += bill.quantity * bill.stock.cost; // Add item totalCost to order total
+
+                        orderTotalCost += bill.quantity * bill.stock.cost; // Calculate total cost of order
                     }
                     order.totalCost = (order.quantity * orderTotalCost).toFixed(2); // Assign calculated order totalCost
                     console.log("Order:", order);

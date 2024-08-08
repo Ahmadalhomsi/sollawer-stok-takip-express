@@ -197,7 +197,7 @@ const BillOfProductTable = () => {
     useEffect(() => {
         axios.get('http://localhost:5000/api/erp/billsOfProduct')
             .then((response) => {
-                console.log(response.data);
+
                 for (const bill of response.data) {
                     const totalCost = bill.items.reduce((acc, item) => acc + item.quantity * item.stock.cost, 0);
                     bill.totalCost = totalCost.toFixed(2); // Assign the calculated totalCost to the bill object
