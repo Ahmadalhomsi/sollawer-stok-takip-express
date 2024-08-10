@@ -133,18 +133,11 @@ const CardTable = () => {
       ),
     },
     { field: 'manufacturer', headerName: 'Üretici', width: 100, editable: true },
+    
     {
       field: 'isActive',
       headerName: 'Aktif/Pasif',
-      width: 120,
-      editable: true,
-      renderCell: (params) => params.value ? 'Aktif' : 'Pasif',
-      renderEditCell: (params) => (
-        <Checkbox
-          checked={params.value}
-          onChange={(e) => params.api.setEditCellValue({ id: params.id, field: params.field, value: e.target.checked })}
-        />
-      ),
+      width: 120, editable: true, type: 'boolean'
     },
     { field: 'depotShelfNo', headerName: 'Depo Raf No', width: 110, editable: true },
     {

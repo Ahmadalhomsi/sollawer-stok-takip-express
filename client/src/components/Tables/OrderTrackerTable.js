@@ -1,7 +1,6 @@
-// src/EditableTable.js
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, Checkbox, Button, Link, Box, IconButton } from '@mui/material';
+import { Button, Box, IconButton, TextField, Autocomplete } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import NewOrderModal from '../Modals/NewOrderModal';
@@ -10,11 +9,9 @@ import toast from "react-hot-toast";
 
 const OrderTrackerTable = () => {
   const [rows, setRows] = useState([]);
-  const [editIdx, setEditIdx] = useState(-1);
-  const [editRow, setEditRow] = useState({});
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setModalOpen] = useState(false);
-
+  const [projectNos, setProjectNos] = useState([]); // State to store project numbers
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/orders')
@@ -23,69 +20,67 @@ const OrderTrackerTable = () => {
         setLoading(false);
       })
       .catch((error) => {
-        toast.error(error.message)
+        toast.error(error.message);
         console.log('There was an error fetching the data!', error);
         setLoading(false);
       });
+
+    // Fetch the list of project numbers
+    axios.get('http://localhost:5000/api/projects')
+      .then((response) => {
+        const projectNumbers = response.data.map((project) => project.projectNO);
+        setProjectNos(projectNumbers);
+      })
+      .catch((error) => {
+        toast.error('Failed to fetch project numbers');
+        console.log('Error fetching project numbers:', error);
+      });
   }, []);
 
-  const handleEdit = (params) => {
-    setEditIdx(params.id);
-    setEditRow(rows.find((row) => row.id === params.id));
-  };
+  const handleRowUpdate = async (newRow, oldRow) => {
+    if (JSON.stringify(newRow) !== JSON.stringify(oldRow)) {
+      const dataToUpdate = {
+        ...newRow,
+        orderDate: new Date(newRow.orderDate).toISOString(),
+        shipmentDate: new Date(newRow.shipmentDate).toISOString(),
+      };
 
-  const handleSave = async () => {
-    // Convert necessary fields to the appropriate types
-    const dataToUpdate = {
-      ...editRow,
-      tableCount: parseInt(editRow.tableCount, 10),   // Convert tableCount to Integer
-      orderDate: new Date(editRow.orderDate).toISOString(),  // Ensure proper Date conversion
-      shipmentDate: new Date(editRow.shipmentDate).toISOString()  // Ensure proper Date conversion
-    };
-
-    try {
-      // Await the Axios PUT request
-      const response = await axios.put(`http://localhost:5000/api/orders/${editIdx}`, dataToUpdate);
-
-      // Update rows state only if the request is successful
-      if (response.status === 200) {
-        const updatedRows = rows.map((row) => (row.id === editIdx ? dataToUpdate : row));
-        setRows(updatedRows);
-        setEditIdx(-1);
-      } else {
-        console.log(`Failed to update row: ${response.statusText}`);
+      try {
+        const response = await axios.put(`http://localhost:5000/api/orders/${newRow.id}`, dataToUpdate);
+        if (response.status === 200) {
+          toast.success("Row updated successfully");
+          return dataToUpdate;
+        } else {
+          toast.error(`Failed to update row: ${response.statusText}`);
+          return oldRow;
+        }
+      } catch (error) {
+        console.log('There was an error creating the new row!', error);
+        if (error.response && error.response.data && error.response.data.error) {
+          if (error.response.data.error.includes('Foreign key constraint violation')) {
+            toast.error('Foreign key constraint violation: the referenced key does not exist.');
+          } else {
+            toast.error(error.response.data.error);
+          }
+        } else {
+          toast.error('There was an error creating the new row!');
+        }
       }
-    } catch (error) {
-      console.log('Error updating row:', error);
     }
+    return oldRow;
   };
 
 
-  const handleCancel = () => {
-    setEditIdx(-1);
-  };
-
-  const handleDelete = (id) => {
-    setRows(rows.filter((row) => row.id !== id));
+  const handleDelete = async (id) => {
     try {
-      axios.delete(`http://localhost:5000/api/orders/${id}`);
+      await axios.delete(`http://localhost:5000/api/orders/${id}`);
+      setRows(rows.filter((row) => row.id !== id));
+      toast.success('Row deleted successfully!');
     } catch (error) {
-      console.log(error);
-      toast.error('Error deleting row')
+      console.log('Error deleting row:', error);
+      toast.error('Error deleting row');
     }
-    toast.success('Row deleted successfully!');
   };
-
-
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setEditRow((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
 
   const handleModalOpen = () => {
     setModalOpen(true);
@@ -100,196 +95,90 @@ const OrderTrackerTable = () => {
   };
 
   const columns = [
-    {
-      field: 'id', headerName: 'ID', width: 10, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="id"
-          value={editRow.id}
-        // onChange={handleChange}
-        />
-      ) : params.value
-    },
+    { field: 'id', headerName: 'ID', width: 100 },
     {
       field: 'orderDate',
       headerName: 'Sipariş Tarih',
       width: 140,
-      renderCell: (params) => params.row.id === editIdx ? (
+      editable: true,
+      renderCell: (params) => new Date(params.value).toLocaleString(),
+      renderEditCell: (params) => (
         <TextField
+          style={{ width: 140 }}
           fullWidth
-
           type="datetime-local"
           name="orderDate"
-          value={new Date(editRow.orderDate).toISOString().slice(0, 16)}
-          onChange={handleChange}
+          value={params.value ? new Date(params.value).toISOString().slice(0, 16) : ''}
+          onChange={(e) => params.api.setEditCellValue({ id: params.id, field: params.field, value: e.target.value })}
           InputLabelProps={{
             shrink: true,
           }}
         />
-      ) : new Date(params.value).toLocaleString()
+      ),
     },
     {
       field: 'shipmentDate',
       headerName: 'Kargo Tarih',
       width: 140,
-      renderCell: (params) => params.row.id === editIdx ? (
+      editable: true,
+      renderCell: (params) => new Date(params.value).toLocaleString(),
+      renderEditCell: (params) => (
         <TextField
+          style={{ width: 140 }}
           fullWidth
           type="datetime-local"
           name="shipmentDate"
-          value={new Date(editRow.shipmentDate).toISOString().slice(0, 16)}
-          onChange={handleChange}
+          value={params.value ? new Date(params.value).toISOString().slice(0, 16) : ''}
+          onChange={(e) => params.api.setEditCellValue({ id: params.id, field: params.field, value: e.target.value })}
           InputLabelProps={{
             shrink: true,
           }}
         />
-      ) : new Date(params.value).toLocaleString()
+      ),
     },
+    { field: 'shipmentStatus', headerName: 'Yollanma Durumu', width: 110, editable: true, type: 'boolean' },
+    { field: 'invoiceStatus', headerName: 'Fatura Durumu', width: 110, editable: true, type: 'boolean' },
+    { field: 'invoiceNO', headerName: 'Fatura NO', width: 120, editable: true },
     {
-      field: 'shipmentStatus', headerName: 'Kargo Durumu', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-        <Checkbox
-          name="shipmentStatus"
-          checked={editRow.shipmentStatus}
-          onChange={handleChange}
+      field: 'projectNO',
+      headerName: 'Proje NO',
+      width: 150,
+      editable: true,
+      renderEditCell: (params) => (
+        <Autocomplete
+          value={params.value || ''}
+          onChange={(event, newValue) => params.api.setEditCellValue({ id: params.id, field: params.field, value: newValue })}
+          options={projectNos}
+          renderInput={(params) => <TextField {...params} />}
+          style={{ width: 200 }}
         />
-      ) : params.value ? 'Yollandı' : 'Yollanmadı'
+      ),
     },
+    { field: 'company', headerName: 'Firma', width: 120, editable: true },
+    { field: 'projectName', headerName: 'Proje', width: 110, editable: true },
+    { field: 'tableCount', headerName: 'Masa Sayısı', width: 100, editable: true, type: 'number' },
+    { field: 'city', headerName: 'Şehir', width: 100, editable: true },
+    { field: 'latitude', headerName: 'Enlem', width: 80, editable: true, type: 'number' },
+    { field: 'longitude', headerName: 'Boylam', width: 80, editable: true, type: 'number' },
+    { field: 'investorName', headerName: 'Yatırımcı İsmi', width: 150, editable: true },
     {
-      field: 'invoiceStatus', headerName: 'Fatura Durumu', width: 110, renderCell: (params) => params.row.id === editIdx ? (
-        <Checkbox
-          name="invoiceStatus"
-          checked={editRow.invoiceStatus}
-          onChange={handleChange}
-        />
-      ) : params.value ? 'Kesildi' : 'Kesilmedi'
-    },
-    {
-      field: 'invoiceNO', headerName: 'Fatura NO', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="invoiceNO"
-          value={editRow.invoiceNO}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'projectNO', headerName: 'Proje NO', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="projectNO"
-          value={editRow.projectNO}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-
-    {
-      field: 'company', headerName: 'Firma', width: 120, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="company"
-          value={editRow.company}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'projectName', headerName: 'Proje', width: 110, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="projectName"
-          value={editRow.projectName}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-
-    {
-      field: 'tableCount', headerName: 'Masa Sayısı', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          type="number"
-          name="tableCount"
-          value={editRow.tableCount}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'city', headerName: 'Şehir', width: 100, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="city"
-          value={editRow.city}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'latitude', headerName: 'Enlem', width: 80, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          type="number"
-          name="latitude"
-          value={editRow.latitude}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'longitude', headerName: 'Boylam', width: 80, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          type="number"
-          name="longitude"
-          value={editRow.longitude}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'investorName', headerName: 'Yatırımcı İsmi', width: 150, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="investorName"
-          value={editRow.investorName}
-          onChange={handleChange}
-        />
-      ) : params.value
-    },
-    {
-      field: 'projectLink', headerName: 'Proje Linki', width: 200, renderCell: (params) => params.row.id === editIdx ? (
-        <TextField
-          name="projectLink"
-          value={editRow.projectLink}
-          onChange={handleChange}
-        />
-      ) : (
-        <Link href={params.value} target="_blank" rel="noopener noreferrer">
+      field: 'projectLink', headerName: 'Proje Linki', width: 200, editable: true, renderCell: (params) => (
+        <a href={params.value} target="_blank" rel="noopener noreferrer">
           {params.value}
-        </Link>
+        </a>
       )
     },
-
     {
       field: 'actions',
       headerName: 'Actions',
       width: 164,
       renderCell: (params) => (
-        params.row.id === editIdx ? (
-          <>
-            <Button onClick={handleSave} variant="contained" color="primary" size="small" style={{ marginRight: 8 }}>
-              Save
-            </Button>
-            <Button onClick={handleCancel} variant="contained" color="secondary" size="small">
-              Cancel
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button onClick={() => handleEdit(params)} variant="contained" size="small" style={{ marginRight: 8 }}>
-              Edit
-            </Button>
-            <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
-              <DeleteIcon />
-            </IconButton>
-          </>
-        )
+        <IconButton onClick={() => handleDelete(params.id)} color="error" size="small">
+          <DeleteIcon />
+        </IconButton>
       )
     }
   ];
-
 
   return (
     <Box sx={{ height: 600, width: '100%' }}>
@@ -301,11 +190,11 @@ const OrderTrackerTable = () => {
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[5, 10, 20]}
-        // checkboxSelection
         disableSelectionOnClick
         loading={loading}
         getRowId={(row) => row.id}
-
+        processRowUpdate={handleRowUpdate}  // Handle updates
+        experimentalFeatures={{ newEditingApi: true }}  // Enable the new editing API
       />
       <NewOrderModal
         open={isModalOpen}

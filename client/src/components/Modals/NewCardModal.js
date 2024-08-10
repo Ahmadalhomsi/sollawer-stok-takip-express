@@ -44,7 +44,7 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e) => {ddd
         e.preventDefault();
 
         console.log("Created Row:");

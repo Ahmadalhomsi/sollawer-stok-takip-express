@@ -39,6 +39,8 @@ model OrderTracker {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  Project   Project? @relation(fields: [projectNO], references: [projectNO],"ProjectToOrders")
 }
 
 model Customer {
@@ -72,7 +74,8 @@ model Project {
 
   controlCards ControlCard[] @relation("ProjectToControlCards")
 
-  faultyCards FaultyCard[] @relation("ProjectToFaultyCards")
+  faultyCards FaultyCard[]   @relation("ProjectToFaultyCards")
+  orders      OrderTracker[] @relation("ProjectToOrders")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
