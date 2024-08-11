@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { autocompleteStyle, mainButtonStyle, modalCloseButtonStyle, ModalNewFieldStyle } from '../styles';
 
 const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) => {
     const [newRow, setNewRow] = useState({
@@ -110,6 +111,7 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) =>
                         renderInput={(params) => (
                             <TextField {...params} label="Kart ID (UNID)" />
                         )}
+                        sx={autocompleteStyle}
                     />
                     <TextField
                         fullWidth
@@ -117,6 +119,7 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) =>
                         label="Parametre NO"
                         name="parameterNO"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -124,6 +127,7 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) =>
                         label="Parametre"
                         name="parameter"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -131,11 +135,12 @@ const NewCardParameterModal = ({ open, onClose, onRowCreated, selectedUNID }) =>
                         label="Değer"
                         name="value"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
 
                     <Box mt={2} display="flex" justifyContent="space-between">
-                        <Button onClick={onClose} color="secondary">Cancel</Button>
-                        <Button type="submit" variant="contained" color="primary">Create</Button>
+                        <Button onClick={onClose} variant="contained" sx={modalCloseButtonStyle}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={mainButtonStyle}>Create</Button>
                     </Box>
                 </form>
             </Box>

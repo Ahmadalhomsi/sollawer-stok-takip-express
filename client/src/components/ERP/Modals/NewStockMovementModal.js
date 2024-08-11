@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Box, TextField, Button, Typography, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { autocompleteStyle, mainButtonStyle, modalCloseButtonStyle, ModalNewFieldStyle } from '../../styles';
 
 const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
@@ -102,6 +103,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                         value={newRow.stockName}
                         onChange={handleStockNameChange}
                         renderInput={(params) => <TextField {...params} label="Parça Adı" />}
+                        sx={autocompleteStyle}
                     />
                     <TextField
                         fullWidth
@@ -109,6 +111,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                         label="Hareket Tipi"
                         name="movementType"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -117,6 +120,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                         name="quantity"
                         type="number"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -125,6 +129,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                         name="requested"
                         type="number"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -132,6 +137,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                         label="Hareket"
                         name="movement"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -140,6 +146,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                         name="boxQuantity"
                         type="number"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -147,6 +154,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                         label="İhtiyaç"
                         name="need"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -155,6 +163,7 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                         type="datetime-local"
                         name="date"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                         InputLabelProps={{
                             shrink: true,
                         }}
@@ -165,11 +174,12 @@ const NewStockMovementModal = ({ open, onClose, onRowCreated }) => {
                         label="Ek Bilgi"
                         name="description"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
 
                     <Box mt={2} display="flex" justifyContent="space-between">
-                        <Button onClick={onClose} color="secondary">Cancel</Button>
-                        <Button type="submit" variant="contained" color="primary">Create</Button>
+                        <Button onClick={onClose} variant="contained" sx={modalCloseButtonStyle}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={mainButtonStyle}>Create</Button>
                     </Box>
                 </form>
             </Box>

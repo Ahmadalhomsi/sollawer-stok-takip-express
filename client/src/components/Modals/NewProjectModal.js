@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Box, TextField, Button, Typography, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { autocompleteStyle, mainButtonStyle, modalCloseButtonStyle, ModalNewFieldStyle } from '../styles';
 
 const NewProjectModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
@@ -103,6 +104,7 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         label="Project NO"
                         name="projectNO"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -111,6 +113,7 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         label="Masa sayısı"
                         name="tableCount"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -118,6 +121,7 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         label="Proje Linki"
                         name="projectLink"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -125,6 +129,7 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         label="Şehir"
                         name="city"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -134,6 +139,7 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         name="latitude"
                         inputProps={{ step: "any" }} // Allow any step for float numbers
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -143,6 +149,7 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         name="longitude"
                         inputProps={{ step: "any" }} // Allow any step for float numbers
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -150,6 +157,7 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         label="EPC"
                         name="EPC"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <Autocomplete
                         fullWidth
@@ -160,11 +168,12 @@ const NewProjectModal = ({ open, onClose, onRowCreated }) => {
                         renderInput={(params) => (
                             <TextField {...params} label="Müşteri Adı" />
                         )}
+                        sx={autocompleteStyle}
                     />
 
                     <Box mt={2} display="flex" justifyContent="space-between">
-                        <Button onClick={onClose} color="secondary">Cancel</Button>
-                        <Button type="submit" variant="contained" color="primary">Create</Button>
+                        <Button onClick={onClose} variant="contained" sx={modalCloseButtonStyle}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={mainButtonStyle}>Create</Button>
                     </Box>
                 </form>
             </Box>

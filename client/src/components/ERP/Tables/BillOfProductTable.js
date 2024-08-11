@@ -7,7 +7,7 @@ import axios from 'axios';
 import toast from "react-hot-toast";
 import NewBillOfProductModal from '../Modals/NewBillOfProductModal';
 import { Autocomplete } from '@mui/material';
-import { mainButtonStyle } from '../../styles';
+import { autocompleteStyle, mainButtonStyle, modalButtonStyle, modalCloseButtonStyle, numberStyle } from '../../styles';
 
 let outLocalItems = [];
 const EditStockModal = ({ open, onClose, items, onSave }) => {
@@ -88,7 +88,7 @@ const EditStockModal = ({ open, onClose, items, onSave }) => {
                             getOptionLabel={(option) => option.stockName}
                             value={item.stock}
                             onChange={(event, value) => handleStockChange(index, value)}
-                            sx={{ width: 300, marginRight: 2 }}
+                            sx={[autocompleteStyle, { width: 300, marginRight: 2 }]}
                             renderInput={(params) => <TextField {...params} label="Stock" />}
                         />
                         <TextField
@@ -96,17 +96,17 @@ const EditStockModal = ({ open, onClose, items, onSave }) => {
                             type="number"
                             value={item.quantity}
                             onChange={(event) => handleQuantityChange(index, event)}
-                            sx={{ width: 100, marginRight: 2 }}
+                            sx={[numberStyle,{ width: 100, marginRight: 2 }]}
                         />
                         <IconButton onClick={() => handleDeleteItem(index)} color="error">
                             <DeleteIcon />
                         </IconButton>
                     </Box>
                 ))}
-                <Button onClick={handleAddItem} color="primary">Add Item</Button>
+                <Button onClick={handleAddItem} color="primary" sx={{color: '#e6c300'}}>Add Item</Button>
                 <Box mt={2}>
-                    <Button onClick={handleSave} color="primary" variant="contained">Save</Button>
-                    <Button onClick={onClose} color="secondary" variant="contained" sx={{ marginLeft: 2 }}>Cancel</Button>
+                    <Button onClick={handleSave} sx={modalButtonStyle} variant="contained">Save</Button>
+                    <Button onClick={onClose} sx={[modalCloseButtonStyle, { marginLeft: 2 }]} variant="contained" >Cancel</Button>
                 </Box>
             </Box>
         </Modal>
@@ -159,7 +159,7 @@ const BillOfProductTable = () => {
                             </li>
                         ))}
                     </ul>
-                    <Button onClick={onClose} color="primary">Close</Button>
+                    <Button onClick={onClose} sx={modalCloseButtonStyle}>Close</Button>
                 </Box>
             </Modal>
         );

@@ -6,7 +6,7 @@ import TabNavigation from '../components/TabNavigation';
 import { allTabs } from '../components/allTabs';
 import toast from "react-hot-toast";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { autocompleteStyle, mainButtonStyle } from '../components/styles';
+import { autocompleteStyle, mainButtonStyle, ModalNewFieldStyle } from '../components/styles';
 
 const ExcelImport = () => {
     const [file, setFile] = useState(null);
@@ -81,10 +81,10 @@ const ExcelImport = () => {
             <TabNavigation tabs={allTabs} />
 
             <Box sx={{
-                p: 7,
+                p: 5,
             }}>
                 <div {...getRootProps({ className: 'dropzone' })}
-                    style={{ border: '2px dashed #ffd800', padding: '120px', textAlign: 'center' }}>
+                    style={{ border: '2px dashed #ffd800', padding: '80px', textAlign: 'center', width: '80%' }}>
                     <input {...getInputProps()} />
                     <Typography variant="h6">Drag & drop a file here, or click to select a file</Typography>
                 </div>
@@ -97,7 +97,7 @@ const ExcelImport = () => {
                     options={['Kontrol Kart Import', 'Kart Parametresi Import']}
                     value={uploadType}
                     onChange={(event, newValue) => setUploadType(newValue)}
-                    renderInput={(params) => <TextField {...params} label="Upload Type" variant="outlined" sx={{ mt: 2 }} />}
+                    renderInput={(params) => <TextField {...params} label="Upload Type" variant="outlined" sx={{ mt: 2, width: '20%' }} />}
                     sx={autocompleteStyle}
                 />
                 <TextField
@@ -105,26 +105,9 @@ const ExcelImport = () => {
                     variant="outlined"
                     value={sheetPage}
                     onChange={(e) => setSheetPage(e.target.value)}
-                    sx={{
-                        mt: 2,
-                        width: '100%',
-                        '& .MuiOutlinedInput-root': {
-                            '&:hover fieldset': {
-                                borderColor: '#ffb400', // Outline color on hover
-                            },
-                            '&.Mui-focused fieldset': {
-                                borderColor: '#ffd800', // Outline color when focused
-                            },
-                        },
-                        '& .MuiInputLabel-root': {
-                            color: '#CEAF03', // Label color in the default state
-                        },
-                        '& .MuiInputLabel-root.Mui-focused': {
-                            color: '#ff9900', // Label color when focused
-                        },
-
-                    }}
+                    sx={[ModalNewFieldStyle, { mt: 2, width: '8%' }]}
                 />
+                <br />
                 <Button
                     onClick={onSubmit}
                     variant="contained"
@@ -137,11 +120,11 @@ const ExcelImport = () => {
                         {message}
                     </Typography>
                 )}
-                <Box sx={{ mt: 4 }}>
+                <Box sx={{ mt: 2, maxHeight: 300, overflow: 'auto' , width: '80%' }}>
                     <Typography variant="h6">Uploaded Files:</Typography>
                     <List>
                         {uploadedFiles.map((uploadedFile, index) => (
-                            <ListItem key={index}>
+                            <ListItem key={index} >
                                 {uploadedFile}
                                 <IconButton onClick={() => handleDelete(uploadedFile)} size="small" color="error" sx={{ ml: 2 }}>
                                     <DeleteIcon />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { autocompleteStyle, checkboxStyle, mainButtonStyle, modalCloseButtonStyle, ModalNewFieldStyle } from '../styles';
 
 const NewCardModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
@@ -44,7 +45,8 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
         }));
     };
 
-    const handleSubmit = (e) => {ddd
+    const handleSubmit = (e) => {
+        ddd
         e.preventDefault();
 
         console.log("Created Row:");
@@ -94,6 +96,7 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
                         label="Sıra NO"
                         name="orderNumber"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -101,6 +104,7 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
                         label="UNID"
                         name="UNID"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -108,6 +112,7 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
                         label="Revizyon NO"
                         name="revisionNO"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -119,6 +124,7 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -126,9 +132,10 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
                         label="Üretici"
                         name="manufacturer"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <FormControlLabel
-                        control={<Checkbox name="isActive" checked={newRow.isActive} onChange={handleChange} />}
+                        control={<Checkbox name="isActive" checked={newRow.isActive} onChange={handleChange} sx={checkboxStyle} />}
                         label="Aktif/Pasif"
                     />
                     <TextField
@@ -137,6 +144,7 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
                         label="Depo Raf No"
                         name="depotShelfNo"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <Autocomplete
                         fullWidth
@@ -147,11 +155,12 @@ const NewCardModal = ({ open, onClose, onRowCreated }) => {
                         renderInput={(params) => (
                             <TextField {...params} label="Project No" />
                         )}
+                        sx={autocompleteStyle}
                     />
-                    
+
                     <Box mt={2} display="flex" justifyContent="space-between">
-                        <Button onClick={onClose} color="secondary">Cancel</Button>
-                        <Button type="submit" variant="contained" color="primary">Create</Button>
+                        <Button onClick={onClose} variant="contained" sx={modalCloseButtonStyle}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={mainButtonStyle}>Create</Button>
                     </Box>
                 </form>
             </Box>

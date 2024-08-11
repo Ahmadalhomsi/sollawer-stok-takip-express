@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import NewStockModal from '../Modals/NewStockModal';
-import { mainButtonStyle } from '../../styles';
+import { mainButtonStyle, modalCloseButtonStyle } from '../../styles';
 
 const StockTable = () => {
     const [rows, setRows] = useState([]);
@@ -177,7 +177,7 @@ const StockTable = () => {
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 10, editable: false },
-        { field: 'stockName', headerName: 'Parça Adı', width: 240, editable: true,},
+        { field: 'stockName', headerName: 'Parça Adı', width: 240, editable: true, },
         { field: 'stockType', headerName: 'Stok Tipi', width: 100, editable: true },
         { field: 'quantity', headerName: 'Adet', width: 80, editable: true, type: 'number' },
         { field: 'duration', headerName: 'Süre', width: 100, editable: true },
@@ -197,7 +197,7 @@ const StockTable = () => {
                             component="button"
                             variant="body2"
                             onClick={() => handleClickOpen(`http://localhost:5000/uploads/${url}`)}
-                            sx={{ display: 'block',color: '#CEAF03', cursor: 'pointer',  }}
+                            sx={{ display: 'block', color: '#CEAF03', cursor: 'pointer', }}
                         >
                             {url}
                         </Link>
@@ -288,7 +288,7 @@ const StockTable = () => {
                         variant="contained"
                         component="label"
                         color="primary"
-                        style={{ marginBottom: '1rem' }}
+                        sx={[modalCloseButtonStyle, { marginBottom: '1rem' }]}
                     >
                         Choose Photo
                         <input
@@ -298,7 +298,8 @@ const StockTable = () => {
                             accept="image/*"
                         />
                     </Button>
-                    <Button onClick={handleURLSubmit} variant="contained" color="primary" style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
+                    <Button onClick={handleURLSubmit} variant="contained" color="primary"
+                        sx={[mainButtonStyle, { marginLeft: '1rem', marginBottom: '1rem' }]}>
                         Upload
                     </Button>
 
@@ -313,7 +314,9 @@ const StockTable = () => {
                                     component="button"
                                     variant="body2"
                                     onClick={() => handleClickOpen(`http://localhost:5000/uploads/${url}`)}
-                                    sx={{ display: 'block', cursor: 'pointer', marginRight: 2 }}
+                                    sx={{
+                                        color: '#e6c300'
+                                    }}
                                 >
                                     {url}
                                 </Link>

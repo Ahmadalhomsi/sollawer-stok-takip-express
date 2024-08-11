@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Box, TextField, Button, Typography, List, ListItem, Link, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { autocompleteStyle, mainButtonStyle, modalCloseButtonStyle, ModalNewFieldStyle } from '../styles';
 
 const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
@@ -164,6 +165,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                                 label="UNID"
                             />
                         )}
+                        sx={autocompleteStyle}
                     />
                     <TextField
                         fullWidth
@@ -176,6 +178,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -184,6 +187,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                         name="status"
                         value={newRow.status}
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -192,12 +196,13 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                         name="fault"
                         value={newRow.fault}
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
-                    <Typography variant="body1" sx={{ mt: 2 }}>Uploaded Photos:</Typography>
+                    <Typography variant="body1" sx={{ mt: 1 }}>Uploaded Photos:</Typography>
                     <List>
                         {newRow.photoURL.map((url, index) => (
                             <ListItem key={index}>
-                                <Link href={`http://localhost:5000/${url}`} target="_blank" rel="noopener noreferrer">
+                                <Link href={`http://localhost:5000/${url}`} target="_blank" rel="noopener noreferrer" sx={{ color: '#CEAF03' }}>
                                     {url}
                                 </Link>
                             </ListItem>
@@ -206,7 +211,7 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                     <Button
                         variant="contained"
                         component="label"
-                        sx={{ mt: 2 }}
+                        sx={mainButtonStyle}
                     >
                         Upload Photos
                         <input
@@ -230,10 +235,11 @@ const NewFaultyCardModal = ({ open, onClose, onRowCreated }) => {
                                 label="Project NO"
                             />
                         )}
+                        sx={autocompleteStyle}
                     />
                     <Box mt={2} display="flex" justifyContent="space-between">
-                        <Button onClick={onClose} color="secondary">Cancel</Button>
-                        <Button type="submit" variant="contained" color="primary">Create</Button>
+                        <Button onClick={onClose} variant="contained" sx={modalCloseButtonStyle}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={mainButtonStyle}>Create</Button>
                     </Box>
                 </form>
             </Box>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Box, TextField, Button, Typography, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { autocompleteStyle, mainButtonStyle, modalCloseButtonStyle, ModalNewFieldStyle } from '../../styles';
 
 const NewProductionOrderModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
@@ -102,6 +103,7 @@ const NewProductionOrderModal = ({ open, onClose, onRowCreated }) => {
                         name="orderNO"
                         value={newRow.orderNO}
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -111,6 +113,7 @@ const NewProductionOrderModal = ({ open, onClose, onRowCreated }) => {
                         name="quantity"
                         value={newRow.quantity}
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -123,6 +126,7 @@ const NewProductionOrderModal = ({ open, onClose, onRowCreated }) => {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -131,6 +135,7 @@ const NewProductionOrderModal = ({ open, onClose, onRowCreated }) => {
                         name="description"
                         value={newRow.description}
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <Autocomplete
                         options={bills}
@@ -144,10 +149,11 @@ const NewProductionOrderModal = ({ open, onClose, onRowCreated }) => {
                                 placeholder="Reçeteyi seçin"
                             />
                         )}
+                        sx={autocompleteStyle}
                     />
                     <Box mt={2} display="flex" justifyContent="space-between">
-                        <Button onClick={onClose} color="secondary">Cancel</Button>
-                        <Button type="submit" variant="contained" color="primary">Create</Button>
+                        <Button onClick={onClose} variant="contained" sx={modalCloseButtonStyle}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={mainButtonStyle}>Create</Button>
                     </Box>
                 </form>
             </Box>

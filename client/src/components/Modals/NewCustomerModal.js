@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { mainButtonStyle, modalCloseButtonStyle, ModalNewFieldStyle } from '../styles';
 
 const NewCustomerModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
@@ -68,6 +69,7 @@ const NewCustomerModal = ({ open, onClose, onRowCreated }) => {
                         label="Müşteri İsmi"
                         name="name"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -75,6 +77,7 @@ const NewCustomerModal = ({ open, onClose, onRowCreated }) => {
                         label="Firma"
                         name="companyName"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -82,6 +85,7 @@ const NewCustomerModal = ({ open, onClose, onRowCreated }) => {
                         label="Email"
                         name="email"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -89,10 +93,11 @@ const NewCustomerModal = ({ open, onClose, onRowCreated }) => {
                         label="Telefon Numarası"
                         name="phone"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <Box mt={2} display="flex" justifyContent="space-between">
-                        <Button onClick={onClose} color="secondary">Cancel</Button>
-                        <Button type="submit" variant="contained" color="primary">Create</Button>
+                        <Button onClick={onClose} variant="contained" sx={modalCloseButtonStyle}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={mainButtonStyle}>Create</Button>
                     </Box>
                 </form>
             </Box>

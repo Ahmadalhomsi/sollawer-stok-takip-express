@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel, List, ListItem, Link } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { mainButtonStyle, modalCloseButtonStyle, ModalNewFieldStyle as ModalFieldStyle } from '../../styles';
 
 
 
@@ -155,6 +156,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                         label="Parça Adı"
                         name="stockName"
                         onChange={handleChange}
+                        sx={ModalFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -162,6 +164,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                         label="Stok Tipi"
                         name="stockType"
                         onChange={handleChange}
+                        sx={ModalFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -170,6 +173,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                         name="quantity"
                         type="number"
                         onChange={handleChange}
+                        sx={ModalFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -177,6 +181,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                         label="Süre"
                         name="duration"
                         onChange={handleChange}
+                        sx={ModalFieldStyle}
                     />
                     {/* <TextField
                         fullWidth
@@ -194,6 +199,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                         type="number"
                         inputProps={{ step: "any" }} // Allow any step for float numbers
                         onChange={handleChange}
+                        sx={ModalFieldStyle}
                     />
                     {/* <TextField
                         fullWidth
@@ -208,6 +214,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                         label="Firma"
                         name="company"
                         onChange={handleChange}
+                        sx={ModalFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -215,12 +222,13 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                         label="Açıklama"
                         name="description"
                         onChange={handleChange}
+                        sx={ModalFieldStyle}
                     />
-                    <Typography variant="body1" sx={{ mt: 2 }}>Uploaded Photos:</Typography>
+                    <Typography variant="body1" sx={{ mt: 1 }}>Uploaded Photos:</Typography>
                     <List>
                         {newRow.photoURL.map((url, index) => (
                             <ListItem key={index}>
-                                <Link href={`http://localhost:5000/${url}`} target="_blank" rel="noopener noreferrer">
+                                <Link href={`http://localhost:5000/${url}`} target="_blank" rel="noopener noreferrer" sx={{color: '#CEAF03'}}>
                                     {url}
                                 </Link>
                             </ListItem>
@@ -229,7 +237,7 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                     <Button
                         variant="contained"
                         component="label"
-                        sx={{ mt: 2 }}
+                        sx={[mainButtonStyle]}
                     >
                         Upload Photos
                         <input
@@ -240,8 +248,8 @@ const NewStockModal = ({ open, onClose, onRowCreated }) => {
                         />
                     </Button>
                     <Box mt={2} display="flex" justifyContent="space-between">
-                        <Button onClick={onClose} color="secondary">Cancel</Button>
-                        <Button type="submit" variant="contained" color="primary">Create</Button>
+                        <Button onClick={onClose} variant="contained" sx={modalCloseButtonStyle}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={mainButtonStyle}>Create</Button>
                     </Box>
                 </form>
             </Box>

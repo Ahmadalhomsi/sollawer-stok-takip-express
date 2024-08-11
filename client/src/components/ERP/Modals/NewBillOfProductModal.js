@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Box, TextField, Button, Typography, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { autocompleteStyle, mainButtonStyle, modalCloseButtonStyle, ModalNewFieldStyle } from '../../styles';
 
 const NewBillOfProductModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
@@ -122,6 +123,7 @@ const NewBillOfProductModal = ({ open, onClose, onRowCreated }) => {
                         name="billName"
                         value={newRow.billName}
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -134,6 +136,7 @@ const NewBillOfProductModal = ({ open, onClose, onRowCreated }) => {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -142,6 +145,7 @@ const NewBillOfProductModal = ({ open, onClose, onRowCreated }) => {
                         name="description"
                         value={newRow.description}
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <Autocomplete
                         multiple
@@ -156,6 +160,7 @@ const NewBillOfProductModal = ({ open, onClose, onRowCreated }) => {
                                 placeholder="Stokları seçin"
                             />
                         )}
+                        sx={autocompleteStyle}
                     />
                     {newRow.items.map((item, index) => (
                         <Box key={item.stock.id} display="flex" alignItems="center" mt={2}>
@@ -170,8 +175,8 @@ const NewBillOfProductModal = ({ open, onClose, onRowCreated }) => {
                         </Box>
                     ))}
                     <Box mt={2} display="flex" justifyContent="space-between">
-                        <Button onClick={onClose} color="secondary">Cancel</Button>
-                        <Button type="submit" variant="contained" color="primary">Create</Button>
+                        <Button onClick={onClose} variant="contained" sx={modalCloseButtonStyle}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={mainButtonStyle}>Create</Button>
                     </Box>
                 </form>
             </Box>

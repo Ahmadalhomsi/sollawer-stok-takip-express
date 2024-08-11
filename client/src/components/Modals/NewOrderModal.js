@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { autocompleteStyle, checkboxStyle, mainButtonStyle, modalCloseButtonStyle, ModalNewFieldStyle } from '../styles';
 
 const NewOrderModal = ({ open, onClose, onRowCreated }) => {
     const [newRow, setNewRow] = useState({
@@ -103,6 +104,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -114,13 +116,14 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                        sx={ModalNewFieldStyle}
                     />
                     <FormControlLabel
-                        control={<Checkbox name="shipmentStatus" checked={newRow.shipmentStatus} onChange={handleChange} />}
+                        control={<Checkbox name="shipmentStatus" checked={newRow.shipmentStatus} onChange={handleChange} sx={checkboxStyle} />}
                         label="Shipment Status"
                     />
                     <FormControlLabel
-                        control={<Checkbox name="invoiceStatus" checked={newRow.invoiceStatus} onChange={handleChange} />}
+                        control={<Checkbox name="invoiceStatus" checked={newRow.invoiceStatus} onChange={handleChange} sx={checkboxStyle} />}
                         label="Invoice Status"
                     />
                     <TextField
@@ -129,6 +132,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         label="Invoice No"
                         name="invoiceNO"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <Autocomplete
                         fullWidth
@@ -139,6 +143,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         renderInput={(params) => (
                             <TextField {...params} label="Project No" />
                         )}
+                        sx={autocompleteStyle}
                     />
                     <TextField
                         fullWidth
@@ -146,6 +151,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         label="Project Name"
                         name="projectName"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -154,6 +160,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         name="tableCount"
                         type="number"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -161,6 +168,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         label="Project Link"
                         name="projectLink"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -168,6 +176,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         label="Company"
                         name="company"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -175,6 +184,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         label="Investor Name"
                         name="investorName"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -182,6 +192,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         label="City"
                         name="city"
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -191,6 +202,7 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         type="number"
                         inputProps={{ step: "any" }} // Allow any step for float numbers
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <TextField
                         fullWidth
@@ -200,10 +212,11 @@ const NewOrderModal = ({ open, onClose, onRowCreated }) => {
                         type="number"
                         inputProps={{ step: "any" }} // Allow any step for float numbers
                         onChange={handleChange}
+                        sx={ModalNewFieldStyle}
                     />
                     <Box mt={2} display="flex" justifyContent="space-between">
-                        <Button onClick={onClose} color="secondary">Cancel</Button>
-                        <Button type="submit" variant="contained" color="primary">Create</Button>
+                        <Button onClick={onClose} variant="contained" sx={modalCloseButtonStyle}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={mainButtonStyle}>Create</Button>
                     </Box>
                 </form>
             </Box>

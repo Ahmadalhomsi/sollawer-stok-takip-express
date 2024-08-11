@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Modal, Typography, Autocomplete, TextField } from '@mui/material';
 import axios from 'axios';
+import { autocompleteStyle, mainButtonStyle, modalButtonStyle, modalCloseButtonStyle } from '../../styles';
 
 const EditStockModal = ({ open, onClose, item, onSave }) => {
     const [localItem, setLocalItem] = useState(item);
@@ -60,12 +61,12 @@ const EditStockModal = ({ open, onClose, item, onSave }) => {
                     getOptionLabel={(option) => option.billName}
                     value={localItem.bill}
                     onChange={handleBillChange}
-                    sx={{ width: 300, marginBottom: 2 }}
+                    sx={[autocompleteStyle, { width: 300, marginBottom: 2 }]}
                     renderInput={(params) => <TextField {...params} label="Bill" />}
                 />
                 <Box mt={2}>
-                    <Button onClick={handleSave} color="primary" variant="contained">Save</Button>
-                    <Button onClick={onClose} color="secondary" variant="contained" sx={{ marginLeft: 2 }}>Cancel</Button>
+                    <Button onClick={handleSave} color="primary" variant="contained" sx={modalButtonStyle}>Save</Button>
+                    <Button onClick={onClose} color="secondary" variant="contained" sx={[modalCloseButtonStyle, { marginLeft: 2 }]}>Cancel</Button>
                 </Box>
             </Box>
         </Modal>
