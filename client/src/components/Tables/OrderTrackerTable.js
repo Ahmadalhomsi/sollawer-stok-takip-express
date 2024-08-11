@@ -6,6 +6,7 @@ import axios from 'axios';
 import NewOrderModal from '../Modals/NewOrderModal';
 import toast from "react-hot-toast";
 import { useTheme } from '@emotion/react';
+import { mainButtonStyle } from '../styles';
 
 
 const OrderTrackerTable = () => {
@@ -175,7 +176,7 @@ const OrderTrackerTable = () => {
           <a href={params.value}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: linkColor }}>
+            style={{ color: '#CEAF03' }}>
             {params.value}
           </a>
         );
@@ -195,7 +196,11 @@ const OrderTrackerTable = () => {
 
   return (
     <Box sx={{ height: 600, width: '100%' }}>
-      <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+      <Button
+        onClick={handleModalOpen}
+        variant="contained"
+        sx={mainButtonStyle}
+      >
         YENİ SİPARİŞ EKLE
       </Button>
       <DataGrid

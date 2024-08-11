@@ -7,6 +7,7 @@ import axios from 'axios';
 import toast from "react-hot-toast";
 import NewBillOfProductModal from '../Modals/NewBillOfProductModal';
 import { Autocomplete } from '@mui/material';
+import { mainButtonStyle } from '../../styles';
 
 let outLocalItems = [];
 const EditStockModal = ({ open, onClose, items, onSave }) => {
@@ -319,7 +320,7 @@ const BillOfProductTable = () => {
                         return `${item.stock.stockName}, Q: ${item.quantity}, C: ${item.stock.cost}`;
                     }).join(' | ');
                     return (
-                        <Button onClick={() => handleItemsClick(params.value)}>
+                        <Button style={{color: '#CEAF03'}} onClick={() => handleItemsClick(params.value)}>
                             {itemsString}
                         </Button>
                     );
@@ -368,7 +369,11 @@ const BillOfProductTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
-            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+            <Button
+                onClick={handleModalOpen}
+                variant="contained"
+                sx={mainButtonStyle}
+            >
                 YENİ ÜRÜN REÇETESİ EKLE
             </Button>
             <DataGrid

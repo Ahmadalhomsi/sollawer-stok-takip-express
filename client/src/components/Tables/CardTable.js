@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import NewCardModal from '../Modals/NewCardModal';
+import { filterStyle, mainButtonStyle } from '../styles';
 
 const CardTable = () => {
   const [rows, setRows] = useState([]);
@@ -133,7 +134,7 @@ const CardTable = () => {
       ),
     },
     { field: 'manufacturer', headerName: 'Üretici', width: 100, editable: true },
-    
+
     {
       field: 'isActive',
       headerName: 'Aktif/Pasif',
@@ -150,7 +151,7 @@ const CardTable = () => {
           value={params.value || ''}
           onChange={(event, newValue) => params.api.setEditCellValue({ id: params.id, field: params.field, value: newValue })}
           options={projectNos}
-          renderInput={(params) => <TextField {...params}/>}
+          renderInput={(params) => <TextField {...params} />}
           style={{ width: 200 }}
         />
       ),
@@ -169,7 +170,11 @@ const CardTable = () => {
 
   return (
     <Box sx={{ height: 600, width: '100%' }}>
-      <Button onClick={handleModalOpen} variant="contained" color="primary" sx={{ marginBottom: 2 }}>
+      <Button
+        onClick={handleModalOpen}
+        variant="contained"
+        sx={mainButtonStyle}
+      >
         YENİ KONTROL KARTI EKLE
       </Button>
       <TextField
@@ -178,7 +183,7 @@ const CardTable = () => {
         value={unidFilter}
         onChange={handleUnidFilterChange}
         size='small'
-        sx={{ marginBottom: 2, marginRight: 2, marginLeft: 2 }}
+        sx={filterStyle}
       />
       <TextField
         label="Proje NO Filter"
@@ -186,7 +191,7 @@ const CardTable = () => {
         value={projectNoFilter}
         onChange={handleProjectNoFilterChange}
         size='small'
-        sx={{ marginBottom: 2, marginRight: 2 }}
+        sx={filterStyle}
       />
 
       <DataGrid

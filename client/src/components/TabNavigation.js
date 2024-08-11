@@ -29,7 +29,7 @@ const TabNavigation = ({ tabs }) => {
         sx={{
           ...tab.sx, // Apply custom sx if provided
           '&.Mui-selected': {
-            color: tab.sx?.['&.Mui-selected']?.color || '#E7C503', // Change selected tab text color, // Change selected tab text color
+            color: tab.sx?.['&.Mui-selected']?.color || '#e6c300', // Change selected tab text color, // Change selected tab text color
           },
           '&:hover': {
             color: tab.sx?.['&:hover']?.color || "#ACA001", // Change text color on hover

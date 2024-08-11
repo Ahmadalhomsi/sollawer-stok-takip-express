@@ -6,6 +6,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import EditStockModal from '../Modals/EditStockModal'; // Ensure the correct import path
 import NewProductionOrderModal from '../Modals/NewProductionOrderModal';
+import { mainButtonStyle } from '../../styles';
 
 
 let outLocalItems = [];
@@ -175,7 +176,7 @@ const ProductionOrderTable = () => {
             editable: true,
 
             renderCell: (params) => (
-                <span>{params.row.BillOfProduct.billName || "Default Bill Name"}</span>
+                <span style={{color: '#CEAF03'}}>{params.row.BillOfProduct.billName || "Default Bill Name"}</span>
             ),
             renderEditCell: (params) => (
                 <>
@@ -208,7 +209,11 @@ const ProductionOrderTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
-            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+            <Button
+                onClick={handleModalOpen}
+                variant="contained"
+                sx={mainButtonStyle}
+            >
                 ADD NEW PRODUCTION ORDER
             </Button>
             <DataGrid

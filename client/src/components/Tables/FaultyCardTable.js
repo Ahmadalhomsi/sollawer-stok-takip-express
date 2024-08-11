@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import NewFaultyCardModal from '../Modals/NewFaultyCardModal';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Autocomplete } from '@mui/material';
+import { mainButtonStyle } from '../styles';
 
 const FaultyCardsTable = () => {
     const [rows, setRows] = useState([]);
@@ -239,7 +240,7 @@ const FaultyCardsTable = () => {
                             component="button"
                             variant="body2"
                             onClick={() => handleClickOpen(`http://localhost:5000/uploads/${url}`)}
-                            sx={{ display: 'block', cursor: 'pointer' }}
+                            sx={{ display: 'block', cursor: 'pointer', color: '#CEAF03' }}
                         >
                             {url}
                         </Link>
@@ -306,7 +307,11 @@ const FaultyCardsTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
-            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+            <Button
+                onClick={handleModalOpen}
+                variant="contained"
+                sx={mainButtonStyle}
+            >
                 YENİ ARIZALI KART EKLE
             </Button>
 
@@ -358,7 +363,8 @@ const FaultyCardsTable = () => {
                             accept="image/*"
                         />
                     </Button>
-                    <Button onClick={handleURLSubmit} variant="contained" color="primary" style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
+                    <Button onClick={handleURLSubmit} variant="contained" color="primary"
+                        style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
                         Upload
                     </Button>
 
@@ -373,7 +379,23 @@ const FaultyCardsTable = () => {
                                     component="button"
                                     variant="body2"
                                     onClick={() => handleClickOpen(`http://localhost:5000/uploads/${url}`)}
-                                    sx={{ display: 'block', cursor: 'pointer', marginRight: 2 }}
+                                    sx={{
+                                        display: 'block', cursor: 'pointer', marginRight: 2, width: '100%',
+                                        '& .MuiOutlinedInput-root': {
+                                            '&:hover fieldset': {
+                                                borderColor: '#ffb400', // Outline color on hover
+                                            },
+                                            '&.Mui-focused fieldset': {
+                                                borderColor: '#ffd800', // Outline color when focused
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: '#CEAF03', // Label color in the default state
+                                        },
+                                        '& .MuiInputLabel-root.Mui-focused': {
+                                            color: '#ff9900', // Label color when focused
+                                        },
+                                    }}
                                 >
                                     {url}
                                 </Link>

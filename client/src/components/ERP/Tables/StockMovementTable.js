@@ -5,6 +5,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import NewStockMovementModal from '../../ERP/Modals/NewStockMovementModal';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { mainButtonStyle } from '../../styles';
 
 const StockMovementTable = () => {
   const [rows, setRows] = useState([]);
@@ -209,7 +210,11 @@ const StockMovementTable = () => {
 
   return (
     <Box sx={{ height: 600, width: '100%' }}>
-      <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+      <Button
+        onClick={handleModalOpen}
+        variant="contained"
+        sx={mainButtonStyle}
+      >
         YENİ STOK HAREKETİ EKLE
       </Button>
 

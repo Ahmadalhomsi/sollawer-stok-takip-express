@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import NewCardParameterModal from '../Modals/NewCardParameterModal';
+import { filterStyle, mainButtonStyle } from '../styles';
 
 const CardParametersTable = () => {
     const [rows, setRows] = useState([]);
@@ -112,7 +113,7 @@ const CardParametersTable = () => {
                     onChange={(event, newValue) => {
                         params.api.setEditCellValue({ id: params.id, field: params.field, value: newValue });
                     }}
-                    renderInput={(params) => <TextField {...params}/>}
+                    renderInput={(params) => <TextField {...params} />}
                     style={{ width: 200 }}
                 />
             ),
@@ -136,7 +137,11 @@ const CardParametersTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
-            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+            <Button
+                onClick={handleModalOpen}
+                variant="contained"
+                sx={mainButtonStyle}
+            >
                 YENİ KART PARAMETRESİ EKLE
             </Button>
 
@@ -146,7 +151,7 @@ const CardParametersTable = () => {
                 onChange={handleFilterChange}
                 variant="outlined"
                 size='small'
-                style={{ marginBottom: 16, marginLeft: 15 }}
+                sx={filterStyle}
             />
 
             <DataGrid

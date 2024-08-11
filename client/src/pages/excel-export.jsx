@@ -4,6 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import TabNavigation from '../components/TabNavigation';
 import { allTabs } from '../components/allTabs';
+import { autocompleteStyle, mainButtonStyle } from '../components/styles';
 
 const ExcelExport = () => {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -42,15 +43,13 @@ const ExcelExport = () => {
 
                 <h1>Excel File Export</h1>
 
-
-
-
-                <FormControl fullWidth margin="normal">
+                <FormControl fullWidth margin="normal" sx={autocompleteStyle}>
                     <InputLabel>Export Table</InputLabel>
                     <Select
                         value={exportTable}
                         onChange={(e) => setExportTable(e.target.value)}
                         label="Export Table"
+
                     >
                         <MenuItem value="Siparişler">Siparişler</MenuItem>
                         <MenuItem value="Kontrol kartlar">Kontrol kartlar</MenuItem>
@@ -60,11 +59,11 @@ const ExcelExport = () => {
 
                 <Button
                     variant="contained"
-                    color="secondary"
                     onClick={handleExport}
                     fullWidth
                     margin="normal"
                     disabled={!exportTable}
+                    sx={mainButtonStyle}
                 >
                     Export Data
                 </Button>

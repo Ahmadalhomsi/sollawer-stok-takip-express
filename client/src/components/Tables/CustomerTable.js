@@ -7,6 +7,7 @@ import toast from
   "react-hot-toast";
 import NewCustomerModal from '../Modals/NewCustomerModal';
 import { useTheme } from '@emotion/react';
+import { mainButtonStyle } from '../styles';
 
 const CustomerTable = () => {
   const [rows, setRows] = useState([]);
@@ -96,7 +97,7 @@ const CustomerTable = () => {
             target="_blank"
             rel="noopener noreferrer"
             variant="body2"
-            style={{ color: emailColor, textDecoration: 'underline on hover' }} // Add underline on hover
+            style={{ color: '#CEAF03', textDecoration: 'underline on hover' }} // Add underline on hover
           >
             {params.row.email}
           </Typography>
@@ -120,7 +121,11 @@ const CustomerTable = () => {
   ];
   return (
     <Box sx={{ height: 600, width: '100%' }}>
-      <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+      <Button
+        onClick={handleModalOpen}
+        variant="contained"
+        sx={mainButtonStyle}
+      >
         YENİ MÜŞTERİ EKLE
       </Button>
       <DataGrid

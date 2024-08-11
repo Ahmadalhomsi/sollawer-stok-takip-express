@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import toast from "react-hot-toast";
 import NewProjectModal from '../Modals/NewProjectModal';
+import { filterStyle, mainButtonStyle } from '../styles';
 
 const ProjectTable = () => {
     const [rows, setRows] = useState([]);
@@ -92,7 +93,7 @@ const ProjectTable = () => {
         {
             field: 'projectLink', headerName: 'Proje Linki', width: 200, editable: true,
             renderCell: (params) => (
-                <Link href={params.value} target="_blank" rel="noopener noreferrer">
+                <Link href={params.value} target="_blank" rel="noopener noreferrer" sx={{ color: '#CEAF03' }}>
                     {params.value}
                 </Link>
             ),
@@ -130,7 +131,11 @@ const ProjectTable = () => {
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
-            <Button onClick={handleModalOpen} variant="contained" color="primary" style={{ marginBottom: 16 }}>
+            <Button
+                onClick={handleModalOpen}
+                variant="contained"
+                sx={mainButtonStyle}
+            >
                 YENİ PROJE EKLE
             </Button>
 
@@ -139,9 +144,10 @@ const ProjectTable = () => {
                 value={epcFilter}
                 onChange={handleFilterChange}
                 variant="outlined"
-                size='small'
-                style={{ marginBottom: 16, marginRight: 35, marginLeft: 10 }}
+                size="small"
+                sx={filterStyle}
             />
+
 
             <DataGrid
                 rows={filteredRows}
