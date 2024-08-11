@@ -47,9 +47,9 @@ export default function App() {
                     // primary: {
                     //     main: darkMode ? '#bb86fc' : '#6200ea',
                     // },
-                    secondary: {
-                        main: darkMode ? '#481d7b' : '#03a9f4',
-                    },
+                    // secondary: {
+                    //     main: darkMode ? '#481d7b' : '#03a9f4',
+                    // },
                     background: {
                         default: darkMode ? '#001626' : '#ffffff',
                         paper: darkMode ? '#1e1e1e' : '#ffffff',
