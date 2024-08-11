@@ -99,13 +99,10 @@ export default function App() {
                     <Route path='/erp/analytics' element={<ERPanalyticsPage />} />
                 </Routes>
 
-
-
                 <Toaster
                     position="top-center"
                     reverseOrder={true}
                 />
-
 
             </ThemeProvider>
 
