@@ -48,7 +48,7 @@ export default function App() {
                     //     main: darkMode ? '#bb86fc' : '#6200ea',
                     // },
                     secondary: {
-                        main: darkMode ? '#03dac6' : '#03a9f4',
+                        main: darkMode ? '#481d7b' : '#03a9f4',
                     },
                     background: {
                         default: darkMode ? '#001626' : '#ffffff',

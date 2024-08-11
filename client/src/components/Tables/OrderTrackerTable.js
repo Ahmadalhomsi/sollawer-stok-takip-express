@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import NewOrderModal from '../Modals/NewOrderModal';
 import toast from "react-hot-toast";
+import { useTheme } from '@emotion/react';
 
 
 const OrderTrackerTable = () => {
@@ -162,11 +163,23 @@ const OrderTrackerTable = () => {
     { field: 'longitude', headerName: 'Boylam', width: 80, editable: true, type: 'number' },
     { field: 'investorName', headerName: 'Yatırımcı İsmi', width: 150, editable: true },
     {
-      field: 'projectLink', headerName: 'Proje Linki', width: 200, editable: true, renderCell: (params) => (
-        <a href={params.value} target="_blank" rel="noopener noreferrer">
-          {params.value}
-        </a>
-      )
+      field: 'projectLink',
+      headerName: 'Proje Linki',
+      width: 200,
+      editable: true,
+      renderCell: (params) => {
+        const theme = useTheme();
+        const linkColor = theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2'; // Use a lighter color for dark mode
+
+        return (
+          <a href={params.value}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: linkColor }}>
+            {params.value}
+          </a>
+        );
+      }
     },
     {
       field: 'actions',

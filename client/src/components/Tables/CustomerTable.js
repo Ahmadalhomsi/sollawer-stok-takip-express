@@ -6,6 +6,7 @@ import axios from 'axios';
 import toast from
   "react-hot-toast";
 import NewCustomerModal from '../Modals/NewCustomerModal';
+import { useTheme } from '@emotion/react';
 
 const CustomerTable = () => {
   const [rows, setRows] = useState([]);
@@ -84,12 +85,25 @@ const CustomerTable = () => {
       headerName: 'Email',
       width: 220,
       editable: true,
-      renderCell: (params) => (
-        <Typography component="a" href={params.row.emailLink} target="_blank" rel="noopener noreferrer" variant="body2" underlineColor="none">
-          {params.row.email}
-        </Typography>
-      ),
+      renderCell: (params) => {
+        const theme = useTheme();
+        const emailColor = theme.palette.mode === 'dark' ? '#d1c4e9' : '#6a1b9a'; // Use a lighter purple for dark mode
+
+        return (
+          <Typography
+            component="a"
+            href={params.row.emailLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="body2"
+            style={{ color: emailColor, textDecoration: 'underline on hover' }} // Add underline on hover
+          >
+            {params.row.email}
+          </Typography>
+        );
+      },
     },
+
     { field: 'phone', headerName: 'Telefon Numarası', width: 180, editable: true },
     {
       field: 'actions',

@@ -477,15 +477,11 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     if (!file) {
         return res.status(400).send('No file uploaded');
     }
-
     const fileName = file.filename;
 
     const filePath = path.join('uploads', file.filename);
 
     fs.renameSync(file.path, filePath);
-
-
-    console.log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
 
     console.log(fileName);
 
