@@ -89,24 +89,38 @@ The project is divided into two main folders:
    * The server will be running at `http://localhost:5000`.
 
 ## Screenshots
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/1.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/2.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/3.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/4.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/5.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/6.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/7.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/8.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/9.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/10.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/11.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/12.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/13.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/14.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/15.png>)
-![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/16.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/1.png>)
 
-<!-- ![](<https://github.com/Ahmadalhomsi/Academic-Publication-Search-Engine/blob/Academic-Publication-Search-Engine/public/2.png>) -->
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/2.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/3.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/4.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/5.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/6.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/7.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/8.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/9.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/10.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/11.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/12.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/13.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/14.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/15.png>)
+
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/main/client/public/16.png>)
+
   
 ## Routes
 The application includes the following routes:  
