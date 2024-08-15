@@ -1,42 +1,42 @@
-# <span style="color: #ffd800 ">ERP Order and Control Management System</span>
+# ERP Order and Control Management System
 
 This project is an ERP (Enterprise Resource Planning) Order and Control Management System built with React for the frontend and Express.js for the backend. The system allows users to manage orders, control cards, card parameters, faulty cards, and more, with features like dark mode, data grid tables, and integration with PostgreSQL via Prisma ORM.
 
-## <span style="color: #ffd800 ">Project Structure</span>
+## Project Structure
 
 The project is divided into two main folders:
 
-- **<span style="color: #BEA200 ">client</span>**: Contains the React frontend.
-- **<span style="color: #BEA200 ">server</span>**: Contains the Express.js backend.
+- **client**: Contains the React frontend.
+- **server**: Contains the Express.js backend.
 
-## <span style="color: #ffd800 ">Features</span>
+## Features
 
-- **<span style="color: #BEA200 ">Order Management</span>**: Manage orders with detailed shipment and invoice statuses.
-- **<span style="color: #BEA200 ">Control Card Management</span>**: Track and manage control cards, including revision details and related card parameters.
-- **<span style="color: #BEA200 ">Customer and Project Management</span>**: Manage customers and associated projects with location details.
-- **<span style="color: #BEA200 ">Faulty Card Tracking</span>**: Track faulty cards with status and fault details.
-- **<span style="color: #BEA200 ">Stock and Bill of Product Management</span>**: Manage stock items, movements, and bills of products for production orders.
-- **<span style="color: #BEA200 ">Excel Import/Export</span>**: Import and export data using Excel files.
-- **<span style="color: #BEA200 ">Dark Mode</span>**: Toggle between light and dark modes using MUI's ThemeProvider.
-- **<span style="color: #BEA200 ">Notifications</span>**: Real-time notifications with React Hot Toast.
-- **<span style="color: #BEA200 ">Responsive UI</span>**: Built with Material UI (MUI) components like DataGrid, Icons, TextFields, Buttons, and Autocompletes.
+- **Order Management**: Manage orders with detailed shipment and invoice statuses.
+- **Control Card Management**: Track and manage control cards, including revision details and related card parameters.
+- **Customer and Project Management**: Manage customers and associated projects with location details.
+- **Faulty Card Tracking**: Track faulty cards with status and fault details.
+- **Stock and Bill of Product Management**: Manage stock items, movements, and bills of products for production orders.
+- **Excel Import/Export**: Import and export data using Excel files.
+- **Dark Mode**: Toggle between light and dark modes using MUI's ThemeProvider.
+- **Notifications**: Real-time notifications with React Hot Toast.
+- **Responsive UI**: Built with Material UI (MUI) components like DataGrid, Icons, TextFields, Buttons, and Autocompletes.
 
-## <span style="color: #ffd800 ">Tech Stack</span>
+## Tech Stack
 
 ### Frontend
-- **<span style="color: #BEA200 ">React</span>**: JavaScript library for building user interfaces.
-- **<span style="color: #BEA200 ">Material UI (MUI)</span>**: React components for faster and easier web development.
-- **<span style="color: #BEA200 ">React Hot Toast</span>**: Notifications system.
-- **<span style="color: #BEA200 ">Axios</span>**: Promise-based HTTP client for making requests.
-- **<span style="color: #BEA200 ">Prisma</span>**: ORM for database management.
-- **<span style="color: #BEA200 ">React Router</span>**: For routing and navigation.
+- **React**: JavaScript library for building user interfaces.
+- **Material UI (MUI)**: React components for faster and easier web development.
+- **React Hot Toast**: Notifications system.
+- **Axios**: Promise-based HTTP client for making requests.
+- **Prisma**: ORM for database management.
+- **React Router**: For routing and navigation.
 
 ### Backend
-- **<span style="color: #BEA200 ">Express.js</span>**: Web framework for Node.js.
-- **<span style="color: #BEA200 ">Prisma</span>**: Database ORM for PostgreSQL.
-- **<span style="color: #BEA200 ">PostgreSQL</span>**: Relational database management system.
+- **Express.js**: Web framework for Node.js.
+- **Prisma**: Database ORM for PostgreSQL.
+- **PostgreSQL**: Relational database management system.
 
-## <span style="color: #ffd800 ">Installation</span>
+## Installation
 
 1. **Clone the repository:**
    ```bash
@@ -87,8 +87,28 @@ The project is divided into two main folders:
 5. **Access the application:**
    * The client will be running at `http://localhost:3000`.
    * The server will be running at `http://localhost:5000`.
+
+## Screenshots
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/1.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/2.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/3.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/4.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/5.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/6.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/7.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/8.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/9.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/10.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/11.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/12.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/13.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/14.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/15.png>)
+![](<https://github.com/Ahmadalhomsi/sollawer-stok-takip-express/blob/sollawer-stok-takip-express/client/public/16.png>)
+
+<!-- ![](<https://github.com/Ahmadalhomsi/Academic-Publication-Search-Engine/blob/Academic-Publication-Search-Engine/public/2.png>) -->
   
-## <span style="color: #ffd800 ">Routes</span>
+## Routes
 The application includes the following routes:  
 `/`: Orders page  
 `/card`: Control card management  
@@ -103,3 +123,7 @@ The application includes the following routes:
 `/erp/billOfProduct`: Manage bills of products  
 `/erp/productionOrder`: Manage production orders  
 `/erp/analytics`: View analytics  
+
+
+
+
